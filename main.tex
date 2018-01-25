@@ -1,0 +1,60 @@
+\documentclass{kththesis}
+
+\usepackage{blindtext} % This is just to get some nonsense text in this template, can be safely removed
+
+\usepackage{csquotes} % Recommended by biblatex
+\usepackage{biblatex}
+\addbibresource{bibliography.bib} % The file containing our references, in BibTeX format
+
+
+\title{This is the English title}
+\alttitle{Detta är den svenska översättningen av titeln}
+\author{Osquar Student}
+\email{osquar@kth.se}
+\supervisor{Lotta Larsson}
+\examiner{Lennart Bladgren}
+\programme{Master in Computer Science}
+\school{School of Computer Science and Communication}
+\date{\today}
+
+
+\begin{document}
+
+% Frontmatter includes the titlepage, abstracts and table-of-contents
+\frontmatter
+
+\titlepage
+
+% English abstract
+\input{abstract/abstract_english.tex}
+
+% Swedish abstract
+\input{abstract/abstract_swedish.tex}
+
+
+
+\tableofcontents
+
+
+% Mainmatter is where the actual contents of the thesis goes
+\mainmatter
+
+% Introduction
+\input{introduction/introduction.tex}
+
+% Background
+\input{background/background.tex}
+
+% Method
+\input{method/method.tex}
+
+% Bibliography
+\printbibliography[heading=bibintoc] % Print the bibliography (and make it appear in the table of contents)
+
+% Appendices
+\appendix
+
+% Appendix A
+\chapter{Unnecessary Appended Material}
+
+\end{document}
