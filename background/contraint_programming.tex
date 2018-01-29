@@ -1,2 +1,31 @@
 \section{Contraint Programming}
-Combinatorial optimisation
+
+Constraint programming is a programming paradigm where problems are modeled as contraints
+on variables. That is, a problem is solved by first identifying the variables, the domain
+of each variable and the \textit{constraints} of the variables, i.e. the relation between them.
+
+Contraint programming is used to solve combinatorial problems in a relatively efficient
+manner, which makes it an excellent approach to e.g. NP-problems. Constraint programming
+is somtimes also called \textit{combinatorial optimization}, and implementations are then
+% https://developers.google.com/optimization/
+called \textit{combinatorial optimization software suite}. This is perhaps an ever better
+name for the paradigm since it describes the usage (and limitations).
+
+% https://en.wikipedia.org/wiki/Constraint_programming#Constraint_programming_libraries_for_imperative_programming_languages
+This paradigm is not limited to certain languages but are usually implemented as libraries
+that implement a constraint solver. There are also a few languages that support constraint
+programming natively, such as Curry.
+% http://www-ps.informatik.uni-kiel.de/currywiki/_media/documentation/report.pdf
+% http://www-ps.informatik.uni-kiel.de/currywiki/documentation/features
+In both cases the user specifies the variables and
+the constraints and the constaint solver propagates the given constraints and reduces each
+variables domain until there is only one option left, and the problem is solved.
+
+\subsection{Variables and Domains}
+
+
+\subsection{Constraints}
+
+\subsection{Constraint Solving}
+
+\subsection{Searching}
