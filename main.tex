@@ -5,11 +5,10 @@
 \addbibresource{bibliography.bib} % The file containing our references, in BibTeX format
 
 \usepackage{graphicx}
-
 \usepackage{listings}
 
-\title{This is the English title}
-\alttitle{Detta är den svenska översättningen av titeln}
+\title{Providing Software Diversity by LLVM MIR Transformation using Unison}
+\alttitle{Varierad Mjukvara genom LLVM MIR Transformation med Unison}
 \author{Patrik Karlström}
 \email{pkarlstr@kth.se}
 \supervisor{Benoit Baudry}
@@ -31,7 +30,6 @@
 
 % Swedish abstract
 \input{abstract/abstract_swedish.tex}
-
 
 
 \tableofcontents
@@ -59,6 +57,8 @@
 \chapter{Unnecessary Appended Material}
 
 \chapter{SEND+MOST=MONEY Source Code}
-\lstinputlisting[language=C++,tabsize=2,frame=single]{background/examples/send_most_money.cpp}
+\label{appendix:constraint_programming}
+\lstinputlisting[language=C++,tabsize=2,frame=single,breaklines=true,showstringspaces=false]
+	{background/examples/send_most_money.cpp}
 
 \end{document}
