@@ -5,13 +5,13 @@
 
 using namespace Gecode;
 
-class SendMoreMoney : public Space {
+class SendMostMoney : public Space {
 	protected:
 		IntVarArray l;
 	public:
-		SendMoreMoney(void) : l(*this, 8, 0 ,9) {
+		SendMostMoney(void) : l(*this, 8, 0 ,9) {
 			IntVar s(l[0]), e(l[1]), n(l[2]), d(l[3]),
-				m(l[4]), o(l[5]), r(l[6]), y(l[7]);
+				m(l[4]), o(l[5]), t(l[6]), y(l[7]);
 
 			// s and m are nonzero
 			rel(*this, s != 0);
@@ -21,8 +21,8 @@ class SendMoreMoney : public Space {
 			distinct(*this, l);
 
 			// The linear equation constraint
-			rel(*this, 1000*(s+m) + 100*(e+o) + 10*(n+r) + 1*(d+e) \
-					== 1000*m + 1000*o + 100*n + 10*e + 1*y);
+			rel(*this, ( 1000*(s+m) + 100*(e+o) + 10*(n+s) + 1*(d+t) ) \
+					== (10000*m + 1000*o + 100*n + 10*e + 1*y) );
 
 			// Our search / branching heuristic
 			// Pick the variable with the smallest domain and branch on the
@@ -30,23 +30,25 @@ class SendMoreMoney : public Space {
 			branch(*this, l, INT_VAR_SIZE_MIN(), INT_VAL_MIN());
 		}
 
-		SendMoreMoney(bool share, SendMoreMoney& s) : Space(share, s) {
+		SendMostMoney(bool share, SendMostMoney& s) : Space(share, s) {
 			l.update(*this, share, s.l);
 		}
 
 		virtual Space* copy(bool share) {
-			return new SendMoreMoney(share, *this);
+			return new SendMostMoney(share, *this);
 		}
 
 		void print(std::ostream& os) const {
 			os << "{s : " << l[0] << ", e : " << l[1] << ", n : " << l[2]
 				<< ", d : " << l[3] << ", m : " << l[4] << ", o : " << l[5]
-				<< ", r : " << l[6] << ", y : " << l[7] << "}";
+				<< ", t : " << l[6] << ", y : " << l[7] << "} : "
+				<< l[0] << l[1] << l[2] << l[3] << " + " << l[4] << l[5] << l[0] << l[6] << " = "
+				<< l[4] << l[5] << l[2] << l[1] << l[7];
 		}
 
 		// Specify how we omptimize the solution when searching
 		virtual void constrain(const Space& _b) {
-			const SendMoreMoney& b = static_cast<const SendMoreMoney&>(_b);
+			const SendMostMoney& b = static_cast<const SendMostMoney&>(_b);
 			IntVar e(l[1]), n(l[2]), m(l[4]), o(l[5]), y(l[7]);
 			IntVar b_e(b.l[1]), b_n(b.l[2]), b_m(b.l[4]), b_o(b.l[5]), b_y(b.l[7]);
 
@@ -61,8 +63,8 @@ class SendMoreMoney : public Space {
 
 int main() {
 	try {
-		SendMoreMoney *m = new SendMoreMoney;
-		Gist::Print<SendMoreMoney> p("Print solution");
+		SendMostMoney *m = new SendMostMoney;
+		Gist::Print<SendMostMoney> p("Print solution");
 		Gist::Options o;
 		o.inspect.click(&p);
 		Gist::bab(m, o);

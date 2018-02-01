@@ -30,7 +30,7 @@ variable's domain until there is only one option left, and the problem is solved
 To illustrate how to model and solve problems with constraint programming consider the
 following example.
 
-We are presented with the problem of solving the equation $SEND + MORE = MONEY$, where
+We are presented with the problem of solving the equation $SEND + MOST = MONEY$, where
 each letter is to be subsituted with a digit, $S$ and $M$ cannot be 0, and all digits must
 be pairwise distinct. We can easily determine that this is indeed a combinatorial problem
 and that, presumably, there exists multiple solutions. The naive method of solving this
@@ -63,8 +63,11 @@ $N \in \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\}$ \\
 $D \in \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\}$ \\
 $M \in \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\}$ \\
 $O \in \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\}$ \\
-$R \in \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\}$ \\
+$T \in \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\}$ \\
 $Y \in \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\}$
+
+Henceforth two integers seperated by two dots will indicate a range of all integers between
+and including the two specified.
 
 \subsubsection{Determining Constraints}
 
@@ -79,7 +82,7 @@ To enforce the equation in the problem description we post the constraint: \\
 
 \begin{tabular}{cccccc}
 	& & $1000 * S$ & $100 * E$ & $10 * N$ & $D$ \\
-	+ &	& $1000 * M$ & $100 * O$ & $10 * R$ & $E$ \\
+	+ &	& $1000 * M$ & $100 * O$ & $10 * S$ & $T$ \\
 	\hline
 	& $10000 * M$ & $1000 * O$ & $100 * N$ & $10 * E$ & $Y$
 \end{tabular}
@@ -97,6 +100,24 @@ be nonzero. We can thus remove the 0 from their domains. We systematically work 
 all constraints and keep pruning values from domains.
 
 % TODO The variables and their domains after propagation for the example
+If we propagate the given constraints on the initial domains of our variables we are left
+with the following state:
+
+\vspace{0.5cm}
+\noindent
+$S \in \{9\}$ \\
+$E \in \{2..7\}$ \\
+$N \in \{3..8\}$ \\
+$D \in \{2..8\}$ \\
+$M \in \{1\}$ \\
+$O \in \{0\}$ \\
+$T \in \{2..8\}$ \\
+$Y \in \{2..8\}$
+
+Notably, we have already determined that $S$ has to be 9, which excludes it from all other
+domains. In a similar manner we have assigned $M=1$ and $O=0$ and removed 1 and 0 from all
+other domains, this in turn has led to the exclusion of 2 from the domain of $N$. In other
+words, the equation will look something like $9END + 109T = 10NEY$
 
 When no more domains can be pruned we have one of three situations. One or more domain(s)
 could be empty, proving that no solution exists. All domains could be of size 1, indicating
@@ -104,7 +125,7 @@ that there exists only one possible value for every variable, and thus we have f
 solution. And last but not least, one or more variables have multiple values in their
 domain. If we reach any of the former situations, either a solution is found or we have proven
 that a solution does not exist. In the latter situation we have multiple possbile values,
-and we must explore these combinations. We do that by \textit{searching}.
+and we must explore these combinations. We do that by \textit{branching}.
 
 \subsubsection{Searching}
 
@@ -113,8 +134,8 @@ search tree}. Each node of the search tree constists of every variable and their
 domain after propagation. The root node would then be the all variables and their domains
 after initial propagation (as in the previous section). From each node we create two or
 more branches, where each branch represents a subset of a domain for a particular variable.
-For example, we could create one branch were $S \in \{1, 2, 3, 4\}$ and one branch where $S \in 
-\{5, 6, 7, 8, 9\}$. It is important that the branches completely covers the original
+For example, we could create one branch were $E \in \{2..4\}$ and one branch where $E \in 
+\{5..7\}$. It is important that the branches completely covers the original
 domain, so that all possible values are explored.
 
 We will then follow one of the branches, propagate constraints given the reduced domain
@@ -123,20 +144,42 @@ situations, only in this case if we have reached the first situation (failure) w
 back and go down the other branch. This process is applied recuresively until a solution
 is found or all combinations have been exhausted.
 
-\subsubsection{Choosing a search heuristic}
+\subsubsection{Choosing a branching heuristic}
 
-Determening on which variable to branch, how many branches to create and which values to
+Determining on which variable to branch, how many branches to create and which values to
 include or exclude for every branch is very much dependent on the problem being modeled.
 In this case something simple is sufficient and we can say that when a dead-end is reached
 we pick the variable with the smallest domain and create one branch where that variable
 is mapped to the smallest value in that domain, and one branch where the smallest value
 is excluded from the domain.
 
-% TODO pictures and illustrations and whatnot
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=8cm]{background/figures/constraint_first_solution}
+	\caption{Search tree of first solution to SEND+MOST=MONEY problem.
+	White nodes are unvisited, blue nodes are propagated, red nodes are failed and orange nodes are solutions.}
+	\label{fig:first_solution}
+\end{figure}
 
-% Perhaps add a section about other possible search strategies?
+\begin{table}
+	\centering
+	\begin{tabular}{c|c|c|c|c|c|c|c|c}
+		Node & S & E & N & D & M & O & T & Y \\
+		\hline
+		root & 9 & {2..7} & {3..8} & {2..8} & 1 & 0 & {2..8} & {2..8} \\
+		2 & 9 & {3..7} & {4..8} & {2..8} & 1 & 0 & {2..8} & {2..8} \\
+		3 & 9 & 3 & 4 & {2, 5, 6} & 1 & 0 & {2, 5, 6} & {5..8} \\
+		5 & 9 & 3 & 4 & 2 & 1 & 0 & {5, 6} & {7, 8} \\
+		7 & 9 & 3 & 4 & 2 & 1 & 0 & 5 & 7 \\
+	\end{tabular}
+	\caption{Each variable's domain in the nodes (after propagation) explored to reach the first solution}
+	\label{tab:first_solution_states}
+\end{table}
 
-% Show a solution
+Figure \ref{fig:first_solution} shows all branching made to reach the first solution given
+our branching heuristic. Table \ref{tab:first_solution_states} show the domains of each
+variable at a given node (after propagation). Node 7 represents a solution to the problem,
+namely $9342+1095=10437$.
 
 \subsubsection{Optimizing}
 
@@ -150,22 +193,47 @@ set the bar at that solution instead. This process is called \textit{branch and 
 For a combinatioral problem we expect mutliple solutions, and by always requiring the
 next solution to be better than the last we will eventually, given enough time, reach
 the \textit{optimal} solution. That is if we apply a branch and bound strategy and allow
-it to run until termination, we have both found the optimal solution and \textit{it} proven
-that it is the optimal solution. For large problems however, this might take an unreasonable
-amount of time, and it is better to terminate early.
+it to run until termination, we have both found the optimal solution and proved that it is
+the optimal solution. For large problems however, this might take an unreasonable amount
+of time and it is better to terminate early.
 
 To first step of finding the optimal solution is indentify what constintutes as \textit{
 	better}. In our case we want as much money as possible. One solution is better than
-another one if the mapping of $MONEY$ yields a larger integer.
+another one if the mapping of $MONEY$ yields a larger integer. Table \ref{tab:two_solutions}
+shows two distinct solutions, one better than the other.
 % Provide example with two solutions
+
+\begin{table}
+	\centering
+	\begin{tabular}{c|c|c|c|c|c|c|c|c}
+		S & E & N & D & M & O & T & Y & MONEY \\
+		\hline
+		9 & 3 & 4 & 2 & 1 & 0 & 5 & 7 & 10437 \\
+		9 & 3 & 4 & 2 & 1 & 0 & 6 & 8 & 10438 \\
+	\end{tabular}
+	\caption{Two solution to the problem, one better than the other.}
+	\label{tab:two_solutions}
+\end{table}
 
 For every solution we find, we require subsequent solution to map $MONEY$ to a larger
 integer. The optimal solution is the largest integer for $MONEY$ we can find while still
-conforming to all constraints.
+conforming to all constraints. If we keep searching and keep requiring that the next solution
+is better than the last we will eventually conclude that the optimal solution is the one
+presented in table \ref{tab:optimal_solution}.
 
-% Show optimal solution
+\begin{table}
+	\centering
+	\begin{tabular}{c|c|c|c|c|c|c|c|c}
+		S & E & N & D & M & O & T & Y & MONEY \\
+		\hline
+		9 & 7 & 8 & 2 & 1 & 0 & 4 & 6 & 10876 \\
+	\end{tabular}
+	\caption{The optimal solution.}
+	\label{tab:optimal_solution}
+\end{table}
 
-% Source code in appendix
+% Source code in appendix TODO: figure out which appendix
+The source code, written with Gecode, for the problem can be found in appendix X
 
 \subsection{Summary}
 The most important part of constraint programming is that you are describing how a

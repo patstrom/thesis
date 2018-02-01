@@ -4,6 +4,9 @@
 \usepackage{biblatex}
 \addbibresource{bibliography.bib} % The file containing our references, in BibTeX format
 
+\usepackage{graphicx}
+
+\usepackage{listings}
 
 \title{This is the English title}
 \alttitle{Detta är den svenska översättningen av titeln}
@@ -54,5 +57,8 @@
 
 % Appendix A
 \chapter{Unnecessary Appended Material}
+
+\chapter{SEND+MOST=MONEY Source Code}
+\lstinputlisting[language=C++,tabsize=2,frame=single]{background/examples/send_most_money.cpp}
 
 \end{document}
