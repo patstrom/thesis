@@ -114,8 +114,8 @@ domain after propagation. The root node would then be the all variables and thei
 after initial propagation (as in the previous section). From each node we create two or
 more branches, where each branch represents a subset of a domain for a particular variable.
 For example, we could create one branch were $S \in \{1, 2, 3, 4\}$ and one branch where $S \in 
-\{5, 6, 7, 8, 9\}$. It is important that the branches cover the original domain, so that
-all possible values are explored.
+\{5, 6, 7, 8, 9\}$. It is important that the branches completely covers the original
+domain, so that all possible values are explored.
 
 We will then follow one of the branches, propagate constraints given the reduced domain
 of the branching variable and once again reach one of the three previously mentioned
