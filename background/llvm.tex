@@ -40,7 +40,7 @@ In the case of LLVM, the interface between the front-end and the mid-end is know
 LLVM IR (\textit{Intermediate Representation}) and is a strongly typed, RISC-like virtual
 instruction set that abstracts some details about the machine, such as function call
 conventions and registers. To implement a programming language one would then only have to
-implement a front-end, that is translate the source code to LLVM IR. One could then pick 
+implement a front-end, that is translate the source code to LLVM IR. One could then pick
 and choose from the already existing LLVM optimizer passes and LLVM back-end implementations
 to complete the compiler.
 
@@ -68,7 +68,20 @@ backgroundcolor= \color{lightgray}]
 Courtesy of the Unison documentation for the code examples.
 % https://github.com/unison-code/unison/tree/master/doc/code
 
-\subsection{LLC - LLVM's Code Generator}
+\subsection{LLVM back-end}
+
+% https://llvm.org/docs/WritingAnLLVMBackend.html
+The LLVM back-end is responsible for three main tasks: Intruction selection, register
+allocation and instruction scheduling. They are performed mostly in isolation to each
+other, which simplifies the architecture but introduces some interesting challenges.
+
+The general behaviour of an LLVM back-end is that it transforms LLVM IR to machine code
+for a specific target platform. Exactly what it produces is depended on the target architecture
+but it is common to generate assembly corresponding to the instruction set of the target
+machine.
+
+\subsubsection{Instruction selection}
+
 
 \subsubsection{Register Allocation}
 % Mention the problem with offset and having to scavenge register
