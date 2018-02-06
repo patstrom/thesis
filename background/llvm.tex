@@ -68,10 +68,16 @@ optimization, ABI implementation, exception handling etc.
 
 \subsubsection{LLVM Machine Representation}
 
-To represent machine specific IR LLVM uses the LLVM MIR (\textit{Machine Intermediate Representation}),
-which is a human readable, YAML serialized format. It is used to test code generation
-passes in LLVM. That is, we can stop the LLVM back-end prematurely and view the current
-progress in the form of an LLVM MIR.
+To represent machine specific IR LLVM uses what is called "Machine specific representation".
+The machine specific representation consists of target agnostic, in-memory representations
+of functions (MachineFuntion), basic blocks (MachineBasicBlock) and instructions (MachinrInstr).
+% https://releases.llvm.org/3.8.1/docs/MIRLangRef.html#id8
+% https://releases.llvm.org/3.8.1/docs/CodeGenerator.html#machine-code-representation
+
+The machine specific representation can be represented as the LLVM MIR (\textit{Machine
+Intermediate Representation}), which is a human readable, YAML serialized format. It is
+used to test code generation passes in LLVM. That is, we can stop the LLVM back-end
+prematurely and view the current progress in the form of an LLVM MIR.
 % https://llvm.org/docs/MIRLangRef.html
 
 For example, the iterative factorial function written in C:
@@ -95,11 +101,63 @@ What is interesting to note is that there is an infinite number of virtual regis
 starting from \%0 and incrementing, as well as some abstract intructions, such as the PHI
 function.
 
+\subsubsection{Instruction Scheduling}
+% https://llvm.org/docs/CodeGenerator.html#scheduling-and-formation
+% https://llvm.org/devmtg/2016-09/slides/Absar-SchedulingInOrder.pdf
+Instruction scheduling is the task of choosing how and in which order the selected instructions
+will run. In the case of LLVM the scheduling phase is logically seperate from the selection
+phase. There exists a wide variety of architecture and they all have different limitations
+and constraints.
+
+Perhaps the most intuitive kind of architecture is the in-order processor where all
+instructions are executed sequentially and the schedule is staticically generated.
+
+Alternatives to this architecture is and out-of-order processor where all instructions are
+fetched and committed in-order, but executed out-of-order. In this case the instructions
+are dynamically scheduled by the CPU. You can also have a VLIW (\textit{Very Long Instruction
+Word}) processor where multiple instructions can be statically scheduled in parallel.
+
+% http://infolab.stanford.edu/~ullman/dragon/w06/lectures/inst-sched.pdf
+
+As previously mentioned LLVM is a set of libraries, and thus no one way to schedule instructions
+in LLVM exists. However, the key factors to take into account during instruction scheduling
+is generally to make use of architecture specific features (such as VLIW), avoiding pipeline
+stalls by rearranging instructions, reducing register pressure. When scheduling instructions
+the main constraint is data-dependencies. Some instructions depends on the result of previous
+instructions, and must thus be scheduled sequentially. In the cases where these dependencies
+does not exists (or can be broken by e.g introducing new temporaries) the instructions
+can be scheduled in a different order or in parallel (if the hardware allows it).
+
+Instruction scheduling can be seen as a problem where the input is a list of resources
+(e.g ALUs, FPUs, presence of VLIW) and a execution cycles for each instruction, and the
+output is the instruction in the sequence they should be executed for optimal performence
+(with regards to whatever factor you are optimizing for). Of course this problem is very
+difficult.
+
 \subsubsection{Register Allocation}
+% https://llvm.org/pubs/2009-04-SCOPES-RegisterAllocationDeconstructed.pdf
+% https://llvm.org/docs/CodeGenerator.html#register-allocator
+
+There are a few different problem concering register allocation. Namely, coalescing, spilling
+move insertion and assigment.
+
+Coalescing is the attempt to eliminate move instructions that refers to identical locations,
+i.e. remove unnecessary moves. When spilling a register you allocate the variable on the
+stack to free up the register for another temporary ("spilling" the temporary to the stack)
+and move insertion is used to split the lifetime of temporaries.
+
+In general the task is modeled as a graph-coloring problem. The first step is then to
+perform a \textit{liveliness analysis}, where you analyse the temporaries in the program
+to determine which values has to co-exist (i.e. be placed in different registers). With
+the liveliness analysis in hand a graph can be constructed where each node is a temporary,
+edges represents that the two temporaries must be assigned to distinct registers and the
+colors are registers. E.g for a machine with 64 registers you would use at most 64 colors
+to color the graph. Assigning a temporary to a specific register (perhaps because of
+calling conventions) would then be to "pre-color" the corresponding node. Coalescing in
+this model would be to "merge" two nodes and spilling would be to remove a node. Spilling
+is usually a consequence of not being able to find a coloring of the graph, thus
+necessitating that a node be removed.
+
+\subsubsection{Combining Instruction Scheduling and Register Allocation}
 % Mention the problem with offset and having to scavenge register
 % https://youtu.be/objxlZg01D0?t=48m53s
-
-% https://llvm.org/pubs/2009-04-SCOPES-RegisterAllocationDeconstructed.pdf
-
-
-\subsubsection{Instruction Scheduling}
