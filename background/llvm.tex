@@ -46,12 +46,35 @@ to complete the compiler.
 
 Only the back-end is of concern to this thesis, so it will focus exclusively on that.
 
+\subsection{LLVM back-end}
+
+A LLVM back-end, also known as a LLVM code generator, has a well defined input. The
+LLVM IR. The output is often an object file, but a backend can also act as an interpreter.
+For most of it's task, a LLVM backend uses what is called the \textit{machine IR} to represent
+the code during the different stages.
+
+% https://llvm.org/docs/WritingAnLLVMBackend.html
+The LLVM back-end is responsible for three main tasks: Intruction selection, register
+allocation and instruction scheduling. They are performed mostly in isolation to each
+other, which simplifies the architecture but introduces some interesting challenges.
+
+The general behaviour of an LLVM back-end is that it transforms LLVM IR to machine code
+for a specific target platform. Exactly what it produces depends on the target architecture
+but it is common to generate assembly corresponding to the instruction set of the target
+machine.
+
+This paper does not cover instruction selection or other, smaller back-end tasks such as
+optimization, ABI implementation, exception handling etc.
+
 \subsubsection{LLVM Machine Representation}
 
 To represent machine specific IR LLVM uses the LLVM MIR (\textit{Machine Intermediate Representation}),
-which is a human readable, YAML serialized format that is used to test code generation passes
-in LLVM. That is, if we stop LLVM prematurely we can view the current progress in the form
-of an LLVM MIR. For example, the iterative factorial function written in C:
+which is a human readable, YAML serialized format. It is used to test code generation
+passes in LLVM. That is, we can stop the LLVM back-end prematurely and view the current
+progress in the form of an LLVM MIR.
+% https://llvm.org/docs/MIRLangRef.html
+
+For example, the iterative factorial function written in C:
 
 \lstinputlisting[language=C,tabsize=2,frame=single,breaklines=true,showstringspaces=false,
 backgroundcolor= \color{lightgray}]
@@ -68,23 +91,11 @@ backgroundcolor= \color{lightgray}]
 Courtesy of the Unison documentation for the code examples.
 % https://github.com/unison-code/unison/tree/master/doc/code
 
-\subsection{LLVM back-end}
-
-% https://llvm.org/docs/WritingAnLLVMBackend.html
-The LLVM back-end is responsible for three main tasks: Intruction selection, register
-allocation and instruction scheduling. They are performed mostly in isolation to each
-other, which simplifies the architecture but introduces some interesting challenges.
-
-The general behaviour of an LLVM back-end is that it transforms LLVM IR to machine code
-for a specific target platform. Exactly what it produces depends on the target architecture
-but it is common to generate assembly corresponding to the instruction set of the target
-machine.
-
-\subsubsection{Instruction selection}
-
-
 \subsubsection{Register Allocation}
 % Mention the problem with offset and having to scavenge register
 % https://youtu.be/objxlZg01D0?t=48m53s
+
+% https://llvm.org/pubs/2009-04-SCOPES-RegisterAllocationDeconstructed.pdf
+
 
 \subsubsection{Instruction Scheduling}
