@@ -30,7 +30,7 @@ assists in performing, these different tasks.
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=12cm]{background/figures/three_phase_compiler}
+	\includegraphics[width=12cm]{background/llvm/figures/three_phase_compiler}
 	\caption{Three-phase compiler construction. The mid-end is somtimes called an \textit{optimizer}
 	and the back-end a \textit{code generator}}
 	\label{fig:three_phase_compiler}
@@ -54,8 +54,8 @@ For most of it's task, a LLVM backend uses what is called the \textit{machine IR
 the code during the different stages.
 
 % https://llvm.org/docs/WritingAnLLVMBackend.html
-The LLVM back-end is responsible for three main tasks: Intruction selection, register
-allocation and instruction scheduling. They are performed mostly in isolation to each
+The LLVM back-end is responsible for three main tasks: intruction selection, instruction
+scheduling and register allocation. They are performed mostly in isolation to each
 other, which simplifies the architecture but introduces some interesting challenges.
 
 The general behaviour of an LLVM back-end is that it transforms LLVM IR to machine code
@@ -63,7 +63,7 @@ for a specific target platform. Exactly what it produces depends on the target a
 but it is common to generate assembly corresponding to the instruction set of the target
 machine.
 
-This paper does not cover instruction selection or other, smaller back-end tasks such as
+This paper does not cover instruction selection or other, smaller, back-end tasks such as
 optimization, ABI implementation, exception handling etc.
 
 \subsubsection{LLVM Machine Representation}
@@ -84,7 +84,7 @@ For example, the iterative factorial function written in C:
 
 \lstinputlisting[language=C,tabsize=2,frame=single,breaklines=true,showstringspaces=false,
 backgroundcolor= \color{lightgray}]
-{background/examples/factorial.c}
+{background/llvm/examples/factorial.c}
 
 gets translated to the following MIR when targeting the Hexagon V4 architecture and
 terminating after instruction selection, right before register allocation and instruction
@@ -92,7 +92,7 @@ scheduling.
 
 \lstinputlisting[tabsize=2,frame=single,breaklines=true,showstringspaces=false,
 backgroundcolor= \color{lightgray}]
-{background/examples/factorial.mir}
+{background/llvm/examples/factorial.mir}
 
 Courtesy of the Unison documentation for the code examples.
 % https://github.com/unison-code/unison/tree/master/doc/code
@@ -103,7 +103,7 @@ function.
 
 \subsubsection{Instruction Scheduling}
 % https://llvm.org/docs/CodeGenerator.html#scheduling-and-formation
-% https://llvm.org/devmtg/2016-09/slides/Absar-SchedulingInOrder.pdf
+% https://llvm.org/devmtg/2016-09/slides/Absar-SchedulingInOrder.pdf - find better souce than this. Needs to be abou different archiectures
 Instruction scheduling is the task of choosing how and in which order the selected instructions
 will run. In the case of LLVM the scheduling phase is logically seperate from the selection
 phase. There exists a wide variety of architecture and they all have different limitations
@@ -117,12 +117,12 @@ fetched and committed in-order, but executed out-of-order. In this case the inst
 are dynamically scheduled by the CPU. You can also have a VLIW (\textit{Very Long Instruction
 Word}) processor where multiple instructions can be statically scheduled in parallel.
 
-% http://infolab.stanford.edu/~ullman/dragon/w06/lectures/inst-sched.pdf
+% http://infolab.stanford.edu/~ullman/dragon/w06/lectures/inst-sched.pdf - find better source for stuff like architecture, instruction scheduling goals and stuff.
 
 As previously mentioned LLVM is a set of libraries, and thus no one way to schedule instructions
 in LLVM exists. However, the key factors to take into account during instruction scheduling
 is generally to make use of architecture specific features (such as VLIW), avoiding pipeline
-stalls by rearranging instructions, reducing register pressure. When scheduling instructions
+stalls by rearranging instructions, reducing register pressure etc. When scheduling instructions
 the main constraint is data-dependencies. Some instructions depends on the result of previous
 instructions, and must thus be scheduled sequentially. In the cases where these dependencies
 does not exists (or can be broken by e.g introducing new temporaries) the instructions
@@ -130,9 +130,9 @@ can be scheduled in a different order or in parallel (if the hardware allows it)
 
 Instruction scheduling can be seen as a problem where the input is a list of resources
 (e.g ALUs, FPUs, presence of VLIW) and a execution cycles for each instruction, and the
-output is the instruction in the sequence they should be executed for optimal performence
-(with regards to whatever factor you are optimizing for). Of course this problem is very
-difficult.
+output is the instruction in the sequence they should be executed for optimal performance
+(with regards to whatever factor you are optimizing for). In other words, maximize \textit{
+	instruction level parallellism}. Of course this problem is very difficult.
 
 \subsubsection{Register Allocation}
 % https://llvm.org/pubs/2009-04-SCOPES-RegisterAllocationDeconstructed.pdf
@@ -158,6 +158,61 @@ this model would be to "merge" two nodes and spilling would be to remove a node.
 is usually a consequence of not being able to find a coloring of the graph, thus
 necessitating that a node be removed.
 
-\subsubsection{Combining Instruction Scheduling and Register Allocation}
+\subsubsection{Problems with LLVM Approach}
+% http://i.stanford.edu/pub/cstr/reports/cs/tn/95/22/CS-TN-95-22.pdf 
+It is a common approach to treat instruction scheduling and register allocation as two
+distinct steps in the back-end pipeline, and indeed so does LLVM. There are two approaches
+to this, either you start with one or the other. Starting with instruction scheduling is,
+nowadays, more common. Doing the register allocation first was mainly used in the early
+days of compilers when machines didn't have as many registers.
+
+% citation needed
+% maybe here: https://pdfs.semanticscholar.org/5246/7f742a206b075324ec17b9b7f9d539f52ec8.pdf
+Seperating these steps in such a manner leads to some problems, and usually some instruction
+scheduling is once again performed after the register allocation. If a register needs to be
+spilled then the dependency graph which we based our schedule on is no longer valid. Re-doing
+these steps is quite expensive though, as you would essentially throw out all previous
+progress as soon as a register is spilled. Instead, modern compiler generate suboptimal
+code. Not very modern.
+
 % Mention the problem with offset and having to scavenge register
 % https://youtu.be/objxlZg01D0?t=48m53s
+More subtle, machine specific problems can also occur even after both instruction scheduling
+and register allocation has happened. When setting up stack frames and resolving frame
+indices one might find oneself in the situation of needing both additional instructions
+\textit{and} more registers. This can occur because of the targets limited number of immediates,
+for examples we might be doing something like this:
+
+\lstinputlisting[tabsize=2,frame=single,breaklines=true,showstringspaces=false,
+backgroundcolor= \color{lightgray}]
+{background/llvm/examples/initial_inst.mir}
+
+Where we attempt to store a value given a (symbolic) frame index. This frame index will be replaced by
+the LLVM Prolog Epilog Inserter to a stack pointer and an offset. For example it might
+generate something like this:
+
+\lstinputlisting[tabsize=2,frame=single,breaklines=true,showstringspaces=false,
+backgroundcolor= \color{lightgray}]
+{background/llvm/examples/stack_offset.mir}
+
+where it has replaced the frame index with an offset of 4104 from the stack pointer. However,
+if the target cannot encode 4104 directly as an immediate we need another instruction to
+calculate this offset, and another register to store the offset in, like so:
+
+\lstinputlisting[tabsize=2,frame=single,breaklines=true,showstringspaces=false,
+backgroundcolor= \color{lightgray}]
+{background/llvm/examples/temporary_resources.mir}
+
+Thus, we are in a situation where we need more instructions and more register after both
+instruction scheduling and register allocation is already over. LLVM solves this with something
+they call \textit{register scavenging}, which is not something that will be covered here.
+
+While this specific example might have needed to incorporate instruction selection into
+the mix as well, it is nonetheless a difficulty.
+
+% Citations for this. Unison, http://i.stanford.edu/pub/cstr/reports/cs/tn/95/22/CS-TN-95-22.pdf
+% and find more.
+Instruction selection, instruction scheduling and register allocation are all tasks that
+depend on each other, but in order to make them managable by current solution they need
+to be performed mostly in isolation to each other. Combining instruction scheduling and
+register allocation is a popular subject of research.
