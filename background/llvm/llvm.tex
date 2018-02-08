@@ -3,15 +3,11 @@ LLVM is an umbrella project that provides a collection of tools for developing l
 toolchains, e.g assemblers, compilers, debuggers, linkers etc. It is designed to be reusable and
 applicable to arbitrary programming languages and target architectures. It started as a
 research project at the University of Illinois in 2000 and is widely used today by hobbyists
-and professionals alike. There are LLVM frontends for languages such as Haskell, Rust,
-Swift and Ruby. Clang is also a part of the LLVM project and built upon
-the LLVM toolchain. It provides a compiler, debugger and standard library implementation
-for the C language family (C, C++, Objective-C, OpenCL, Cuda etc).
-
-% http://www.rubymotion.com/tour/features/
-% https://ghc.haskell.org/trac/ghc/wiki/Commentary/Compiler/Backends/LLVM
-% http://llvm.org/ https://en.wikipedia.org/wiki/Clang
-
+and professionals alike \cite{llvm-overview}. There are LLVM frontends for languages such
+as Haskell\cite{ghc-backend}, Rust\cite{rust-llvm}, Swift\cite{swift-llvm} and Ruby\cite{rubymotion}. Clang is also a part
+of the LLVM project and built upon the LLVM toolchain. It provides a compiler, debugger
+and standard library implementation for the C language family (C, C++, Objective-C,
+OpenCL, Cuda etc)\cite{clang}.
 
 \subsection{Overview of LLVM}
 
@@ -21,12 +17,12 @@ of three phases; The front-end, the mid-end (also called optimizer), and the bac
 (also known as code generator). The front-end is responsible for lexical and syntatical
 analysis of the source code. The mid-end is responsible for target-indenpendent optimizations
 and the back-end handles platform specific tasks such as instruction selection, register
-allocation and instruction scheduling. The point of LLVM is that the interface between
-these modules are well-defined and thus allow for reuse so that, e.g, a front-end for
-C uses the same optimizer as a front-end for Rust. In a similar manner the back-end
-for x86 and the back-end for ARM uses the same mid-end. See figure \ref{fig:three_phase_compiler}.
-LLVM can thus be seen as a \textit{collection of libraries} that perform, or at least
-assists in performing, these different tasks.
+allocation and instruction scheduling\cite[Section~11.1]{aosa-llvm}. The point of LLVM is
+that the interface between these modules are well-defined and thus allow for reuse so
+that, e.g, a front-end for C uses the same optimizer as a front-end for Rust. In a similar
+manner the back-end for x86 and the back-end for ARM uses the same mid-end. See figure
+\ref{fig:three_phase_compiler} \cite[Section~11.4]{aosa-llvm}. LLVM can thus be seen as a \textit{collection of libraries}
+\cite[Section~11.4.2]{aosa-llvm} that perform, or at least assists in performing, these different tasks.
 
 \begin{figure}[h]
 	\centering
@@ -39,46 +35,46 @@ assists in performing, these different tasks.
 In the case of LLVM, the interface between the front-end and the mid-end is known as the
 LLVM IR (\textit{Intermediate Representation}) and is a strongly typed, RISC-like virtual
 instruction set that abstracts some details about the machine, such as function call
-conventions and registers. To implement a programming language one would then only have to
-implement a front-end, that is translate the source code to LLVM IR. One could then pick
-and choose from the already existing LLVM optimizer passes and LLVM back-end implementations
-to complete the compiler.
+conventions and registers \cite[Section~11.3]{aosa-llvm}. To implement a programming language
+one would then only have to implement a front-end, that is translate the source code to
+LLVM IR. One could then pick and choose from the already existing LLVM optimizer passes
+and LLVM back-end implementations to complete the compiler\cite[Section~11.5]{aosa-llvm}.
 
 Only the back-end is of concern to this thesis, so it will focus exclusively on that.
 
 \subsection{LLVM back-end}
 
 A LLVM back-end, also known as a LLVM code generator, has a well defined input. The
-LLVM IR. The output is often an object file, but a backend can also act as an interpreter.
-For most of it's task, a LLVM backend uses what is called the \textit{machine IR} to represent
-the code during the different stages.
+LLVM IR\cite[Section~11.4.1]{aosa-llvm}. The output is often an object file, but a backend
+can also act as an interpreter. For most of it's task, a LLVM backend uses what is called
+the \textit{machine IR} to represent the code during the different stages.
 
 % https://llvm.org/docs/WritingAnLLVMBackend.html
 The LLVM back-end is responsible for three main tasks: intruction selection, instruction
-scheduling and register allocation. They are performed mostly in isolation to each
-other, which simplifies the architecture but introduces some interesting challenges.
+scheduling and register allocation \cite{llvm-writing-backend, llvm-codegenerator-highlevel}.
+They are performed mostly in isolation to each other, which simplifies the architecture
+but introduces some interesting challenges "CITATION NEEDED".
 
 The general behaviour of an LLVM back-end is that it transforms LLVM IR to machine code
 for a specific target platform. Exactly what it produces depends on the target architecture
 but it is common to generate assembly corresponding to the instruction set of the target
-machine.
+machine \cite[Section~11.5]{aosa-llvm}.
 
 This paper does not cover instruction selection or other, smaller, back-end tasks such as
-optimization, ABI implementation, exception handling etc.
+optimization, ABI implementation, exception handling etc \cite[at~1:47]{welcome-to-backend}.
 
 \subsubsection{LLVM Machine Representation}
 
 To represent machine specific IR LLVM uses what is called "Machine specific representation".
 The machine specific representation consists of target agnostic, in-memory representations
-of functions (MachineFuntion), basic blocks (MachineBasicBlock) and instructions (MachinrInstr).
-% https://releases.llvm.org/3.8.1/docs/MIRLangRef.html#id8
-% https://releases.llvm.org/3.8.1/docs/CodeGenerator.html#machine-code-representation
+of functions (MachineFuntion), basic blocks (MachineBasicBlock) and instructions
+(MachinrInstr) \cite{llvm-mir-lang-ref, llvm-codegenerator-machinecode}.
 
 The machine specific representation can be represented as the LLVM MIR (\textit{Machine
 Intermediate Representation}), which is a human readable, YAML serialized format. It is
 used to test code generation passes in LLVM. That is, we can stop the LLVM back-end
-prematurely and view the current progress in the form of an LLVM MIR.
-% https://llvm.org/docs/MIRLangRef.html
+prematurely and view the current progress in the form of an LLVM MIR
+\cite{llvm-mir-lang-ref}.
 
 For example, the iterative factorial function written in C:
 
@@ -94,8 +90,7 @@ scheduling.
 backgroundcolor= \color{lightgray}]
 {background/llvm/examples/factorial.mir}
 
-Courtesy of the Unison documentation for the code examples.
-% https://github.com/unison-code/unison/tree/master/doc/code
+Courtesy of the Unison documentation for the code examples \cite{unison-docs-examples}.
 
 What is interesting to note is that there is an infinite number of virtual registers available,
 starting from \%0 and incrementing, as well as some abstract intructions, such as the PHI
@@ -103,12 +98,12 @@ function.
 
 \subsubsection{Instruction Scheduling}
 % https://llvm.org/docs/CodeGenerator.html#scheduling-and-formation
-% https://llvm.org/devmtg/2016-09/slides/Absar-SchedulingInOrder.pdf - find better souce than this. Needs to be abou different archiectures
 Instruction scheduling is the task of choosing how and in which order the selected instructions
 will run. In the case of LLVM the scheduling phase is logically seperate from the selection
 phase. There exists a wide variety of architecture and they all have different limitations
 and constraints.
 
+% https://llvm.org/devmtg/2016-09/slides/Absar-SchedulingInOrder.pdf - find better souce than this. Needs to be abou different archiectures
 Perhaps the most intuitive kind of architecture is the in-order processor where all
 instructions are executed sequentially and the schedule is staticically generated.
 
@@ -132,19 +127,22 @@ Instruction scheduling can be seen as a problem where the input is a list of res
 (e.g ALUs, FPUs, presence of VLIW) and a execution cycles for each instruction, and the
 output is the instruction in the sequence they should be executed for optimal performance
 (with regards to whatever factor you are optimizing for). In other words, maximize \textit{
-	instruction level parallellism}. Of course this problem is very difficult.
+	instruction level parallellism} "CITATION NEEDED". Of course this problem is very difficult.
 
 \subsubsection{Register Allocation}
 % https://llvm.org/pubs/2009-04-SCOPES-RegisterAllocationDeconstructed.pdf
 % https://llvm.org/docs/CodeGenerator.html#register-allocator
 
-There are a few different problem concering register allocation. Namely, coalescing, spilling
-move insertion and assigment.
+This section needs
+
+There are a few different problem concering register allocation, including (but not limied
+to), coalescing, spilling move insertion and assigment \cite{alloc-deconstructed,
+llvm-codegenerator-allocation}.
 
 Coalescing is the attempt to eliminate move instructions that refers to identical locations,
 i.e. remove unnecessary moves. When spilling a register you allocate the variable on the
 stack to free up the register for another temporary ("spilling" the temporary to the stack)
-and move insertion is used to split the lifetime of temporaries.
+and move insertion is used to split the lifetime of temporaries \cite{alloc-deconstructed}.
 
 In general the task is modeled as a graph-coloring problem. The first step is then to
 perform a \textit{liveliness analysis}, where you analyse the temporaries in the program
@@ -156,18 +154,19 @@ to color the graph. Assigning a temporary to a specific register (perhaps becaus
 calling conventions) would then be to "pre-color" the corresponding node. Coalescing in
 this model would be to "merge" two nodes and spilling would be to remove a node. Spilling
 is usually a consequence of not being able to find a coloring of the graph, thus
-necessitating that a node be removed.
+necessitating that a node be removed \cite{alloc-deconstructed}.
 
 \subsubsection{Problems with LLVM Approach}
-% http://i.stanford.edu/pub/cstr/reports/cs/tn/95/22/CS-TN-95-22.pdf 
+% http://i.stanford.edu/pub/cstr/reports/cs/tn/95/22/CS-TN-95-22.pdf
 It is a common approach to treat instruction scheduling and register allocation as two
 distinct steps in the back-end pipeline, and indeed so does LLVM. There are two approaches
 to this, either you start with one or the other. Starting with instruction scheduling is,
 nowadays, more common. Doing the register allocation first was mainly used in the early
-days of compilers when machines didn't have as many registers.
+days of compilers when machines didn't have as many registers \cite[\pno~3]{combining-alloc-sched}.
 
 % citation needed
 % maybe here: https://pdfs.semanticscholar.org/5246/7f742a206b075324ec17b9b7f9d539f52ec8.pdf
+% it mentions that it needs to be merged which is good.
 Seperating these steps in such a manner leads to some problems, and usually some instruction
 scheduling is once again performed after the register allocation. If a register needs to be
 spilled then the dependency graph which we based our schedule on is no longer valid. Re-doing
@@ -205,7 +204,8 @@ backgroundcolor= \color{lightgray}]
 
 Thus, we are in a situation where we need more instructions and more register after both
 instruction scheduling and register allocation is already over. LLVM solves this with something
-they call \textit{register scavenging}, which is not something that will be covered here.
+they call \textit{register scavenging}, which is not something that will be covered here
+\cite[at~48:53]{welcome-to-backend}.
 
 While this specific example might have needed to incorporate instruction selection into
 the mix as well, it is nonetheless a difficulty.

@@ -4,6 +4,10 @@
 \usepackage{biblatex}
 \addbibresource{bibliography.bib} % The file containing our references, in BibTeX format
 
+\addbibresource{background/llvm/llvm.bib} % LLVM and compiler back-end sources
+\addbibresource{background/unison/unison.bib} % Sources related to unison
+
+
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{xcolor}
@@ -60,6 +64,6 @@
 \chapter{SEND+MOST=MONEY Source Code}
 \label{appendix:constraint_programming}
 \lstinputlisting[language=C++,tabsize=2,frame=single,breaklines=true,showstringspaces=false]
-	{background/examples/send_most_money.cpp}
+	{background/constraint-programming/examples/send_most_money.cpp}
 
 \end{document}
