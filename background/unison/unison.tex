@@ -73,4 +73,6 @@ defined in order to declare something optimal. In the case of Unison there are t
 metrics, speed and size \cite{unison-docs,reg-alloc-inst-sched-uni}. The cost function for speed
 is defined as the sum of the estimated execution time of each basic block (in cycles)
 weighted by the estimated execution frequency. The cost function for size is the sum of
-the size of all active instructions \cite[Section~3]{reg-alloc-inst-sched-uni}.
+the size of all active instructions \cite[Section~3]{reg-alloc-inst-sched-uni}. So either
+we optimize for a lower amount of execution cycles or we optimize for a program whose
+code size is smaller.
