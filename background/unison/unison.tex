@@ -1,13 +1,76 @@
 \section{Unison}
 
+Unison is an open-source, potentially optimal tool that performs integrated register
+allocation and instruction scheduling. It can be used as an alternative or complement to
+the algoritms currently in place by compilers such as GCC and LLVM. In particular there
+already exists a driver for LLVM which accept input in the form of LLVM MIR \cite{unison-docs}.
+
 \subsection{The high-level approach of Unison}
 
-How it models the problem
+Unison models the problems of register allocation and instruction scheduling as a single
+constraint-programming problem and solves them simultaneously \cite{unison-docs,reg-alloc-inst-sched-uni}.
 
-\subsection{Unison IR}
+Throughout this section only the case when integrated into LLVM will be considered. Unison
+takes LLVM MIR as input, performs register allocation and instruction scheduling and outputs
+LLVM MIR, which is then fed back to LLVM which emits assembly code.
 
-How it represents the problem
+\subsubsection{Unison IR}
 
-\subsection{What Unison does and doesn't do}
+To represent the problem Unison uses it's own intermediate representation that captures
+the problem in a format appropriate for a constraint solver. It has a few key properties
+that enables exploring combinations in a controllable manner.
 
-What we can do with it for our purposes
+It is in the \textit{\textbf{L}inear \textbf{S}tatic \textbf{S}ingle \textbf{A}ssignment}
+form \cite{reg-alloc-inst-sched-uni}, which extends \textit{static single assignment} form.
+\textbf{SSA} form is a type of IR where program variables are assigned exactly once and
+where multiple assignments to the same variables create new versions of that variable
+\cite{gcc-ssa}. \textbf{LSSA} is stricter than \textbf{SSA} and requires that each temporary
+is only defined and used in a single basic block \cite[Section~3.2]{constraint-based}.
+
+The second and third key properties is that it introduces \textit{optional copies} and
+\textit{alternative temporaries} \cite{reg-alloc-inst-sched-uni}. This allows Unison to
+support different register allocation decision and perform otherwise unreachable optimizations
+\cite{reg-alloc-inst-sched-uni, comb-spill}.
+
+\subsubsection{Variables and Domains}
+
+% rephrase this sentence.
+For the register allocation part of the problem the variables are the temporaries and their
+domains are (physical) registers. The model also reflects physical limitations of the
+registers, such as width (32/64 bit) \cite[Section~3]{reg-alloc-inst-sched-uni}. We map
+temporaries to physical registers.
+
+Instructions are variables themselves (including the optional moves) and their domains
+are issue cycles. That is, for instruction scheduling we assign an issue cycle for every
+instruction \cite[Section~3]{reg-alloc-inst-sched-uni}.
+
+\subsubsection{Constraints}
+
+For register allocation the problem is modeled as a rectangle packing problem. The vertical
+axis represents time in cycles and the horizontal axis represents registers "FIGURE THINGIE
+HERE". Rectangles that do not overlap vertically aren't live concurrently and can be
+allocated to the same register \cite[Section~4.1]{constraint-based}. Using this representation
+we can model physical limitations of the registers as width and add constraints that invalidates
+incorrect assignments such as assigning a 32-bit temporary to a 16-bit register \cite
+[Section~4.3]{constraint-based}.
+
+Instruction scheduling is done by posting constraints that reflect which instructions rely
+on other instructions due to data dependencies. An instruction cannot be scheduled before
+an instruction on which's result it depends. Unison also supports instructions bundling for
+architectures where several instructions can be issued every cycle \cite[Section~5]{constraint-based}.
+
+By relating the live range of each temporary to the issue cycle of the definer and user(s)
+of each temporary Unison integrates these two problems into one \cite{reg-alloc-inst-sched-uni}.
+
+\subsection{Potentially Optimal}
+
+Unison is potentially optimal \cite{reg-alloc-inst-sched-uni, unison-docs}. This means that
+given enough time unison will find the optimal solution to the integrated register allocation
+and instruction scheduling problem.
+
+As discussed in section \ref{sec:optimizing} a metric of \textit{better} must first be
+defined in order to declare something optimal. In the case of Unison there are two available
+metrics, speed and size \cite{unison-docs,reg-alloc-inst-sched-uni}. The cost function for speed
+is defined as the sum of the estimated execution time of each basic block (in cycles)
+weighted by the estimated execution frequency. The cost function for size is the sum of
+the size of all active instructions \cite[Section~3]{reg-alloc-inst-sched-uni}.
