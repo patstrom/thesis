@@ -7,5 +7,5 @@ thesis:
 
 .PHONY: clean
 clean:
-	rm -f build/*
+	rm -rf build/*
 	rm main.pdf

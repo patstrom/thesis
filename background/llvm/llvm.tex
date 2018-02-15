@@ -60,8 +60,9 @@ for a specific target platform. Exactly what it produces depends on the target a
 but it is common to generate assembly corresponding to the instruction set of the target
 machine \cite[Section~11.5]{aosa-llvm}.
 
-This paper does not cover instruction selection or other, smaller, back-end tasks such as
-optimization, ABI implementation, exception handling etc \cite[at~1:47]{welcome-to-backend}.
+This paper does not cover instruction selection, code layout optimization, assembly emissions
+or other, smaller, back-end tasks such as ABI implementation, exception handling etc
+\cite[at~1:47]{welcome-to-backend}.
 
 \subsubsection{LLVM Machine Representation}
 
@@ -106,7 +107,7 @@ and they all have different limitations and constraints.
 A single issue processor is a processor that issues one instruction per cycle, and thus
 logically easier to compile code for.
 
-Today there exists multiple issue architectures in three major categories\cite[Section~3.7]{caqa},
+Today there exists multiple issue architectures in three major categories \cite[Section~3.7]{caqa},
 
 \begin{itemize}
 	\item Statically scheduled superscalar processors
@@ -130,7 +131,7 @@ processors requires the compiler to generate the entire execution schedule pre-e
 As previously mentioned LLVM is a set of libraries, and thus no one way to schedule instructions
 in LLVM exists. However, the key factors to take into account during instruction scheduling
 is generally to make use of architecture specific features (such as VLIW), avoiding pipeline
-stalls by rearranging instructions \cite{Section~3.2]{caqa}, register pressure
+stalls by rearranging instructions \cite[Section~3.2]{caqa}, register pressure
 \cite{llvm-inst-sched-superscalar-vliw} etc. When scheduling instructions the main
 constraint is data-dependencies. Some instructions depends on the result of previous
 instructions, and must thus be scheduled sequentially. In the cases where these
