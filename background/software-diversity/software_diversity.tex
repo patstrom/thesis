@@ -76,19 +76,19 @@ diversity. Namely, the notion that when compiling source code compilers don't ha
 the same binary file. By using more than one compiler one could easily generate multiple
 binaries that all represent the same source code. For example compiling:
 
-\lstinputlisting[label={src:gcd},caption=A C function for calculation the greatest common divisor,
-language=C,tabsize=2,frame=single,breaklines=true,showstringspaces=false,
-backgroundcolor=\color{lightgray}]{background/software-diversity/examples/gcd.c}
+\lstinputlisting[label={src:gcd},caption=A C function for calculating the greatest common
+divisor between two integers, language=C,tabsize=2,frame=single,breaklines=true,
+showstringspaces=false, backgroundcolor=\color{lightgray}]{background/software-diversity/examples/gcd.c}
 
-can generate multiple different binaries. Here are two examples using gcc and clangs (with
+can generate multiple different binaries. Here are two examples using gcc and clang (with
 -fomit-frame-pointer),
 
-\lstinputlisting[caption=Assembly emitted by gcc for \ref{src:gcd},tabsize=2,frame=single,
-breaklines=ture,showstringspaces=false,backgroundcolor=\color{lightgray}]
+\lstinputlisting[caption=Assembly emitted by gcc for listing \ref{src:gcd},tabsize=2,
+frame=single, breaklines=ture,showstringspaces=false,backgroundcolor=\color{lightgray}]
 {background/software-diversity/examples/gcc_gcd.s}
 
-\lstinputlisting[caption=Assembly emitted by clang for \ref{src:gcd},tabsize=2,frame=single,
-breaklines=ture,showstringspaces=false,backgroundcolor=\color{lightgray}]
+\lstinputlisting[caption=Assembly emitted by clang for listing \ref{src:gcd},tabsize=2,
+frame=single, breaklines=ture,showstringspaces=false,backgroundcolor=\color{lightgray}]
 {background/software-diversity/examples/clang_gcd.s}
 
 While this program is trivially small, the resulting binaries do differ. Generating an
