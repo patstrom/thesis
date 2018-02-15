@@ -92,18 +92,16 @@ breaklines=ture,showstringspaces=false,backgroundcolor=\color{lightgray}]
 {background/software-diversity/examples/clang_gcd.s}
 
 While this program is trivially small, the resulting binaries do differ. Generating an
-ELF file for both assembly programs (with a trivial main function) on my Toshiba Portégé 
+ELF file for both assembly programs (with a trivial main function) on my Toshiba Portégé
 Z30-A-15M running a Intel® Core™ i7-4500U-processor reveals slight differences. For example
-the ELF file emitted by gcc has the entry point address at $0x540$ while the one emitted 
-by clang has the entry point address at $0x530$. They also vary slightly in memory and 
+the ELF file emitted by gcc has the entry point address at $0x540$ while the one emitted
+by clang has the entry point address at $0x530$. They also vary slightly in memory and
 disk layout. Whether these differences actually benefit us or not isn't as relevant right
 as much as the fact that they are two naturally different binaries (compiled with different
 compilers) that are functionally equal.
 
-We can tune compiler to explicitly create differences between binaries.
-
-% This is where we are!
-% More emphasis here!
+We can tune compiler to explicitly create differences between binaries and create more
+"un-natural" diversity. 
 
 % https://wkr.io/public/ref/wartell2012stirring.pdf
 % https://www.informatik.tu-darmstadt.de/fileadmin/user_upload/Group_TRUST/PubsPDF/readactor.pdf
