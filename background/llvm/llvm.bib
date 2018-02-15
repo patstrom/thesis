@@ -89,6 +89,14 @@
 	organization = "LLVM",
 }
 
+@manual {llvm-codegenerator-bundles,
+	title = "The LLVM Target-Independent Code Generator",
+	subtitle = "MachineInstr Bundles",
+	url = "https://llvm.org/docs/CodeGenerator.html#machineinstr-bundles",
+	urldate = "2018-02-15",
+	organization = "LLVM"
+}
+
 @manual {llvm-codegenerator-allocation,
 	title = "The LLVM Target-Independent Code Generator",
 	subtitle = "Register Allocation",
@@ -123,3 +131,56 @@
 	urldate = "2018-02-08",
 	organization = "LLVM",
 }
+
+@misc {inst-sched-cmu,
+	title = "Introduction to Instruction Scheduling",
+	author = "Peter Lee",
+	year = "2006",
+	url = "http://www.cs.cmu.edu/afs/cs/academic/class/15745-s06/web/handouts/11.pdf",
+	type = "presentation",
+	howpublished = "presentation slides",
+	urldate = "2018-02-15",
+	organization = "Carnegie Mellon University"
+}
+
+@misc {llvm-inst-sched-superscalar-vliw,
+	title = "Instruction scheduling for Superscalar and VLIW platforms",
+	author = "Andy Trick and Sergei Larin",
+	year = "2012",
+	url = "https://llvm.org/devmtg/2012-11/Larin-Trick-Scheduling.pdf",
+	urldate = "2018-02-15",
+	type = "presentation",
+	howpublished = "presentation slides",
+}
+
+@book{caqa,
+ author = {Hennessy, John L. and Patterson, David A.},
+ title = {Computer Architecture, Fifth Edition: A Quantitative Approach},
+ year = {2011},
+ isbn = {012383872X, 9780123838728},
+ edition = {5th},
+ publisher = {Morgan Kaufmann Publishers Inc.},
+ address = {San Francisco, CA, USA},
+}
+
+@InProceedings{integrated-sched-alloc-techniques,
+author="Berson, David A.
+and Gupta, Rajiv
+and Soffa, Mary Lou",
+editor="Chatterjee, Siddhartha
+and Prins, Jan F.
+and Carter, Larry
+and Ferrante, Jeanne
+and Li, Zhiyuan
+and Sehr, David
+and Yew, Pen-Chung",
+title="Integrated Instruction Scheduling and Register Allocation Techniques",
+booktitle="Languages and Compilers for Parallel Computing",
+year="1999",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="247--262",
+abstract="An algorithm for integrating instruction scheduling and register allocation must support mechanisms for detecting excessive register and functional unit demands and applying reductions for lessening these demands. The excessive demands for functional units can be detected by identifying the instructions that can execute in parallel, and can be reduced by scheduling some of these instructions sequentially. The excessive demands for registers can be detected on-the-fly while scheduling by maintaining register pressure values or may be detected prior to scheduling using an appropriate representation such as parallel interference graphs or register reuse dags. Reductions in excessive register demands can be achieved by live range spilling or live range splitting. However, existing integrated algorithms that are based upon mechanisms other than register reuse dags do not employ live range splitting. In this paper, we demonstrate that for integrated algorithms, register reuse dags are more effective than either on-the-fly computation of register pressure or interference graphs and that live range splitting is more effective than live range spilling. Moreover the choice of mechanisms greatly impacts on the performance of an integrated algorithm.",
+isbn="978-3-540-48319-9"
+}
+
