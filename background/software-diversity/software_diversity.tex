@@ -4,7 +4,10 @@ Software diversity is a diverse field, and there is research focusing on differe
 with different goals in mind. However, what they all have in common is the that they are
 exploring the potential benefits of engineering diversity within software development.
 When talking about software diversity there are a few different classifications and goals
-\cite[Section~1]{survey} which will be covered here. 
+\cite[Section~1]{survey} which will be covered here.
+
+Software diversity has a diverse (heh) set of goals ranging from fault-tolerance to reusability
+to security \cite{survey}.
 
 \subsection{Managed Software diversity}
 
@@ -23,21 +26,84 @@ tunable by parameters to provide different functionality and performance \cite{s
 Design diversity is the process of introducing diversity through the design process. For
 example, \textit{N-version programming} is the approach where $N \geq 2$ functionality equivalent
 programs are developed from the same specification. The point of this is that hopefully
-it will result in a subset of the programs being free from bugs that another subset 
+it will result in a subset of the programs being free from bugs that another subset
 might suffer from, thus creating a more fault tolerant system \cite{n-version}.
 
 \subsection{Automated Software Diversity}
 
-\textcite{survey} describes automated software diversity as \say{techniques for artificially 
-and automatically synthesizing diversity in software} \cite[\pno~8]{survey}
+\textcite{survey} describes automated software diversity as \say{techniques for artificially
+and automatically synthesizing diversity in software} \cite[\pno~8]{survey}. It is also
+known as \textit{synthetic diversity} \cite{synthetic-diversity}. \say{Automated} is
+refering to the fact that a human is not part of the diversification process, other than
+having designed the framework \cite[Section~4]{survey}.
+
+Automated diversity can characterize itself in different ways. A common approach is to
+introduce some kind of randomness into software to break the otherwise determinstic behaviour
+of most software. This can have several benefits, including security \cite{add-obfuscation}.
+Randomization techniques are generally ways to either directly or indirectly create unique
+execution of the same program \cite[Section~4.1]{survey}.
+
+\subsubsection{Dynamic Randomization}
+
+By introducing randomization at program runtime one can dynamically diversify the program
+and introduce non-determistic behaviour.
+
+\textcite{os-randomization} randomizes the interface
+between userspace applications and the operating system by shuffling system call mappings,
+changing library entry points and randomizing stack placement.
+
+\textcite{mem-exploits} implements a source-to-source C-code transformer that randomizes
+stack-resident variables, static data and individual functions (by introducing a level of
+indirection to function calls).
+
+\textcite{binary-stirring} introduces a technique they call \textit{stirring}, where
+they accept input in the form of x86 binary code (without debug symbols, source code or
+relocation information) and produce a new x86 binary file whose basics block addresses
+are stirred and dynamically determined at program load-time.
+
+Of course there are many more techniques and approaches but they will not be covered here.
+
+\subsubsection{Static Randomization}
+
+Static randomization creates divesity at compile time by generating several versions of the
+same program that are functionally equivalent but semantically different. This can be done
+in a variety of ways including but not limited to: exploting NOP (no operation) instructions,
+instruction set randomization and obfuscation \cite[Section~4.1.1]{survey},
+
+This thesis will focus on static, compiler generated randomization. However, in contrast
+to most statically generated diversity we will explore how a more "natural" kind of compiler
+diversity. Namely, the notion that when compiling source code compilers don't have to reach
+the same binary file. By using more than one compiler one could easily generate multiple
+binaries that all represent the same source code. For example compiling:
+
+\lstinputlisting[label={src:gcd},caption="A C function for calculation the greatest common divisor",
+language=C,tabsize=2,frame=single,breaklines=true,showstringspaces=false,
+backgroundcolor=\color{lightgray}]{background/software-diversity/examples/gcd.c}
+
+can generate multiple different binaries. Here are two examples using gcc and clangs (with
+-fomit-frame-pointer),
+
+\lstinputlisting[caption="Assembly emitted by gcc for \ref{src:gcd},tabsize=2,frame=single,
+breaklines=ture,showstringspaces=false,backgroundcolor=\color{lightgray}]
+{background/software-diversity/examples/gcc_gcd.s}
+
+\lstinputlisting[caption="Assembly emitted by clang for \ref{src:gcd},tabsize=2,frame=single,
+breaklines=ture,showstringspaces=false,backgroundcolor=\color{lightgray}]
+{background/software-diversity/examples/clang_gcd.s}
+
+While this program is trivially small, the resulting binaries do differ. Generating an
+ELF file for both assembly programs (with a trivial main function) on my Toshiba Portégé 
+Z30-A-15M running a Intel® Core™ i7-4500U-processor reveals slight differences. For example
+the ELF file emitted by gcc has the entry point address at $0x540$ while the one emitted 
+by clang has the entry point address at $0x530$. They also vary slightly in memory and 
+disk layout. Whether these differences actually benefit us or not isn't as relevant right
+as much as the fact that they are two naturally different binaries (compiled with different
+compilers) that are functionally equal.
+
+We can tune compiler to explicitly create differences between binaries.
 
 % This is where we are!
 % More emphasis here!
-\subsection{Goals of Software Diversity}
-
-Software diversity has a diverse (heh) set of goals ranging from fault-tolerance to reusability
-to security.
-
 
 % https://wkr.io/public/ref/wartell2012stirring.pdf
 % https://www.informatik.tu-darmstadt.de/fileadmin/user_upload/Group_TRUST/PubsPDF/readactor.pdf

@@ -17,20 +17,20 @@
  publisher = {ACM},
  address = {New York, NY, USA},
  keywords = {Software diversity, design principles, program transformation},
-} 
+}
 
 @article{n-version,
-author={A. Avizienis},
-journal={IEEE Transactions on Software Engineering},
-title={The N-Version Approach to Fault-Tolerant Software},
-year={1985},
-volume={SE-11},
-number={12},
-pages={1491-1501},
-keywords={Design diversity;N-version programming;N-version software;fault tolerance;multiple computation;software reliability;tolerance of design faults;Application software;Circuit faults;Computer errors;Computer science;Fault tolerance;Fault tolerant systems;Hardware;Humans;Software reliability;Software testing;Design diversity;N-version programming;N-version software;fault tolerance;multiple computation;software reliability;tolerance of design faults},
-doi={10.1109/TSE.1985.231893},
-ISSN={0098-5589},
-month={Dec}
+	author={A. Avizienis},
+	journal={IEEE Transactions on Software Engineering},
+	title={The N-Version Approach to Fault-Tolerant Software},
+	year={1985},
+	volume={SE-11},
+	number={12},
+	pages={1491-1501},
+	keywords={Design diversity;N-version programming;N-version software;fault tolerance;multiple computation;software reliability;tolerance of design faults;Application software;Circuit faults;Computer errors;Computer science;Fault tolerance;Fault tolerant systems;Hardware;Humans;Software reliability;Software testing;Design diversity;N-version programming;N-version software;fault tolerance;multiple computation;software reliability;tolerance of design faults},
+	doi={10.1109/TSE.1985.231893},
+	ISSN={0098-5589},
+	month={12}
 }
 
 @inproceedings{synthetic-diversity,
@@ -49,7 +49,7 @@ month={Dec}
  publisher = {ACM},
  address = {New York, NY, USA},
  keywords = {diversity, n-version programming, vulnerability},
-} 
+}
 
 @inproceedings{add-obfuscation,
  author = {Bhatkar, Sandeep and DuVarney, Daniel C. and Sekar, R.},
@@ -64,7 +64,7 @@ month={Dec}
  acmid = {1251361},
  publisher = {USENIX Association},
  address = {Berkeley, CA, USA},
-} 
+}
 
 @article{os-randomization,
 	title = {Mitigating Buffer Overflows by Operating System Randomization},
@@ -86,4 +86,49 @@ month={Dec}
  acmid = {1251415},
  publisher = {USENIX Association},
  address = {Berkeley, CA, USA},
-} 
+}
+
+@inproceedings{binary-stirring,
+ author = {Wartell, Richard and Mohan, Vishwath and Hamlen, Kevin W. and Lin, Zhiqiang},
+ title = {Binary Stirring: Self-randomizing Instruction Addresses of Legacy x86 Binary Code},
+ booktitle = {Proceedings of the 2012 ACM Conference on Computer and Communications Security},
+ series = {CCS '12},
+ year = {2012},
+ isbn = {978-1-4503-1651-4},
+ location = {Raleigh, North Carolina, USA},
+ pages = {157--168},
+ numpages = {12},
+ url = {http://doi.acm.org/10.1145/2382196.2382216},
+ doi = {10.1145/2382196.2382216},
+ acmid = {2382216},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {obfuscation, randomization, return-oriented programming, software security},
+}
+
+@Inbook{compiler-generated-sw-div,
+author="Jackson, Todd
+and Salamat, Babak
+and Homescu, Andrei
+and Manivannan, Karthikeyan
+and Wagner, Gregor
+and Gal, Andreas
+and Brunthaler, Stefan
+and Wimmer, Christian
+and Franz, Michael",
+editor="Jajodia, Sushil
+and Ghosh, Anup K.
+and Swarup, Vipin
+and Wang, Cliff
+and Wang, X. Sean",
+title="Compiler-Generated Software Diversity",
+bookTitle="Moving Target Defense: Creating Asymmetric Uncertainty for Cyber Threats",
+year="2011",
+publisher="Springer New York",
+address="New York, NY",
+pages="77--98",
+abstract="Present approaches to software security are to a large extent reactive: when vulnerabilities are discovered, developers scramble to fix the underlying error. The advantage is on the side of the attackers because they only have to find a single vulnerability to exploit all vulnerable systems, while defenders have to prevent the exploitation of all vulnerabilities. We argue that the compiler is at the heart of the solution for this problem: when the compiler is translating high-level source code to low-level machine code, it is able to automatically diversify the machine code, thus creating multiple functionally equivalent, but internally different variants of a program.We present two orthogonal compiler-based techniques.With multi-variant execution, a monitoring layer executes several diversified variants in lockstep while examining their behavior for differences that indicate attacks. With massive-scale software diversity, every user gets its own diversified variant, so that the attacker has no knowledge about the internal structure of that variant and therefore cannot construct an attack. Both techniques make it harder for an attacker to run a successful attack. We discuss variation techniques that the compiler can utilize to diversify software, and evaluate their effectiveness for our two execution models.",
+isbn="978-1-4614-0977-9",
+doi="10.1007/978-1-4614-0977-9_4",
+url="https://doi.org/10.1007/978-1-4614-0977-9_4"
+}
