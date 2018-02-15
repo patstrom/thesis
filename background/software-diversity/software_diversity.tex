@@ -97,8 +97,8 @@ Z30-A-15M running a Intel® Core™ i7-4500U-processor reveals slight difference
 the ELF file emitted by gcc has the entry point address at $0x540$ while the one emitted
 by clang has the entry point address at $0x530$. They also vary slightly in memory and
 disk layout. Whether these differences actually benefit us or not isn't as relevant right
-as much as the fact that they are two naturally different binaries (compiled with different
-compilers) that are functionally equal.
+as much as the fact that they are two semantically different binaries that are functionally equal
+resulting from natural software diversity.
 
 We can tune compiler to explicitly create differences between binaries and create more
 "un-natural" diversity. 
