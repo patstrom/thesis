@@ -9,3 +9,7 @@ thesis:
 clean:
 	rm -rf build/*
 	rm main.pdf
+
+.PHONY: check
+check:
+	find . -name "*.tex" -exec aspell -tb check "{}" \;
