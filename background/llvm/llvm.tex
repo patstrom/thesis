@@ -16,8 +16,8 @@ OpenCL, Cuda etc)\cite{clang}.
 % http://www.aosabook.org/en/llvm.html
 LLVM is designed to be modular. A compiler written on top of LLVM will in general consist
 of three phases; The front-end, the mid-end (also called optimizer), and the back-end
-(also known as code generator). The front-end is responsible for lexical and syntatical
-analysis of the source code. The mid-end is responsible for target-indenpendent optimizations
+(also known as code generator). The front-end is responsible for lexical and syntactical
+analysis of the source code. The mid-end is responsible for target-independent optimizations
 and the back-end handles platform specific tasks such as instruction selection, register
 allocation and instruction scheduling\cite[Section~11.1]{aosa-llvm}. The point of LLVM is
 that the interface between these modules are well-defined and thus allow for reuse so
@@ -29,7 +29,7 @@ manner the back-end for x86 and the back-end for ARM uses the same mid-end. See 
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=12cm]{background/llvm/figures/three_phase_compiler}
-	\caption{Three-phase compiler construction. The mid-end is somtimes called an \textit{optimizer}
+	\caption{Three-phase compiler construction. The mid-end is sometimes called an \textit{optimizer}
 	and the back-end a \textit{code generator}}
 	\label{fig:three_phase_compiler}
 \end{figure}
@@ -51,7 +51,7 @@ LLVM IR\cite[Section~11.4.1]{aosa-llvm}. The output is often an object file, but
 can also act as an interpreter. For most of it's task, a LLVM backend uses what is called
 the \textit{machine IR} to represent the code during the different stages.
 
-The LLVM back-end is responsible for five main tasks: intruction selection, instruction
+The LLVM back-end is responsible for five main tasks: instruction selection, instruction
 scheduling, register allocation, code layout optimization and assembly code emission
 \cite{llvm-writing-backend, llvm-codegenerator-highlevel, aosa-llvm}. They are performed
 mostly in isolation to each other \cite[Section~11.5]{aosa-llvm}, which simplifies the
@@ -96,13 +96,13 @@ backgroundcolor= \color{lightgray}]
 Courtesy of \textcite{unison-docs-examples}, author of the Unison documentation, for the code examples.
 
 What is interesting to note is that there is an infinite number of virtual registers available,
-starting from \%0 and incrementing, as well as some abstract intructions, such as the PHI
+starting from \%0 and incrementing, as well as some abstract int ructions, such as the PHI
 function.
 
 \subsubsection{Instruction Scheduling}
 % https://llvm.org/docs/CodeGenerator.html#scheduling-and-formation
 Instruction scheduling is the task of choosing how and in which order the selected instructions
-will run. In the case of LLVM the scheduling phase is logically seperate from the selection
+will run. In the case of LLVM the scheduling phase is logically separate from the selection
 phase \cite{llvm-codegenerator-scheduling}. There exists a wide variety of architecture
 and they all have different limitations and constraints.
 
@@ -125,7 +125,7 @@ indicated statically, i.e. by the compiler \cite[Section~3.7]{caqa}.
 
 The superscalar processors issue varying number of instructions per cycle and can be either
 in-order (in the case of statically scheduled) and out-of-order (dynamically scheduled).
-Dynamically scheduled superscalar processors exploits ILP during runtime and thus required
+Dynamically scheduled superscalar processors exploits ILP during run-time and thus required
 no compiler support \cite[Section~3.4]{caqa}, while statically schedules superscalar
 processors requires the compiler to generate the entire execution schedule pre-execution
 \cite[Section~3.7]{caqa}.
@@ -144,13 +144,13 @@ Instruction scheduling can be seen as a problem where the input is a list of res
 (e.g ALUs, FPUs, presence of VLIW) and a execution cycles for each instruction, and the
 output is the instruction in the sequence they should be executed for optimal performance
 (with regards to whatever factor you are optimizing for). In other words, maximize
-\textit{instruction level parallellism} \cite{inst-sched-cmu}. Of course this problem is
+\textit{instruction level parallelism} \cite{inst-sched-cmu}. Of course this problem is
 very difficult.
 
 \subsubsection{Register Allocation}
 
-There are a few different problem concering register allocation, including (but not limied
-to), coalescing, spilling move insertion and assigment \cite{alloc-deconstructed,
+There are a few different problem concerning register allocation, including (but not limited
+to), coalescing, spilling move insertion and assignment \cite{alloc-deconstructed,
 llvm-codegenerator-allocation}.
 
 Coalescing is the attempt to eliminate move instructions that refers to identical locations,
@@ -182,7 +182,7 @@ mainly used in the early days of compilers when machines didn't have as many reg
 % citation needed
 % maybe here: https://pdfs.semanticscholar.org/5246/7f742a206b075324ec17b9b7f9d539f52ec8.pdf
 % it mentions that it needs to be merged which is good.
-Seperating these steps in such a manner leads to some problems, and usually some instruction
+Separating these steps in such a manner leads to some problems, and usually some instruction
 scheduling is once again performed after the register allocation \cite{welcome-to-backend}.
 If a register needs to be spilled then the dependency graph which we based our schedule on is no longer valid. Re-doing
 these steps is quite expensive though, as you would essentially throw out all previous
@@ -224,7 +224,7 @@ While this specific example might have needed to incorporate instruction selecti
 the mix as well, it is nonetheless a difficulty.
 
 Instruction selection, instruction scheduling and register allocation are all tasks that
-depend on each other, but in order to make them managable by current solution they need
+depend on each other, but in order to make them manageable by current solution they need
 to be performed mostly in isolation to each other. Combining instruction scheduling and
 register allocation is a popular subject of research
 \cite{constraint-based, combining-alloc-sched, integrated-sched-alloc-techniques}.

@@ -1,10 +1,56 @@
 \chapter{Exploring the Unison Diversity Space}
 
-\section{What do we want to do?}
+Since Unison uses a branch and bound strategy to find the optimal solution there are a lot
+of solutions that we simply discard. In this section we will focus on exploring these
+solutions. How many we can generate, how diverse they are as-is and what applications this
+might have. In further chapters we will explore how we can modify Unison to transform the code to
+provide diversity.
 
+%\section{Potential Applications}
+%
+%I'd like to start this chapther with the potential applications of something like this.
+%If we one day replace the current LLVM instruction scheduler and register allocator in our
+%toolchain with Unison all of this potential diversity will be given to us for free, so there
+%is no real point in \textit{not} exploring and hopefully applying it.
+%
+%One could imagine an assembly line of embedded devices, all running the same firmware, where
+%a unique binary of the firmware is compiled for every new device as it is ready to be loaded.
+%This would
 
-\section{How much variation do we tolerate?}
+%Does all binaries have to be within a (e.g) 5-cycle cost of each other? Can we just spit something
+%out every X seconds and assume it's different enough? Can we choose the variation depending
+%on how many binaries the user wants?
 
-Does all binaries have to be within a (e.g) 5-cycle cost of each other? Can we just spit something
-out every X seconds and assume it's different enough? Can we choose the variation depending
-on how many binaries the user wants? 
+\section{Program Set}
+
+Throughout this chapter we will be working with a set of benchmarks called something
+Roberto knows.
+
+I will now commence explaining why these are appropriate in a way that doesn't make it
+obvious that it's because they are used as tests in Unison.
+
+\section{The Natural Space}
+
+The first step is to look at what is available. I.e. what diversity can be identify in the
+unmodified Unison search space. Unison upper bound on the optimizing factor is often a
+gross over-estimation, thus some solutions will be several orders of magnitude worse than
+the optimal solution. Since we want to minimize the run-time effect on our diversified
+program we only want to consider programs within a reasonable distance of the optimal
+solution. For example if the optimal solution executes in 7 cycles then a solution that
+executes in 52 cycles is not relevant for any application.
+
+\subsubsection{Differentiating Factors}
+
+When comparing two different solution there needs to be a way to quantify how different
+they are. This is a strict requirement to add diversify as a cost function in Unison and
+implementing a "diversity" optimization goal.
+
+A good starting point for this to look at the diversification techniques presented by
+\textcite[Section~4.4]{compiler-generated-sw-div} and \textcite{survey} and attempt to
+quantify how many of these are present and in what capacity.
+
+\subsubsection{More Than one Optimal Solution}
+
+Something to also explore is how many optimal solutions there are. During Unison's branch
+and bound strategy subsequent solutions has to be \textit{better} to even be considered,
+but how many \textit{equally good} solutions can find? And how different are they?

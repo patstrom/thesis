@@ -1,16 +1,16 @@
-\section{Contraint Programming}
+\section{Constraint Programming}
 
 \subsection{Overview}
 
-Constraint programming is a programming paradigm where problems are modeled as contraints
+Constraint programming is a programming paradigm where problems are modeled as constraints
 on variables. That is, a problem is solved by first identifying the variables, the domain
 of each variable and the \textit{constraints} of the variables, i.e. the relation between them.
 This is different from conventional programming paradigms because you are essentially
 describing a solution to the problem, rather than an algorithm on how to achieve the solution.
 
-Contraint programming is used to solve combinatorial problems in a relatively efficient
+Constraint programming is used to solve combinatorial problems in a relatively efficient
 manner, which makes it an excellent approach to e.g. NP-problems. Constraint programming
-is somtimes also called \textit{combinatorial optimization}, and implementations are then
+is sometimes also called \textit{combinatorial optimization}, and implementations are then
 % https://developers.google.com/optimization/
 called \textit{combinatorial optimization software suite}. This is perhaps an ever better
 name for the paradigm since it describes the usage (and limitations).
@@ -22,7 +22,7 @@ programming natively, such as Curry.
 % http://www-ps.informatik.uni-kiel.de/currywiki/_media/documentation/report.pdf
 % http://www-ps.informatik.uni-kiel.de/currywiki/documentation/features
 In both cases the user specifies the variables and
-the constraints and the constaint solver propagates the given constraints and reduces each
+the constraints and the constraint solver propagates the given constraints and reduces each
 variable's domain until there is only one option left, and the problem is solved.
 
 \subsection{Modeling a Problem}
@@ -31,7 +31,7 @@ To illustrate how to model and solve problems with constraint programming consid
 following example.
 
 We are presented with the problem of solving the equation $SEND + MOST = MONEY$, where
-each letter is to be subsituted with a digit, $S$ and $M$ cannot be 0, and all digits must
+each letter is to be substituted with a digit, $S$ and $M$ cannot be 0, and all digits must
 be pairwise distinct. We can easily determine that this is indeed a combinatorial problem
 and that, presumably, there exists multiple solutions. The naive method of solving this
 problem would be with an exhaustive search. However, this would try a lot of combinations
@@ -48,7 +48,7 @@ will employ constraint programming and model the problem in 4 steps:
 \subsubsection{Identifying Variables and Corresponding Domains}
 
 The first step of modeling is to determine the variables of the problem, and what their
-possible values are. The set of possible values is refered to as the variable's \textit{
+possible values are. The set of possible values is referred to as the variable's \textit{
 domain}. Choosing the variables of a problem is not always easy and the implications
 of the choice may not be apparent until later steps. E.g. for certain problems the intuitive
 variable selection might make searching too inefficient to ever terminate. In our case
@@ -66,14 +66,14 @@ $O \in \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\}$ \\
 $T \in \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\}$ \\
 $Y \in \{0, 1, 2, 3, 4, 5, 6, 7, 8, 9\}$
 
-Henceforth two integers seperated by two dots will indicate a range of all integers between
+Henceforth two integers separated by two dots will indicate a range of all integers between
 and including the two specified.
 
 \subsubsection{Determining Constraints}
 
 The constraints of our model is used to describe the relationship between variables in a
 solution. For example how does $S$ and $E$ interact when part of a solution? Given the
-problem describtion one constraint is that each digit is only used once, i.e. our variables
+problem description one constraint is that each digit is only used once, i.e. our variables
 are pairwise distinct. If $S$ is assigned 1, no other letter can be assigned 1. In addition,
 both $S$ and $M$ are nonzero, so we post one constraint for each that excludes 0 from their
 domain.
@@ -131,13 +131,13 @@ When no more domains can be pruned we have one of three situations.
 For situation (1) and (2), either a solution is found or we have proven that a solution
 does not exist.
 		
-In the latter situation (3) we have multiple possbile values, and we must explore these
+In the latter situation (3) we have multiple possible values, and we must explore these
 combinations. We do that by \textit{branching}.
 
 \subsubsection{Searching}
 
 To explore the different combinations of variable to value mappings we construct a \textit{
-search tree}. Each node of the search tree constists of every variable and their respective
+search tree}. Each node of the search tree consists of every variable and their respective
 domain after propagation. The root node would then be the all variables and their domains
 after initial propagation (as in the previous section). From each node we create two or
 more branches, where each branch represents a subset of a domain for a particular variable.
@@ -198,14 +198,14 @@ constraint that says that from now on, a combination will only be considered a s
 if it is \textit{better} than the current solution. If we find another solution, we can
 set the bar at that solution instead. This process is called \textit{branch and bound}.
 
-For a combinatioral problem we expect mutliple solutions, and by always requiring the
+For a combinatorial problem we expect multiple solutions, and by always requiring the
 next solution to be better than the last we will eventually, given enough time, reach
 the \textit{optimal} solution. That is if we apply a branch and bound strategy and allow
 it to run until termination, we have both found the optimal solution and proved that it is
 the optimal solution. For large problems however, this might take an unreasonable amount
 of time and it is better to terminate early.
 
-The first step of finding the optimal solution is indentify what constintutes as \textit{
+The first step of finding the optimal solution is identify what constitutes as \textit{
 	better}. In our case we want as much money as possible. One solution is better than
 another one if the mapping of $MONEY$ yields a larger integer. Table \ref{tab:two_solutions}
 shows two distinct solutions, one better than the other.
