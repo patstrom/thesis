@@ -119,13 +119,20 @@ domains. In a similar manner we have assigned $M=1$ and $O=0$ and removed 1 and 
 other domains, this in turn has led to the exclusion of 2 from the domain of $N$. In other
 words, the equation will look something like $9END + 109T = 10NEY$
 
-When no more domains can be pruned we have one of three situations. One or more domain(s)
-could be empty, proving that no solution exists. All domains could be of size 1, indicating
-that there exists only one possible value for every variable, and thus we have found a
-solution. And last but not least, one or more variables have multiple values in their
-domain. If we reach any of the former situations, either a solution is found or we have proven
-that a solution does not exist. In the latter situation we have multiple possbile values,
-and we must explore these combinations. We do that by \textit{branching}.
+When no more domains can be pruned we have one of three situations.
+
+\begin{enumerate}
+	\item One or more domain(s) could be empty, proving that no solution exists.
+	\item	All domains could be of size 1, indicating that there exists only one possible
+		value for every variable, and thus we have found a solution.
+	\item And last but not least, one or more variables have multiple values in their domain.
+\end{enumerate}
+
+For situation (1) and (2), either a solution is found or we have proven that a solution
+does not exist.
+		
+In the latter situation (3) we have multiple possbile values, and we must explore these
+combinations. We do that by \textit{branching}.
 
 \subsubsection{Searching}
 
@@ -141,7 +148,7 @@ domain, so that all possible values are explored.
 We will then follow one of the branches, propagate constraints given the reduced domain
 of the branching variable and once again reach one of the three previously mentioned
 situations, only in this case if we have reached the first situation (failure) we can go
-back and go down the other branch. This process is applied recuresively until a solution
+back and go down the other branch. This process is applied recursively until a solution
 is found or all combinations have been exhausted.
 
 \subsubsection{Choosing a branching heuristic}
@@ -216,7 +223,7 @@ shows two distinct solutions, one better than the other.
 	\label{tab:two_solutions}
 \end{table}
 
-For every solution we find, we require subsequent solution to map $MONEY$ to a larger
+For every solution we find, we require subsequent solutions to map $MONEY$ to a larger
 integer. The optimal solution is the largest integer for $MONEY$ we can find while still
 conforming to all constraints. If we keep searching and keep requiring that the next solution
 is better than the last we will eventually conclude that the optimal solution is the one
