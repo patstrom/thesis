@@ -8,7 +8,6 @@ thesis:
 .PHONY: clean
 clean:
 	rm -rf build/*
-	rm main.pdf
 
 .PHONY: check
 check:
