@@ -75,34 +75,32 @@ and obfuscation (register randomization, variable reordering etc)
 This thesis will focus on static, compiler generated randomization. Just as for dynamic
 randomization, static randomization's current focus is security. The key insight is that
 while the same source code always yields the same binary in the current climate, the compiler
-takes a lot of decision based on heuristics when reaching this concluding binary (see \ref{sec:llvm}).
+takes a lot of decisions based on heuristics when reaching this concluding binary (see \ref{sec:llvm}).
 It is even the case that those decisions might be flawed and that a different heuristic
 might have yielded a better result (see \ref{sec:unison}). Not only does this indicate
 that there is room for improvements in present-day compilers, but it also a huge potential
 for automated software diversity. For example, if we compile:
 
-\lstinputlisting[label={src:gcd},caption=A C function for calculating the greatest common
-divisor between two integers, language=C,tabsize=2,frame=single,breaklines=true,
-showstringspaces=false, backgroundcolor=\color{lightgray}]{background/software-diversity/examples/gcd.c}
+\lstinputlisting[label={src:vec-add},caption=A C++ function for adding two vector values,
+language=C++,tabsize=2,frame=single,breaklines=true, showstringspaces=false,
+backgroundcolor=\color{lightgray}]{background/software-diversity/examples/vec_add.cpp}
 
 we can generate multiple different binaries simply by using multiple different compilers.
-Here are two examples using gcc and clang (with -fomit-frame-pointer):
+Here are two examples using gcc and clang (with -Ofast):
 
-\lstinputlisting[caption=Assembly emitted by gcc for listing \ref{src:gcd},tabsize=2,
+\lstinputlisting[caption=Assembly emitted by gcc for listing \ref{src:vec-add},tabsize=2,
 frame=single, breaklines=true,showstringspaces=false,backgroundcolor=\color{lightgray}]
-{background/software-diversity/examples/gcc_gcd.s}
+{background/software-diversity/examples/gcc_vec_add.s}
 
-\lstinputlisting[caption=Assembly emitted by clang for listing \ref{src:gcd},tabsize=2,
+\lstinputlisting[caption=Assembly emitted by clang for listing \ref{src:vec-add},tabsize=2,
 frame=single, breaklines=true,showstringspaces=false,backgroundcolor=\color{lightgray}]
-{background/software-diversity/examples/clang_gcd.s}
+{background/software-diversity/examples/clang_vec_add.s}
 
-While this program is trivially small, the resulting binaries do differ. Generating an
-ELF file for both assembly programs (with a trivial main function) on my Toshiba Portégé
-Z30-A-15M running a Intel® Core™ i7-4500U-processor reveals slight differences. For example
-the ELF file emitted by gcc has the entry point address at $0x540$ while the one emitted
-by clang has the entry point address at $0x530$. They also vary slightly in memory and
-disk layout. Whether these differences actually benefit us or not isn't as relevant right now
-as much as the fact that they are two semantically different binaries that are functionally equal.
+Even though this function is very small the resulting assembly is very different. In this
+case the assembly produced by gcc is basically garbage (in terms of optimizations)
+compared to the one produced by clang (a difference of 20 instructions) but nonetheless
+they are two functionally equal but semantically different binaries. This is to emphasise
+that software diversity is not a foreign concept, but rather very commonly occuring.
 
 There are ways to deploy and steer this inherent diversity. \textcite{compiler-generated-sw-div}
 have explored two approaches to this. One where they implement a diversification engine for
@@ -118,9 +116,10 @@ that potentially represents the input source code (\ref{sec:llvm} and \ref{sec:u
 In other words, it compiles the code by working out possible binary representations of the
 program and then iteratively verifying them to find a solution.
 
-\subsection{Return Oriented Programming}
+\subsection{Why bother?}
+\subsubsection{Return Oriented Programming}
 Introduce return oriented programming and ways to counter it using nop and instruction
 scheduling. \cite{rop, large-scale-automated}.
 
 %return oriented programming: https://www.informatik.tu-darmstadt.de/fileadmin/user_upload/Group_TRUST/PubsPDF/readactor.pdf
-
+% Show gadgets in previously emitted assembly (vec_add)
