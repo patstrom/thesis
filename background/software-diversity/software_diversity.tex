@@ -118,12 +118,12 @@ program and then iteratively verifying them to find a solution.
 
 \subsection{Why bother?}
 \subsubsection{Return Oriented Programming}
-Return oriented programming hijacks the call stack to divert control flow in a program. It
-works by overwriting the return address of a function call to execute instruction sequences
-outside the intended order. By carefully choosing these sequences (called gadgets) an adversary
-can perfor arbitrary operations. \textcite{rop} not only introduced this technique
-but also showed that more or less all binaries contain enough of these gadgets to execute
-arbitrary code (such as opening a shell).
+Return oriented programming refers to a technique where and adversary hijacks the call 
+stack to divert control flow in a program. It works by overwriting the return address of 
+a function call to execute instruction sequences outside the intended order. By carefully
+choosing these sequences (called gadgets) an adversary can perform arbitrary operations. 
+\textcite{rop} not only introduced this technique but also showed that more or less all 
+binaries contain enough of these gadgets to execute arbitrary code (such as opening a shell).
 
 The attack is mainly about identifying these gadgets, construction a sequence of
 gadgets to execute the sought-after code and construction a payload which somehow hijacks
