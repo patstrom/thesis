@@ -118,8 +118,31 @@ program and then iteratively verifying them to find a solution.
 
 \subsection{Why bother?}
 \subsubsection{Return Oriented Programming}
-Introduce return oriented programming and ways to counter it using nop and instruction
-scheduling. \cite{rop, large-scale-automated}.
+Return oriented programming hijacks the call stack to divert control flow in a program. It
+works by overwriting the return address of a function call to execute instruction sequences
+outside the intended order. By carefully choosing these sequences (called gadgets) an adversary
+can perfor arbitrary operations. \textcite{rop} not only introduced this technique
+but also showed that more or less all binaries contain enough of these gadgets to execute
+arbitrary code (such as opening a shell).
+
+The attack is mainly about identifying these gadgets, construction a sequence of
+gadgets to execute the sought-after code and construction a payload which somehow hijacks
+the control flow of the program to execute this sequence of gadgets. If we can somehow
+break these gadgets then the payload will be useless. However, as \textcite{rop} showed
+it is not practically impossible to break all gadgets. What we can do, however, is diversify
+our binaries. By compiling several different binaries who all have different instruction
+sequences we break these gadgets, and thus make attacking all versions of our program
+a lot more resource heavy. As it stands now by construction a payload on one binary you can
+attack all of them. If we diversify, that payload only works on the specific binary it was
+constructed for.
+
+\textcite{large-scale-automated} explored two static compiler techniques to break these
+gadgets, NOP insertion and randomizing instruction scheduling. While they found that their
+techiques worked very well they both rely on randomness. More specifically they insert
+NOP randomly in the code and randomize the instruction schedule. Both of these techniques
+offers no \textit{guarantees} that the resulting binaries will the diverse enough and they
+also introduce some overhead when executing the binaries (albeit small).
+
 
 %return oriented programming: https://www.informatik.tu-darmstadt.de/fileadmin/user_upload/Group_TRUST/PubsPDF/readactor.pdf
 % Show gadgets in previously emitted assembly (vec_add)
