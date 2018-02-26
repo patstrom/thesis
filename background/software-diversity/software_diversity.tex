@@ -88,11 +88,11 @@ backgroundcolor=\color{lightgray}]{background/software-diversity/examples/vec_ad
 we can generate multiple different binaries simply by using multiple different compilers.
 Here are two examples using gcc and clang (with -Ofast):
 
-\lstinputlisting[caption=Assembly emitted by gcc for listing \ref{src:vec-add},tabsize=2,
+\lstinputlisting[label={src:gcc-vec-add},caption=Assembly emitted by gcc for listing \ref{src:vec-add},tabsize=2,
 frame=single, breaklines=true,showstringspaces=false,backgroundcolor=\color{lightgray}]
 {background/software-diversity/examples/gcc_vec_add.s}
 
-\lstinputlisting[caption=Assembly emitted by clang for listing \ref{src:vec-add},tabsize=2,
+\lstinputlisting[label={src:clang-vec-add},caption=Assembly emitted by clang for listing \ref{src:vec-add},tabsize=2,
 frame=single, breaklines=true,showstringspaces=false,backgroundcolor=\color{lightgray}]
 {background/software-diversity/examples/clang_vec_add.s}
 
@@ -116,8 +116,7 @@ that potentially represents the input source code (\ref{sec:llvm} and \ref{sec:u
 In other words, it compiles the code by working out possible binary representations of the
 program and then iteratively verifying them to find a solution.
 
-\subsection{Why bother?}
-\subsubsection{Return Oriented Programming}
+\subsection{Return Oriented Programming}
 Return oriented programming refers to a technique where and adversary hijacks the call 
 stack to divert control flow in a program. It works by overwriting the return address of 
 a function call to execute instruction sequences outside the intended order. By carefully
@@ -143,6 +142,45 @@ NOP randomly in the code and randomize the instruction schedule. Both of these t
 offers no \textit{guarantees} that the resulting binaries will the diverse enough and they
 also introduce some overhead when executing the binaries (albeit small).
 
+\subsubsection{Gadgets}
+Gadgets are short sequences of instructions, usually ending in a "ret" instruction, that
+perform a specific function. E.g "pop \%edi; ret" or "movl 64(\%eax), \%eax; ret". \cite{rop}
+These are instruction sequences already present in the binary (perhaps loaded from libc)
+, and can thus be executed even if there are measures to prevent execution on the stack.
+Not all sequences that end in a "ret" are gadgets. Many of them are useless, e.g "leave;
+ret".
+
+For example, using radare2 functionality to find gadgets on our previous examples we find
+the following gadget in the assembly emitted by clang (the leftmost column is the address
+of the instruction, the middle column is the byte sequence and  the right column is the
+instruction in assembly form):
+
+\lstinputlisting[label={src:clang-gadget},caption=Gadgets present in the assembly emitted by
+clang (see listing \ref{src:clang-vec-add}),tabsize=2, frame=single, breaklines=true,
+showstringspaces=false,backgroundcolor=\color{lightgray}]
+{background/software-diversity/examples/clang_vec_add.gadget}
+
+The binary only contains one gadget, and it's the entire "add" function, including some
+bytes in the elf header that happens to also be valid instructions. If we look at the
+gadgets present in the assembly emitted by gcc see something interesting:
+
+\lstinputlisting[label={src:gcc-gadget},caption=Gadgets present in the assembly emitted by
+gcc (see listing \ref{src:gcc-vec-add}),tabsize=2, frame=single,showstringspaces=false,
+backgroundcolor=\color{lightgray}]
+{background/software-diversity/examples/gcc_vec_add.gadget}
+
+While there is still only one gadget, the sequence of instructions that it constitutes of
+does not exist in the original assembly. Since x86-64 is a complex instruction set and
+instructions can be of different lengths, we can find gadgets that are not present in the
+original assembly by overwriting the return address to point to the middle of an intended
+instruction. In this case the original instruction sequence is:
+
+\lstinputlisting[label={src:gcc-gadget},caption=Intended instruction sequence,tabsize=2,
+frame=single, breaklines=true,showstringspaces=false,backgroundcolor=\color{lightgray}]
+{background/software-diversity/examples/gcc_vec_add.original}
+
+but if we start reading at an offset of 2, we instead get the gadget. In this case
+the original instruction is located at 0x08000080, and the gadget at 0x08000082.
 
 %return oriented programming: https://www.informatik.tu-darmstadt.de/fileadmin/user_upload/Group_TRUST/PubsPDF/readactor.pdf
 % Show gadgets in previously emitted assembly (vec_add)

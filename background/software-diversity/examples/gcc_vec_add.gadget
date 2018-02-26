@@ -1,0 +1,4 @@
+0x08000082           58  pop rax
+0x08000083     c1660f7e  shl dword [rsi + 0xf], 0x7e
+0x08000087     d04889  ror byte [rax - 0x77], 1
+0x0800008a     c2660f  ret 0xf66

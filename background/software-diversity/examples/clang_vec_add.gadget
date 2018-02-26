@@ -1,0 +1,5 @@
+0x08000039    004000  add byte [rax], al
+0x0800003c      0800  or byte [rax], al
+0x0800003e      0100  add dword [rax], eax
+0x08000040    0f58c1  addps xmm0, xmm1
+0x08000043        c3  ret

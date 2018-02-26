@@ -1,0 +1,4 @@
+0x08000080     f30f58c1     addss xmm0, xmm1
+0x08000084     660f7ed0     movd eax, xmm2
+0x08000088     4889c2       mov rdx, rax
+0x0800008b     660f7ec0     movd eax, xmm0
