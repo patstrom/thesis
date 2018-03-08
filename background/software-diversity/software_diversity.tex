@@ -89,11 +89,11 @@ we can generate multiple different binaries simply by using multiple different c
 Here are two examples using gcc and clang (with -Ofast):
 
 \lstinputlisting[label={src:gcc-vec-add},caption=Assembly emitted by gcc for listing \ref{src:vec-add},tabsize=2,
-frame=single, breaklines=true,showstringspaces=false,backgroundcolor=\color{lightgray}]
+frame=single, breaklines=true,showstringspaces=false,backgroundcolor=\color{lightgray},language={[x86masm]Assembler}]
 {background/software-diversity/examples/gcc_vec_add.s}
 
 \lstinputlisting[label={src:clang-vec-add},caption=Assembly emitted by clang for listing \ref{src:vec-add},tabsize=2,
-frame=single, breaklines=true,showstringspaces=false,backgroundcolor=\color{lightgray}]
+frame=single, breaklines=true,showstringspaces=false,backgroundcolor=\color{lightgray},language={[x86masm]Assembler}]
 {background/software-diversity/examples/clang_vec_add.s}
 
 Even though this function is very small the resulting assembly is very different. In this
@@ -166,7 +166,7 @@ gadgets present in the assembly emitted by gcc see something interesting:
 
 \lstinputlisting[label={src:gcc-gadget},caption=Gadgets present in the assembly emitted by
 gcc (see listing \ref{src:gcc-vec-add}),tabsize=2, frame=single,showstringspaces=false,
-backgroundcolor=\color{lightgray}]
+backgroundcolor=\color{lightgray},language={[x86masm]Assembler}]
 {background/software-diversity/examples/gcc_vec_add.gadget}
 
 While there is still only one gadget, the sequence of instructions that it constitutes of
@@ -176,7 +176,7 @@ original assembly by overwriting the return address to point to the middle of an
 instruction. In this case the original instruction sequence is:
 
 \lstinputlisting[label={src:gcc-gadget},caption=Intended instruction sequence,tabsize=2,
-frame=single, breaklines=true,showstringspaces=false,backgroundcolor=\color{lightgray}]
+frame=single, breaklines=true,showstringspaces=false,backgroundcolor=\color{lightgray},language={[x86masm]Assembler}]
 {background/software-diversity/examples/gcc_vec_add.original}
 
 but if we start reading at an offset of 2, we instead get the gadget. In this case
