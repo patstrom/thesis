@@ -1,186 +1,46 @@
 \section{Software Diversity}
 
-Software diversity is a diverse field, and there is research focusing on different areas
-with different goals in mind. However, what they all have in common is the that they are
-exploring the potential benefits of engineering diversity within software development.
-When talking about software diversity there are a few different classifications and goals
-\cite[Section~1]{survey} which will be covered here.
+Software diversity is the study of diversity in software and software engineering. It is
+a diverse discipline and there is a wide range of research all with different focus and
+set of goals. The one common factor is that they all explore the potential benefits of
+diverse engineering \cite{survey}.
 
-Software diversity has a diverse (heh) set of goals ranging from fault-tolerance to re-usability
-to security \cite{survey}.
+Software diversity is a relatively common approach to certain security issues such as
+memory errors exploits \cite{os-randomization,mem-exploits,add-obfuscation,compiler-generated-sw-div}
+as well as reverse-engineering based exploits (such as \textit{return-oriented programming}, see \ref{rop})
+\cite{SoK,binary-stirring,large-scale-automated,readactor,smashing-gadgets,synthetic-diversity,librando},
+the latter of which will be the focus of this paper. What all of these techniques have in
+common is that they introduce some kind of chance into the development toolchain, which
+will not be the approach taken in this paper.
 
-\subsection{Managed Software diversity}
-
-Managed software diversity is the notion of encouraging or controlling software diversity.
-
-\subsubsection{Natural Diversity}
-
-A lot of software with similar features naturally and spontaneously emerges from engineering
-processes. There are a multitude of products from competing organizations that provide
-the same function, for example routers, web browsers, compilers, database management systems
-and firewalls. Natural diversity could also be something as simple as one program being
-tunable by parameters to provide different functionality and performance \cite{survey}.
-
-\subsubsection{Design Diversity}
-
-Design diversity is the process of introducing diversity through the design process. For
-example, \textit{N-version programming} is the approach where $N \geq 2$ functionality equivalent
-programs are developed from the same specification. The point of this is that hopefully
-it will result in a subset of the programs being free from bugs that another subset
-might suffer from, thus creating a more fault tolerant system \cite{n-version}.
-
-\subsection{Automated Software Diversity}
-
-\textcite{survey} describes automated software diversity as \say{techniques for artificially
-and automatically synthesizing diversity in software} \cite[\pno~8]{survey}. It is also
-known as \textit{synthetic diversity} \cite{synthetic-diversity}. \say{Automated} is
-referring to the fact that a human is not part of the diversification process, other than
-having designed the framework \cite[Section~4]{survey}.
-
-Automated diversity can characterize itself in different ways. A common approach is to
-introduce some kind of randomness into software to break the otherwise deterministic behaviour
-of most software. This can have several benefits, including security \cite{add-obfuscation}.
-Randomization techniques are generally ways to either directly or indirectly create unique
-execution of the same program \cite[Section~4.1]{survey}.
-
-\subsubsection{Dynamic Randomization}
-
-By introducing randomization at program run-time one can dynamically diversify the program
-and introduce non-deterministic behaviour.
-
-\textcite{os-randomization} randomizes the interface
-between user space applications and the operating system by shuffling system call mappings,
-changing library entry points and randomizing stack placement.
-
-\textcite{mem-exploits} implements a source-to-source C-code transformer that randomizes
-stack-resident variables, static data and individual functions (by introducing a level of
-indirection to function calls).
-
-\textcite{binary-stirring} introduces a technique they call \textit{stirring}, where
-they accept input in the form of x86 binary code (without debug symbols, source code or
-relocation information) and produce a new x86 binary file whose basics block addresses
-are stirred and dynamically determined at program load-time.
-
-Of course there are many more techniques and approaches but they will not be covered here.
-
-\subsubsection{Static Randomization}
-
-Static randomization creates diversity at compile time by generating several versions of the
-same program that are functionally equivalent but semantically different. This can be done
-in a variety of ways including but not limited to: exploiting NOP (no operation) instructions,
-instruction set randomization, reversing the stack, stack frame padding,
-and obfuscation (register randomization, variable reordering etc)
-\cite{survey, compiler-generated-sw-div},
-
-This thesis will focus on static, compiler generated randomization. Just as for dynamic
-randomization, static randomization's current focus is security. The key insight is that
-while the same source code always yields the same binary in the current climate, the compiler
-takes a lot of decisions based on heuristics when reaching this concluding binary (see \ref{sec:llvm}).
-It is even the case that those decisions might be flawed and that a different heuristic
-might have yielded a better result (see \ref{sec:unison}). Not only does this indicate
-that there is room for improvements in present-day compilers, but it also a huge potential
-for automated software diversity. For example, if we compile:
-
-\lstinputlisting[label={src:vec-add},caption=A C++ function for adding two vector values,
-language=C++,tabsize=2,frame=single,breaklines=true, showstringspaces=false,
-backgroundcolor=\color{lightgray}]{background/software-diversity/examples/vec_add.cpp}
-
-we can generate multiple different binaries simply by using multiple different compilers.
-Here are two examples using gcc and clang (with -Ofast):
-
-\lstinputlisting[label={src:gcc-vec-add},caption=Assembly emitted by gcc for listing \ref{src:vec-add},tabsize=2,
-frame=single, breaklines=true,showstringspaces=false,backgroundcolor=\color{lightgray},language={[x86masm]Assembler}]
-{background/software-diversity/examples/gcc_vec_add.s}
-
-\lstinputlisting[label={src:clang-vec-add},caption=Assembly emitted by clang for listing \ref{src:vec-add},tabsize=2,
-frame=single, breaklines=true,showstringspaces=false,backgroundcolor=\color{lightgray},language={[x86masm]Assembler}]
-{background/software-diversity/examples/clang_vec_add.s}
-
-Even though this function is very small the resulting assembly is very different. In this
-case the assembly produced by gcc is basically garbage (in terms of optimizations)
-compared to the one produced by clang (a difference of 20 instructions) but nonetheless
-they are two functionally equal but semantically different binaries. This is to emphasise
-that software diversity is not a foreign concept, but rather very commonly occuring.
-
-There are ways to deploy and steer this inherent diversity. \textcite{compiler-generated-sw-div}
-have explored two approaches to this. One where they implement a diversification engine for
-an App Store (such as Apple's App Store or Google Play Store) that automatically generates
-a unique binary for every download. The other approach is to run multiple variants of the
-same program at the same time in parallel and verifying that their behaviour is correct.
-Both of these approaches can make use of more or less all previously mentioned diversity
-techniques, both dynamic and static.
-
-We will explore the diversity potential in integrated instruction scheduling and register
-allocation by using a tool that functions by combinatorial exploration of binary programs
-that potentially represents the input source code (\ref{sec:llvm} and \ref{sec:unison}).
-In other words, it compiles the code by working out possible binary representations of the
-program and then iteratively verifying them to find a solution.
+The motivation is that by employing diversification techniques one can break the
+reactive nature of software security and shift the advantage from the attacker to the
+defender \cite{compiler-generated-sw-div}, and by doing it without randomization one has
+greater control over the process.
 
 \subsection{Return Oriented Programming}
-Return oriented programming refers to a technique where and adversary hijacks the call 
-stack to divert control flow in a program. It works by overwriting the return address of 
-a function call to execute instruction sequences outside the intended order. By carefully
-choosing these sequences (called gadgets) an adversary can perform arbitrary operations. 
-\textcite{rop} not only introduced this technique but also showed that more or less all 
-binaries contain enough of these gadgets to execute arbitrary code (such as opening a shell).
+\label{rop}
 
-The attack is mainly about identifying these gadgets, construction a sequence of
-gadgets to execute the sought-after code and construction a payload which somehow hijacks
-the control flow of the program to execute this sequence of gadgets. If we can somehow
-break these gadgets then the payload will be useless. However, as \textcite{rop} showed
-it is not practically impossible to break all gadgets. What we can do, however, is diversify
-our binaries. By compiling several different binaries who all have different instruction
-sequences we break these gadgets, and thus make attacking all versions of our program
-a lot more resource heavy. As it stands now by construction a payload on one binary you can
-attack all of them. If we diversify, that payload only works on the specific binary it was
-constructed for.
+\textcite{rop} introduces \textit{return-oriented programming} (ROP) as an extension of
+the \textit{return-to-libc}\cite{return-into-libc} attack that allows arbitrary code
+execution instead of calling complete functions.
+
+A typical return-into-libc attack involves somehow diverting the program control
+flow to transfer control to code that already exists in the program's address space,
+it coud e.g be the system() library function, allowing the adversary to, for example, spawn
+a shell without injecting any code. By first jumping to a sequence of instructions such as
+"pop reg; pop reg; ret;" it is possible to chain together several of these function calls,
+performing more complex operations \cite{non-exec-stack,advanced-return-into-libc}.
+
+\textcite{rop} builds upon this concept by instead diverting the control flow to just a short
+sequence of instruction, usually just two or three instructions, typically ending with a
+"ret" instruction. These sequences are dubbed \textit{gadgets} and by carefully choosing
+and chaining them together one can achieve arbitrary code execution \cite{rop}.
 
 \textcite{large-scale-automated} explored two static compiler techniques to break these
-gadgets, NOP insertion and randomizing instruction scheduling. While they found that their
-techiques worked very well they both rely on randomness. More specifically they insert
-NOP randomly in the code and randomize the instruction schedule. Both of these techniques
-offers no \textit{guarantees} that the resulting binaries will the diverse enough and they
-also introduce some overhead when executing the binaries (albeit small).
-
-\subsubsection{Gadgets}
-Gadgets are short sequences of instructions, usually ending in a "ret" instruction, that
-perform a specific function. E.g "pop \%edi; ret" or "movl 64(\%eax), \%eax; ret". \cite{rop}
-These are instruction sequences already present in the binary (perhaps loaded from libc)
-, and can thus be executed even if there are measures to prevent execution on the stack.
-Not all sequences that end in a "ret" are gadgets. Many of them are useless, e.g "leave;
-ret".
-
-For example, using radare2 functionality to find gadgets on our previous examples we find
-the following gadget in the assembly emitted by clang (the leftmost column is the address
-of the instruction, the middle column is the byte sequence and  the right column is the
-instruction in assembly form):
-
-\lstinputlisting[label={src:clang-gadget},caption=Gadgets present in the assembly emitted by
-clang (see listing \ref{src:clang-vec-add}),tabsize=2, frame=single, breaklines=true,
-showstringspaces=false,backgroundcolor=\color{lightgray}]
-{background/software-diversity/examples/clang_vec_add.gadget}
-
-The binary only contains one gadget, and it's the entire "add" function, including some
-bytes in the elf header that happens to also be valid instructions. If we look at the
-gadgets present in the assembly emitted by gcc see something interesting:
-
-\lstinputlisting[label={src:gcc-gadget},caption=Gadgets present in the assembly emitted by
-gcc (see listing \ref{src:gcc-vec-add}),tabsize=2, frame=single,showstringspaces=false,
-backgroundcolor=\color{lightgray},language={[x86masm]Assembler}]
-{background/software-diversity/examples/gcc_vec_add.gadget}
-
-While there is still only one gadget, the sequence of instructions that it constitutes of
-does not exist in the original assembly. Since x86-64 is a complex instruction set and
-instructions can be of different lengths, we can find gadgets that are not present in the
-original assembly by overwriting the return address to point to the middle of an intended
-instruction. In this case the original instruction sequence is:
-
-\lstinputlisting[label={src:gcc-gadget},caption=Intended instruction sequence,tabsize=2,
-frame=single, breaklines=true,showstringspaces=false,backgroundcolor=\color{lightgray},language={[x86masm]Assembler}]
-{background/software-diversity/examples/gcc_vec_add.original}
-
-but if we start reading at an offset of 2, we instead get the gadget. In this case
-the original instruction is located at 0x08000080, and the gadget at 0x08000082.
-
-%return oriented programming: https://www.informatik.tu-darmstadt.de/fileadmin/user_upload/Group_TRUST/PubsPDF/readactor.pdf
-% Show gadgets in previously emitted assembly (vec_add)
+gadgets. By inserting NOP instructions randomly in the code and by randomizing the
+instruction schedule they generate several semantically different, but functionally equal,
+executables. Diversifying in this manner proved to be effective and they manage to break
+the majority of gadgets \cite{large-scale-automated}. However, due to the inherent reliance
+on chance there is no fine-grained control of the diversification process nor is there
+any guarantee that the program structure is sufficiently different.
