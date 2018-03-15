@@ -1,79 +1,68 @@
 \section{Unison}
 \label{sec:unison}
 
-Unison is an open-source, potentially optimal tool that performs integrated register
-allocation and instruction scheduling. It can be used as an alternative or complement to
+Unison is an open-source\footnote{https://github.com/unison-code/unison},
+potentially optimal tool that performs integrated register allocation and instruction
+scheduling using constraint programming. It can be used as an alternative or complement to
 the algorithms currently in place by compilers such as GCC and LLVM. In particular there
 already exists a driver for LLVM which accept input in the form of LLVM MIR \cite{unison-docs}.
 
-\subsection{The high-level approach of Unison}
+\subsection{Constraint Programming}
+
+Constraint programming is a programming paradigm for solving combinatorial problems.
+By declaring all variables possible values and their \textit{constraints}, the relationship
+between them when part of a solution, a \textit{constraint solver} can search the solution
+space and find an assignment of variables to values that is consistent with the constraints.
+A constraint solver effectively explores different possible combinations systematically,
+by a potentially incomplete local inference (also known as \textit{constraint propagation})
+or more commonly a combination of the two \cite{handbook-constraint-programming}.
+
+Currently the only constraint solver supported by Unison is Gecode\footnote{www.gecode.org}
+\cite{unison-docs}, which is a constraint solver that interleaves system search algorithms
+search with constraint propagation\cite{MPG}.
+
+When propagating constraints the Gecode solver searches all variable's domains and removes
+variables that in conflict with the constraints\cite[Section~23.1]{MPG}. For example,
+given two variables (and their corresponding domains) $x \in {0,1,2}$ and $y \in {0,1,2}$
+and the constraint $x > y$ constraint propagation can determine that $x \in {1, 2}$ and
+$y \in {0, 1}$ are the only combinations consistent with the constraint.
+
+When constraint propagation is finished there are three possible states:
+
+\begin{enumerate}
+	\item One or more domains could be empty, proving that no solution exists.
+	\item	All domains could be of size 1, indicating that there exists only one possible
+		value for every variable, and thus we have found a solution.
+	\item One or more variables have multiple values in their domain.
+\end{enumerate}
+
+For situation (1) and (2), either a solution is found or we have proven that a solution
+does not exist (within the local search space).
+
+In the latter situation (3) the Gecode constraint solver splits a variable's domain into
+two or more subsets, creating a \texit{search tree} where each \textit{branch} represents
+reducing the variable's domain to a particular subset \cite[Section~8]{MPG}. By commiting
+to a branch the constraint solver can once again perform constraint propagation and repeat
+the process. However, if \textit{branching} has taken place and the solver reaches
+situation (1) it can go back up the tree and explore a different branch. If situation (2)
+is reached it can still backtrack but with the added option of adding more constraints
+based on the newly found solution. Constraining based on previously found solutions in the
+search tree is done with the \textit{branch-and-bound} search engine\cite[Section~9]{MPG}
+in Gecode.
+
+\textit{Branch and bound} is an efficient strategy to find the optimal solution to a
+combinatorial problem which in essence constitutes comparing potential solutions to the
+currently best found solution, choosing the better of the two\cite{BaB}. We will adopt a
+similar strategy, but instead of constraining solutions to be better we will require them
+to be \textit{different}. In addition, no solutions will be discarded.
+
+\subsection{Unison}
+
 
 Unison models the problems of register allocation and instruction scheduling as a single
-constraint-programming problem and solves them simultaneously \cite{unison-docs,reg-alloc-inst-sched-uni}.
+constraint-satisfaction problem and solves them simultaneously \cite{unison-docs,reg-alloc-inst-sched-uni}.
 
-Throughout this section only the case when integrated into LLVM will be considered. Unison
-takes LLVM MIR as input, performs register allocation and instruction scheduling and outputs
-LLVM MIR, which is then fed back to LLVM which emits assembly code.
-
-\subsubsection{Unison IR}
-
-To represent the problem Unison uses it's own intermediate representation that captures
-the problem in a format appropriate for a constraint solver. It has a few key properties
-that enables exploring combinations in a controllable manner.
-
-It is in the \textit{\textbf{L}inear \textbf{S}tatic \textbf{S}ingle \textbf{A}ssignment}
-form \cite{reg-alloc-inst-sched-uni}, which extends \textit{static single assignment} form.
-\textbf{SSA} form is a type of IR where program variables are assigned exactly once and
-where multiple assignments to the same variables create new versions of that variable
-\cite{gcc-ssa}. \textbf{LSSA} is stricter than \textbf{SSA} and requires that each temporary
-is only defined and used in a single basic block \cite[Section~3.2]{constraint-based}.
-
-The second and third key properties is that it introduces \textit{optional copies} and
+Unison's key properties are that it introduces \textit{optional copies} and
 \textit{alternative temporaries} \cite{reg-alloc-inst-sched-uni}. This allows Unison to
 support different register allocation decision and perform otherwise unreachable optimizations
 \cite{reg-alloc-inst-sched-uni, comb-spill}.
-
-\subsubsection{Variables and Domains}
-
-% rephrase this sentence.
-For the register allocation part of the problem the variables are the temporaries and their
-domains are (physical) registers. The model also reflects physical limitations of the
-registers, such as width (32/64 bit) \cite[Section~3]{reg-alloc-inst-sched-uni}. We map
-temporaries to physical registers.
-
-Instructions are variables themselves (including the optional moves) and their domains
-are issue cycles. That is, for instruction scheduling we assign an issue cycle for every
-instruction \cite[Section~3]{reg-alloc-inst-sched-uni}.
-
-\subsubsection{Constraints}
-
-For register allocation the problem is modeled as a rectangle packing problem. The vertical
-axis represents time in cycles and the horizontal axis represents registers "FIGURE THINGIE
-HERE". Rectangles that do not overlap vertically aren't live concurrently and can be
-allocated to the same register \cite[Section~4.1]{constraint-based}. Using this representation
-we can model physical limitations of the registers as width and add constraints that invalidates
-incorrect assignments such as assigning a 32-bit temporary to a 16-bit register \cite
-[Section~4.3]{constraint-based}.
-
-Instruction scheduling is done by posting constraints that reflect which instructions rely
-on other instructions due to data dependencies. An instruction cannot be scheduled before
-an instruction on which's result it depends. Unison also supports instructions bundling for
-architectures where several instructions can be issued every cycle \cite[Section~5]{constraint-based}.
-
-By relating the live range of each temporary to the issue cycle of the definer and user(s)
-of each temporary Unison integrates these two problems into one \cite{reg-alloc-inst-sched-uni}.
-
-\subsection{Potentially Optimal}
-
-Unison is potentially optimal \cite{reg-alloc-inst-sched-uni, unison-docs}. This means that
-given enough time unison will find the optimal solution to the integrated register allocation
-and instruction scheduling problem.
-
-As discussed in section \ref{sec:optimizing} a metric of \textit{better} must first be
-defined in order to declare something optimal. In the case of Unison there are two available
-metrics, speed and size \cite{unison-docs,reg-alloc-inst-sched-uni}. The cost function for speed
-is defined as the sum of the estimated execution time of each basic block (in cycles)
-weighted by the estimated execution frequency. The cost function for size is the sum of
-the size of all active instructions \cite[Section~3]{reg-alloc-inst-sched-uni}. So either
-we optimize for a lower amount of execution cycles or we optimize for a program whose
-code size is smaller.
