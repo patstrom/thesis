@@ -1,0 +1,49 @@
+\section{Constraint Programming}
+
+Constraint programming is a programming paradigm for solving combinatorial problems.
+By declaring all variable's possible values and their \textit{constraints}, the relationship
+between them when part of a solution, a \textit{constraint solver} can search the solution
+space and find an assignment of variables to values that is consistent with the constraints.
+A constraint solver effectively explores different possible combinations systematically,
+by a potentially incomplete local inference (also known as \textit{constraint propagation})
+or more commonly a combination of the two \cite{handbook-constraint-programming}.
+
+Currently the only constraint solver supported by Unison (which is the primary tool used
+in this paper. See \ref{sec:unison}) is Gecode\footnote{\url{www.gecode.org}}
+\cite{unison-docs}, which is a constraint solver that interleaves systematic search algorithms
+with constraint propagation\cite{MPG}.
+
+When propagating constraints the Gecode solver searches all variable's domains and removes
+variables that are in conflict with the constraints\cite[Section~23.1]{MPG}. For example,
+given two variables (and their corresponding domains) $x \in {0,1,2}$ and $y \in {0,1,2}$
+and the constraint $x > y$ constraint propagation can determine that $x \in {1, 2}$ and
+$y \in {0, 1}$ are the only combinations consistent with the constraint.
+
+When constraint propagation is finished there are three possible states:
+
+\begin{enumerate}
+	\item One or more domains could be empty, proving that no solution exists.
+	\item	All domains could be of size 1, indicating that there exists only one possible
+		value for every variable, and thus we have found a solution.
+	\item One or more variables have multiple values in their domain.
+\end{enumerate}
+
+For situation (1) and (2), either a solution is found or we have proven that a solution
+does not exist (within the local search space).
+
+In the latter situation (3) the Gecode constraint solver splits a variable's domain into
+two or more subsets, creating a \textit{search tree} where each \textit{branch} represents
+reducing the variable's domain to a particular subset \cite[Section~8]{MPG}. By committing
+to a branch the constraint solver can once again perform constraint propagation and repeat
+the process. However, if \textit{branching} has taken place and the solver reaches
+situation (1) it can go back up the tree and explore a different branch. If situation (2)
+is reached it can still backtrack but with the added option of adding more constraints
+based on the newly found solution. Constraining based on previously found solutions in the
+search tree is done with the \textit{branch-and-bound} search engine\cite[Section~9]{MPG}
+in Gecode.
+
+\textit{Branch and bound} is an efficient strategy to find the optimal solution to a
+combinatorial problem which in essence constitutes comparing potential solutions to the
+currently best found solution, choosing the better of the two\cite{BaB}. We will adopt a
+similar strategy, but instead of constraining solutions to be better we will require them
+to be \textit{different}. In addition, no solutions will be discarded.
