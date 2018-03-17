@@ -27,7 +27,7 @@ execution without the limitation of calling complete functions.
 
 A typical return-into-libc attack involves somehow diverting the program control
 flow to transfer control to code that already exists in the program's address space,
-it coud e.g be the system() library function, allowing the adversary to, for example, spawn
+it could e.g be the system() library function, allowing the adversary to, for example, spawn
 a shell without injecting any code. By first jumping to a sequence of instructions such as
 "pop reg; pop reg; ret;" it is possible to chain together several of these function calls,
 performing more complex operations \cite{non-exec-stack,advanced-return-into-libc}.
