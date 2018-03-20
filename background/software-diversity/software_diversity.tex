@@ -6,12 +6,31 @@ set of goals. The one common factor is that they all explore the potential benef
 diverse engineering \cite{survey}.
 
 Software diversity is a relatively common approach to certain security issues such as
-memory errors exploits \cite{os-randomization,mem-exploits,add-obfuscation,compiler-generated-sw-div}
-as well as reverse-engineering based exploits (such as \textit{return-oriented programming}, see \ref{rop})
-\cite{SoK,binary-stirring,large-scale-automated,readactor,smashing-gadgets,synthetic-diversity,librando},
-the latter of which will be the focus of this paper. What all of these techniques have in
-common is that they introduce some kind of chance into the development toolchain, which
-will not be the approach taken in this paper.
+memory errors exploits and different approaches have been taken. For example
+\textcite{os-randomization} randomizes the interface between user space applications and
+the operating system, \textcite{mem-exploits} introduces a level of indirection to function
+call to randomize static data at the C source code level and \textcite{add-obfuscation}
+obfuscates the code and data of an executable by randomizing the absolute locations.
+% Stuff about memory errors
+%\cite{os-randomization,mem-exploits,add-obfuscation,compiler-generated-sw-div}
+
+Failing to defend against certain memory errors can introduce new attack vectors for a
+determined adversary. Some of these attacks are based on the availiability to reverse engineer
+an vulnerable executable, where software diversity can once again prove an effective defense.
+\textcite{binary-stirring} dynamically determine the addresses of basic blocks at load time,
+\textcite{smashing-gadgets} performs in-place code randomization to make each executable
+look different without incurring significant overhead and \textcite{librando} implements
+a library to transparently diversify code compiled and executed by JIT-compilers.
+
+Many more strategies and techniques exist for what is known as
+\textit{automated software diversity} and \textcite{SoK} provides an overview of different
+attacks, defenses and deployment methods.
+
+% Stuff about ROP and other reverse engineering, code re-use attacks
+%\cite{SoK,binary-stirring,large-scale-automated,readactor,smashing-gadgets,synthetic-diversity,librando},
+
+What all of these techniques have in common is that they introduce some kind of chance into
+the development toolchain, which will not be the approach taken in this paper.
 
 The motivation is that by employing diversification techniques one can break the
 reactive nature of software security and shift the advantage from the attacker to the
