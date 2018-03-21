@@ -1,56 +1,52 @@
-\chapter{Exploring the Unison Diversity Space}
+\chapter{Diversification with Unison}
 
-%Since Unison uses a branch and bound strategy to find the optimal solution there are a lot
-%of solutions that we simply discard. In this section we will focus on exploring these
-%solutions. How many we can generate, how diverse they are as-is and what applications this
-%might have. In further chapters we will explore how we can modify Unison to transform the code to
-%provide diversity.
+The two strategies explored by \textcite{large-scale-automated} proved to be
+effective and Unison is very capable of employing both of them. Specifically, the two
+strategies where to randomize the instruction schedule and randomly inserting no-op
+instructions. With Unison we have the opportunity to fine-tune them. For example, instead
+of randomizing the entire instruction schedule we can focus on randomizing at a certain
+distance from any return instructions.
 
-%\section{Potential Applications}
-%
-%I'd like to start this chapther with the potential applications of something like this.
-%If we one day replace the current LLVM instruction scheduler and register allocator in our
-%toolchain with Unison all of this potential diversity will be given to us for free, so there
-%is no real point in \textit{not} exploring and hopefully applying it.
-%
-%One could imagine an assembly line of embedded devices, all running the same firmware, where
-%a unique binary of the firmware is compiled for every new device as it is ready to be loaded.
-%This would
+Since these fine-grained strategies can be implemented as constraints we do not need to
+consider if they can break program functionality, since if they do the constraint solver
+will simply not find a solution at all.
 
-%Does all binaries have to be within a (e.g) 5-cycle cost of each other? Can we just spit something
-%out every X seconds and assume it's different enough? Can we choose the variation depending
-%on how many binaries the user wants?
+\subsection{Constraining Difference}
 
-%\section{Program Set}
-%
-%Throughout this chapter we will be working with a set of benchmarks called something
-%Roberto knows.
-%
-%I will now commence explaining why these are appropriate in a way that doesn't make it
-%obvious that it's because they are used as tests in Unison.
-%
-%\section{The Natural Space}
-%
-%The first step is to look at what is available. I.e. what diversity can be identify in the
-%unmodified Unison search space. Unison upper bound on the optimizing factor is often a
-%gross over-estimation, thus some solutions will be several orders of magnitude worse than
-%the optimal solution. Since we want to minimize the run-time effect on our diversified
-%program we only want to consider programs within a reasonable distance of the optimal
-%solution. For example if the optimal solution executes in 7 cycles then a solution that
-%executes in 52 cycles is not relevant for any application.
-%
-%\subsubsection{Differentiating Factors}
-%
-%When comparing two different solution there needs to be a way to quantify how different
-%they are. This is a strict requirement to add diversify as a cost function in Unison and
-%implementing a "diversity" optimization goal.
-%
-%A good starting point for this to look at the diversification techniques presented by
-%\textcite[Section~4.4]{compiler-generated-sw-div} and \textcite{survey} and attempt to
-%quantify how many of these are present and in what capacity.
-%
-%\subsubsection{More Than one Optimal Solution}
-%
-%Something to also explore is how many optimal solutions there are. During Unison's branch
-%and bound strategy subsequent solutions has to be \textit{better} to even be considered,
-%but how many \textit{equally good} solutions can find? And how different are they?
+The trivial strategy for diversification with Unison is to simply require all executables
+to be \textit{different}. Unison can differ code in a few ways (see \ref{sec:unison}):
+
+\begin{itemize}
+	\item The order of the instructions is different
+	\item The used registers are different
+	\item Execute an copy using a different instruction (or not at all)
+	\item Split live-ranges and spill temporaries differently
+\end{itemize}
+
+One of the techniques that will be evaluated is to simply require that all executables
+are different \textit{in some way}. This would be the Unison equivalent of randomizing
+the instruction schedule, but supposedly the diversity space will be larger as it will
+entail more than just the instruction schedule.
+
+\subsection{no-op Instructions}
+
+To introduce even more possible combinations we can add an optional no-op instruction
+between each of the original instructions. This would be the Unison equivalent of randomly
+inserting no-ops. This technique can extend both the trivial constraint mentioned above
+as well as the more fine-grained strategies.
+
+\subsection{Fine-Grained Control}
+
+\subsubsection{Diversify around the returns}
+
+Since gadgets typically end in a "ret" instruction we can constrain solutions to be different
+from a certain length from a "ret" instruction. This will most likely shrink our diversity
+space, but hopefully it will also make more of an impact on the number of shared gadgets.
+
+A problem with this approach is that gadgets are not necessarily found at the "ret"
+instructions intentended by te compiler. Due to the nature of architectures with varying
+instruction sizes one can possibly find gadgets by pointing to an address that is not
+aligned with the intended assembly. In other words, a gadgets can be part of a function
+prelude if one of those instructions can be partly read as "ret".
+
+\subsubsection{}
