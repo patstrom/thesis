@@ -1,107 +1,65 @@
 \begin{frame}
-	\frametitle{Software Diversity}
+	\frametitle{Automated Software Diversity}
+
+	Using some kind of tool to generate several semantically different but functionally
+	equal executables.
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Some Approaches}
 
 	\begin{itemize}
-		\item Natural Diversity
-		\item N-version programming
-		\item Automated Diversity
-		\item Dynamic \& static randomization
+		\item \textcite{os-randomization}
+randomizes the interface between user space applications and the operating system,
+		\item \textcite{mem-exploits} introduces a level of indirection to function call to
+			randomize static data at the C source code level
+		\item \textcite{binary-stirring} dynamically determine the addresses of basic blocks
+			at load time,
+		\item \textcite{librando} implements a library to transparently diversify code compiled
+			and executed by JIT-compilers.
 	\end{itemize}
 
 \end{frame}
 
 \begin{frame}
-	\frametitle{Compiler-generated Software Diversity}
+	\frametitle{Why Automated Software Diversity?}
 
-	A lot of decision are taken by the compiler. These decision might not be correct and
-	many might be equivalent (with respect to program functionality).
-
-\end{frame}
-
-\begin{frame}[fragile]
-	\frametitle{Compiler-generated Software Diversity}
-
-	\lstinputlisting[language=C++,frame=single,tabsize=2,breaklines=true,showstringspaces=false]
-	{../background/software-diversity/examples/vec_add.cpp}
-
-\end{frame}
-
-\begin{frame}
-	\frametitle{Clang (clang++)}
-	x86-64
-
-	\lstinputlisting[firstline=8,lastline=10,tabsize=2,language={[x86masm]Assembler},breaklines=true,frame=single,showstringspaces=false]
-	{../background/software-diversity/examples/clang_vec_add.s}
+	\begin{itemize}
+		\item Security $\leftarrow$
+		\item Obfuscation
+		\item	Error-handling
+	\end{itemize}
 
 \end{frame}
 
 
 \begin{frame}
-	\frametitle{GCC (g++)}
-	x86-64
+	\frametitle{Return Oriented Programming}
+		\begin{itemize}
+			\item Code re-use attack
+			\item extends \textit{return-into-libc}
+			\item Arbitrary code execution
+		\end{itemize}
+\end{frame}
 
-	\lstinputlisting[basicstyle=\tiny,firstline=7, lastline=29,tabsize=2,language={[x86masm]Assembler},breaklines=true,frame=single,showstringspaces=false]
-	{../background/software-diversity/examples/gcc_vec_add.s}
+\begin{frame}
+	\frametitle{Return-into libc}
 
+	\begin{itemize}
+		\item Hijack control flow
+		\item Call unintended function that is already loaded, e.g system()
+		\item Setup parameters with short code sequences such as "pop reg; ret"
+	\end{itemize}
 \end{frame}
 
 \begin{frame}
 	\frametitle{ROP}
-	
-	\begin{itemize}
-		\item	Hijack control flow
-		\item	Use already existing code to perform arbitrary execution
-		\item	Quite prevalent
-	\end{itemize}
 
-\end{frame}
+	Only use these short code sequences (that typically end with a ret)
 
-\begin{frame}[fragile]
-	\frametitle{Gadgets}
-	
-	Short sequences of code
+	\vspace{0.5cm}
 
-	\begin{lstlisting}[tabsize=2,frame=single,language={[x86masm]Assembler}]
-	pop %edi
-	ret
-	\end{lstlisting}
-
-	\begin{lstlisting}[tabsize=2,frame=single,language={[x86masm]Assembler}]
-	movl 64(%eax), %eax
-	ret
-	\end{lstlisting}
-
-\end{frame}
-
-\begin{frame}
-	\frametitle{Gadget - Clang}
-
-	\lstinputlisting[tabsize=2, frame=single, breaklines=true,
-	showstringspaces=false,language={[x86masm]Assembler}]
-	{../background/software-diversity/examples/clang_vec_add.gadget}
-
-\end{frame}
-
-\begin{frame}
-	\frametitle{Gadget - GCC}
-
-	\lstinputlisting[tabsize=2, frame=single, breaklines=true,
-	showstringspaces=false,language={[x86masm]Assembler}]
-	{../background/software-diversity/examples/gcc_vec_add.gadget}
-
-	Something interesting!
-
-\end{frame}
-
-\begin{frame}
-	\frametitle{Gadget - GCC}
-
-	\lstinputlisting[tabsize=2, frame=single, breaklines=true,
-	showstringspaces=false,language={[x86masm]Assembler}]
-	{../background/software-diversity/examples/gcc_vec_add.gadget}
-
-	\lstinputlisting[tabsize=2, frame=single, breaklines=true,
-	showstringspaces=false,language={[x86masm]Assembler}]
-	{../background/software-diversity/examples/gcc_vec_add.original}
-
+	\textcite{rop} (who introduced the concept) showed you can execute arbitrary code, e.g
+	open a shell.
 \end{frame}

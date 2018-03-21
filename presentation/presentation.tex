@@ -2,39 +2,21 @@
 
 \usepackage{listings}
 \usepackage{xcolor}
+\usepackage{biblatex}
+
+\addbibresource{../background/software-diversity/software_diversity.bib}
+%\addbibresource{../background/llvm/llvm.bib}
+\addbibresource{../background/constraint-programming/constraint_programming.bib}
+\addbibresource{../background/unison/unison.bib}
 
 \begin{document}
 
 \input{software_diversity.tex}
 
-\input{llvm.tex}
+%\input{llvm.tex}
 
 \input{constraint_programming.tex}
 
 \input{unison.tex}
-
-\begin{frame}
-	\frametitle{Unison for SW Diversity}
-
-	Can explore the entire diversity space.
-
-	\vspace{0.5cm}
-
-	We do not need to rely on randomness.
-
-	\vspace{0.5cm}
-
-	Possibly no overhead (compared to LLVM).
-\end{frame}
-
-\begin{frame}
-	\frametitle{MIR to Machine Code}
-
-	Is the mapping deterministic?
-
-	\vspace{0.5cm}
-
-	Perhaps it's enough to say that different MIR means different machine code?
-\end{frame}
 
 \end{document}
