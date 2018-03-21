@@ -44,7 +44,7 @@ from a certain length from a "ret" instruction. This will most likely shrink our
 space, but hopefully it will also make more of an impact on the number of shared gadgets.
 
 A problem with this approach is that gadgets are not necessarily found at the "ret"
-instructions intentended by te compiler. Due to the nature of architectures with varying
+instructions intended by the compiler. Due to the nature of architectures with varying
 instruction sizes one can possibly find gadgets by pointing to an address that is not
 aligned with the intended assembly. In other words, a gadgets can be part of a function
 prelude if one of those instructions can be partly read as "ret".
