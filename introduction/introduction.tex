@@ -14,10 +14,15 @@ more ways to diversify an executable the concept extends.
 
 By instead systemtically searching the space of different ways to transform the program
 we can generate the entire \textit{diversity space} (all pair-wise sufficiently different
-executable of the same program). We can thus generate the largest set of executables that
-satisfy our demands and prove that it is indeed the largest set.
+executables of the same program). In the example above that would entail determenistically
+generating the 6 different permutations. Not only would this provide is with the largest
+number of diverse executables, we could also prove that it is indeed the largest set.
+
+The primary tool that will be used to achieve this, called Unison, (see \ref{sec:unison}),
+is mainly a code generator that does integrated instruction scheduling and register
+allication. This limits our code transformations to what Unison is capable of.
 
 \subsection{Hypothesis}
 
-Systematically generating diverse executables is at least as effective at thwarting ROP
-attacks as basing the diversification process on randomization.
+Systematically generating diverse executables with Unison is at least as effective at
+thwarting ROP attacks as basing the diversification process on randomization.
