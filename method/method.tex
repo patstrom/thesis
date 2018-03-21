@@ -3,13 +3,15 @@
 The two strategies explored by \textcite{large-scale-automated} proved to be
 effective and Unison is very capable of employing both of them. Specifically, the two
 strategies where to randomize the instruction schedule and randomly inserting no-op
-instructions. With Unison we have the opportunity to fine-tune them. For example, instead
-of randomizing the entire instruction schedule we can focus on randomizing at a certain
-distance from any return instructions.
+instructions. With Unison we also have the opportunity to fine-tune them. For example,
+instead of randomizing the entire instruction schedule we can focus on randomizing at a
+certain distance from any return instructions.
 
 Since these fine-grained strategies can be implemented as constraints we do not need to
 consider if they can break program functionality, since if they do the constraint solver
 will simply not find a solution at all.
+
+\section{Strategies}
 
 \subsection{Constraining Difference}
 
@@ -25,28 +27,22 @@ to be \textit{different}. Unison can differ code in a few ways (see \ref{sec:uni
 
 One of the techniques that will be evaluated is to simply require that all executables
 are different \textit{in some way}. This would be the Unison equivalent of randomizing
-the instruction schedule, but supposedly the diversity space will be larger as it will
-entail more than just the instruction schedule.
+the instruction schedule, but supposedly the diversity space will be larger as
+\textit{different} entails more than just the instruction schedule.
+
+\subsubsection{Diversify only Instruction Preceding Returns}
+
+Since gadgets typically end in a "ret" instruction we can constrain solutions to be different
+from a certain length from a "ret" instruction. This will most likely shrink our diversity
+space, but hopefully it will also make more of an impact on the number of shared gadgets
+between executables.
+
+A problem with this approach is that any potential hidden gadgets will not be broken. Since
+we cannot search for gadgets in the LLVM MIR the only way to break hidden gadgets is to
+assume they are everywhere. Nevertheless the strategy will be tested.
 
 \subsection{no-op Instructions}
 
 To introduce even more possible combinations we can add an optional no-op instruction
 between each of the original instructions. This would be the Unison equivalent of randomly
-inserting no-ops. This technique can extend both the trivial constraint mentioned above
-as well as the more fine-grained strategies.
-
-\subsection{Fine-Grained Control}
-
-\subsubsection{Diversify around the returns}
-
-Since gadgets typically end in a "ret" instruction we can constrain solutions to be different
-from a certain length from a "ret" instruction. This will most likely shrink our diversity
-space, but hopefully it will also make more of an impact on the number of shared gadgets.
-
-A problem with this approach is that gadgets are not necessarily found at the "ret"
-instructions intended by the compiler. Due to the nature of architectures with varying
-instruction sizes one can possibly find gadgets by pointing to an address that is not
-aligned with the intended assembly. In other words, a gadgets can be part of a function
-prelude if one of those instructions can be partly read as "ret".
-
-\subsubsection{}
+inserting no-ops. This technique can extend all the previously mentioned approaches.
