@@ -26,9 +26,13 @@ to be \textit{different}. Unison can differ code in a few ways (see \ref{sec:uni
 \end{itemize}
 
 One of the techniques that will be evaluated is to simply require that all executables
-are different \textit{in some way}. This would be the Unison equivalent of randomizing
-the instruction schedule, but supposedly the diversity space will be larger as
-\textit{different} entails more than just the instruction schedule.
+are different \textit{in some way}. This is the "trivial" strategy with Unison since all different combinations are explored regardless.
+
+\subsubsection{Instruction Schedule}
+
+The Unison equivalent of randomizing the instruction schedule would be to never generate
+the same schedule twice, i.e. generate the entire diversity space of the instruction
+schedule.
 
 \subsubsection{Diversify only Instruction Preceding Returns}
 
