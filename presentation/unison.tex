@@ -1,104 +1,40 @@
 \begin{frame}
 	\frametitle{Unison}
 	
-	Combined instruction scheduling and register allocation.
+	Combined instruction scheduling and register allocation
 
 	\vspace{0.5cm}
 
-	Based on combinatorial optimization (constraint programming).
+	Models the problem for a constraint solver \cite{unison-docs}
+
+	\vspace{0.5cm}
+
+	Introduces alternatives, creating more possible combinations
 
 \end{frame}
 
 \begin{frame}
-	\frametitle{LSSA}
-	\textit{Linear Static Single Assignment}
+	\frametitle{LLVM Machine Specific Representation}
 	
-	All variables are local to basic blocks and made live-in/live-out as necessary.
+	The data structure(s) used by the code generator to emit assembly \cite{llvm-mir-lang-ref}
 
 	\vspace{0.5cm}
 
-	Makes it possible to model register allocation as a rectangle packing problem where
-	each rectangle represents a live-range.
-
+	Not close enough to the actual machine code to search for gadgets in
+	
 \end{frame}
 
 \begin{frame}
-	\frametitle{Features}
-	\begin{itemize}
-		\item Optional copies
+	\frametitle{Diversifying}
 
-			Introduce optional copies that can be implemented by alternate instructions
-
-		\item Alternative Temporaries
-
-			Introduce possibility of alternate temporaries that can break data dependencies
-	\end{itemize}
-\end{frame}
-
-\begin{frame}
-	\begin{columns}
-		\begin{column}{0.5\textwidth}
-			LLVM MIR ( Hexagon)
-
-			\lstinputlisting[basicstyle=\tiny,tabsize=2,frame=single,breaklines=true,showstringspaces=false]
-			{../background/llvm/examples/factorial.mir}
-		\end{column}
-
-		\begin{column}{0.5\textwidth}
-			Unison IR
-
-			\lstinputlisting[basicstyle=\tiny,tabsize=2,frame=single,breaklines=true,showstringspaces=false]
-			{../background/unison/examples/factorial.uni}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}
-	\begin{columns}
-		\begin{column}{0.5\textwidth}
-			Unison IR
-			\lstinputlisting[basicstyle=\tiny,tabsize=2,frame=single,breaklines=true,showstringspaces=false]
-			{../background/unison/examples/factorial.uni}
-		\end{column}
-
-		\begin{column}{0.5\textwidth}
-			Linearized
-			\lstinputlisting[basicstyle=\tiny,tabsize=2,frame=single,breaklines=true,showstringspaces=false]
-			{../background/unison/examples/factorial.lssa.uni}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}
-	\begin{columns}
-		\begin{column}{0.5\textwidth}
-			Linearized
-			\lstinputlisting[firstline=8,lastline=14,basicstyle=\tiny,tabsize=2,frame=single,breaklines=true,showstringspaces=false]
-			{../background/unison/examples/factorial.lssa.uni}
-		\end{column}
-
-		\begin{column}{0.5\textwidth}
-			Extented (optional copy)
-			\lstinputlisting[firstline=13,lastline=29,basicstyle=\tiny,tabsize=2,frame=single,breaklines=true,showstringspaces=false]
-			{../background/unison/examples/factorial.ext.uni}
-		\end{column}
-	\end{columns}
-\end{frame}
-
-\begin{frame}
-	Augmented (alternate temporaries) - Snippet of loop body
-		\lstinputlisting[firstline=15,lastline=33,basicstyle=\tiny,tabsize=2,frame=single,breaklines=true,showstringspaces=false]
-		{../background/unison/examples/factorial.alt.uni}
-\end{frame}
-
-\begin{frame}
-	\frametitle{Solving}
-
-	Also takes into account processor specific features and resources.
+	\textcite{large-scale-automated} tried randomizing instruction schedule and inserting no-ops at random places in the code.
 
 	\vspace{0.5cm}
 
-	Such as which instructions can implement an operation, latencies of these instructions,
-	register capacity and packing capability.
+	Proved to be successful
+
+	\vspace{0.5cm}
+
+	Unison can do both. Perhaps better.
 
 \end{frame}

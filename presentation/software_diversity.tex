@@ -2,7 +2,11 @@
 	\frametitle{Automated Software Diversity}
 
 	Using some kind of tool to generate several semantically different but functionally
-	equal executables.
+	equal executables or runtimes.
+
+	\vspace{0.5cm}
+
+	Specifically we will generate multiple executables at compile time.
 
 \end{frame}
 
@@ -14,7 +18,7 @@
 randomizes the interface between user space applications and the operating system,
 		\item \textcite{mem-exploits} introduces a level of indirection to function call to
 			randomize static data at the C source code level
-		\item \textcite{binary-stirring} dynamically determine the addresses of basic blocks
+		\item \textcite{binary-stirring} dynamically determines the addresses of basic blocks
 			at load time,
 		\item \textcite{librando} implements a library to transparently diversify code compiled
 			and executed by JIT-compilers.
@@ -26,7 +30,7 @@ randomizes the interface between user space applications and the operating syste
 	\frametitle{Why Automated Software Diversity?}
 
 	\begin{itemize}
-		\item Security $\leftarrow$
+		\item Security
 		\item Obfuscation
 		\item	Error-handling
 	\end{itemize}
@@ -47,19 +51,81 @@ randomizes the interface between user space applications and the operating syste
 	\frametitle{Return-into libc}
 
 	\begin{itemize}
-		\item Hijack control flow
-		\item Call unintended function that is already loaded, e.g system()
-		\item Setup parameters with short code sequences such as "pop reg; ret"
+		\item $W \oplus X$ defense
+		\item Somehow hijack control flow
+		\item Call functions that are already loaded (e.g system) in an unintended manner
+		\item Setup parameters / chain function call with short code sequences such as "pop reg; ret"
 	\end{itemize}
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]
 	\frametitle{ROP}
 
-	Only use these short code sequences (that typically end with a ret)
+	Only use these short code sequences (that typically end with a ret).
+
+	\vspace{0.5cm}
+
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			\begin{lstlisting}[tabsize=2,frame=single,language={[x86masm]Assembler}]
+pop %edi
+ret
+			\end{lstlisting}
+		\end{column}
+
+		\begin{column}{0.5\textwidth}
+			\begin{lstlisting}[tabsize=2,frame=single,language={[x86masm]Assembler}]
+movl 64(%eax), %eax
+ret
+			\end{lstlisting}
+		\end{column}
+	\end{columns}
 
 	\vspace{0.5cm}
 
 	\textcite{rop} (who introduced the concept) showed you can execute arbitrary code, e.g
-	open a shell.
+	open a shell, and that they are quite common in x86-64.
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Hidden Gadgets}
+	Not explicitly placed there by the compiler
+
+	\vspace{0.5cm}
+
+	\textcite{rop} used an analogy in the English language
+
+	\vspace{0.5cm}
+
+	Both the word "dress" and "head" and be found in "the address"
+
+	\vspace{0.5cm}
+
+	For architectures sets with varying instruction sizes this can mean many more gadgets
+	than apparent from the assembly (such as x86-64)
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Defenses}
+
+	Introduce randomness somewhere so that a payload is only useful once
+
+	\vspace{0.5cm}
+
+	Problems:
+	\begin{itemize}
+		\item No fine-grained control
+		\item No guarantees
+	\end{itemize}
+
+	\vspace{0.5cm}
+
+	E.g a sequence of 3 instructions only has 6 permutations. Generating 7 with randomization
+	would yield \textit{at least} two that are equal. All could be.
+	\vspace{0.5cm}
+
+	Try to deterministically generate all of them instead
+
 \end{frame}

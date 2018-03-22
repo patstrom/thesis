@@ -1,11 +1,13 @@
 \documentclass{beamer}
 
+\usepackage[utf8]{inputenc}
+
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{biblatex}
 
 \addbibresource{../background/software-diversity/software_diversity.bib}
-%\addbibresource{../background/llvm/llvm.bib}
+\addbibresource{../background/llvm/llvm.bib}
 \addbibresource{../background/constraint-programming/constraint_programming.bib}
 \addbibresource{../background/unison/unison.bib}
 
@@ -18,5 +20,35 @@
 \input{constraint_programming.tex}
 
 \input{unison.tex}
+
+\begin{frame}
+	\frametitle{Preliminary strategies}
+
+	\begin{itemize}
+		\item \textit{Just} (with respect to Unison) different
+		\item Generate all possible schedules (equivalent of randomizing schedule)
+		\item Insert "alternative" no-ops (equivalent of no-op insertion)
+		\item Only diversify instruction preceding "ret"
+	\end{itemize}
+\end{frame}
+
+\begin{frame}
+	\frametitle{Evaluating the Binaries}
+
+	Unison doesn't support x86-64
+
+	\vspace{0.5cm}
+
+	Analyze Hexagon instead.
+
+	\vspace{0.5cm}
+	
+	Can diversity be statically analyzed at the LLVM MIR level?
+
+	\vspace{0.5cm}
+
+	Static analysis of execution time
+
+\end{frame}
 
 \end{document}
