@@ -21,18 +21,20 @@ to be \textit{different}. Unison can differ code in a few ways (see \ref{sec:uni
 \begin{itemize}
 	\item The order of the instructions is different
 	\item The used registers are different
-	\item Execute an copy using a different instruction (or not at all)
+	\item Execute a copy using a different instruction (or not at all)
 	\item Split live-ranges and spill temporaries differently
 \end{itemize}
 
 One of the techniques that will be evaluated is to simply require that all executables
-are different \textit{in some way}. This is the "trivial" strategy with Unison since all different combinations are explored regardless.
+are different \textit{in some way}. This is the "trivial" strategy with Unison since all
+different combinations are explored regardless.
 
 \subsubsection{Instruction Schedule}
 
 The Unison equivalent of randomizing the instruction schedule would be to never generate
 the same schedule twice, i.e. generate the entire diversity space of the instruction
-schedule.
+schedule. The expected impact of this would be similar to generating random schedules but
+it is interesting to see how far we can go with it.
 
 \subsubsection{Diversify only Instruction Preceding Returns}
 
