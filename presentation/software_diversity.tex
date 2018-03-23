@@ -43,7 +43,7 @@ randomizes the interface between user space applications and the operating syste
 		\begin{itemize}
 			\item Code re-use attack
 			\item extends \textit{return-into-libc}
-			\item Arbitrary code execution
+			\item Arbitrary code execution without code injection
 		\end{itemize}
 \end{frame}
 
@@ -102,7 +102,7 @@ ret
 
 	\vspace{0.5cm}
 
-	For architectures sets with varying instruction sizes this can mean many more gadgets
+	For architectures with varying instruction sizes this can mean many more gadgets
 	than apparent from the assembly (such as x86-64)
 
 \end{frame}
@@ -122,10 +122,9 @@ ret
 
 	\vspace{0.5cm}
 
-	E.g a sequence of 3 instructions only has 6 permutations. Generating 7 with randomization
-	would yield \textit{at least} two that are equal. All could be.
+	E.g a sequence of 3 instructions only has 6 permutations. Generating 7 would yield 
+	\textit{at least} two that are equal. With randomization all could be.
 	\vspace{0.5cm}
 
 	Try to deterministically generate all of them instead
-
 \end{frame}
