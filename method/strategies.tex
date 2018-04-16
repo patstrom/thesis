@@ -36,9 +36,9 @@ schedule must be to achieve results similar to \textcite{large-scale-automaed}.
 Unison operates by creating an abstract construct, an \textit{operation}, for every instruction
 in the MIR input. One reason for this is that some instructions can be replaced with another
 instruction and be functionally equivalent, but (hopefully) faster. In other words some operations
-can be implemented by several instructions. When implementing the diversification of the 
+can be implemented by several instructions. When implementing the diversification of the
 instruction schedule this is taken into account and the constraints posted when a solution
-is found entails making sure that future solutions do not have the same sequence of 
+is found entails making sure that future solutions do not have the same sequence of
 operations, and if they do that at least one operation is impemented by another instruction.
 
 \subsection{Registers}
