@@ -27,3 +27,11 @@ that execute in fewer (or the same amount of) cycles than the LLVM solution. In 
 we could generate executables with zero overhead \textit{with respect to LLVM's solution}.
 Certain strategies would of course have an overhead, but with respect to the \textit{optimal
 solution}.
+
+\section{Architecture}
+
+Unison does not currently support the x86 or x86-64 architecture. Only ARM, Hexagon and MIPS
+are supported \cite{unison-src}. None of the supported architectures are complex instruction
+set architecutres (at least in theory). Thus, hidden gadgets are not a problem. However,
+regular gadgets are still present and for the purposes of systematic strategies for
+diversity the supported architectures are sufficient.
