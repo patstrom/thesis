@@ -11,7 +11,6 @@ Regardless of what unorthodox strategy we want to try out we do not need to cons
 effect on program functionality, since the constraints that ensure a valid program is
 generated must still be satisfied.
 
-
 \input{method/strategies.tex}
 
 \section{Performance}
@@ -32,6 +31,6 @@ solution}.
 
 Unison does not currently support the x86 or x86-64 architecture. Only ARM, Hexagon and MIPS
 are supported \cite{unison-src}. None of the supported architectures are complex instruction
-set architecutres (at least in theory). Thus, hidden gadgets are not a problem. However,
-regular gadgets are still present and for the purposes of systematic strategies for
-diversity the supported architectures are sufficient.
+set architecutres and thus hidden gadgets are not a problem. However, regular gadgets are
+still present and for the purposes of systematic strategies for diversity the supported
+architectures are sufficient.
