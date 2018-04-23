@@ -1,13 +1,13 @@
 \section{Strategies}
 
-For the purposes of this paper only a few strategies will be evaluated. When exploring
-combinations with a constraint solver similar solutions are found close to each-other (in-time).
-The number of possible combinations for certain strategies might be far too large to handle
-efficiently so when limiting the number of binaries generated it is beneficial to discard
-an amount of binaries in between those kept. The contrasting approach is of course to stop
-the search after X amount of solutions are found or Y amount of time has passed, in which
-case the solutions might be too similar.
+When exploring combinations with a constraint solver similar solutions are found close to
+each-other (in-time).  The number of possible combinations for certain strategies might be
+far too large to handle efficiently so when limiting the number of binaries generated it is
+beneficial to discard an amount of binaries in between those kept. The contrasting approach
+is of course to stop the search after X amount of solutions are found or Y amount of time
+has passed, in which case the solutions might be too similar.
 
+For the purposes of this paper only a few strategies will be evaluated.
 
 \subsection{Constraining Difference}
 
@@ -29,21 +29,16 @@ for a large input.
 
 \subsection{Instruction Schedule}
 
-For reference to \textcite{large-scale-automated} diversifying the instruction schedule will
-be implemented. This would be the equivalent of randomizing the instruction schedule. It is
-interesting to see the size of the diversity space (i.e number of binaries that can be
-generated) and how different the schedule must be to achieve similar results.
+For reference, diversifying the instruction schedule will be implemented. This would be
+the equivalent of \textcite{large-scale-automated}'s randomizing of the instruction
+schedule. It is interesting to see the size of the diversity space (i.e number of binaries
+that can be generated) and how different the schedule must be to achieve similar results.
 
-Unison operates by creating an abstract construct, an \textit{operation}, for every instruction
-in the MIR input. One reason for this is that some instructions can be replaced with
-another instruction and be functionally equivalent, but (hopefully) faster. This is also
-the way Unison implements alternative moves (and allows for live-range splitting).
-Operations can be flagged as not-used, so in the optimal solution nothing unnecessary will
-be executed. In other words some operations can be implemented by several instructions.
-When implementing the diversification of the instruction schedule this is taken into
-account and the constraints posted when a solution is found entails making sure that
-future solutions do not have the same sequence of operations, and if they do that at least
-one operation is impemented by another instruction.
+As described in \ref{sec:unison} Unison operates on \textit{operations} rather than
+instructions, each of which can potentially be implemented by multiple instructions.
+Diversifying the instruction schedule thus have two aspects to it; Either the sequence of
+operations is different, or if they are equal at least one operation is implemented by a
+different instruction.
 
 \subsection{Registers}
 
@@ -51,6 +46,9 @@ Constraining each binary to allocate registers in a different way is, if suffici
 attractive strategy due to causing no overhead. The downside for a production release is
 minimal since there are usually no use-cases where knowing the register allocation is required.
 
-Unison keeps track of which operand is allocated to which register. To ensure different
-register allocations we post constraints that, when satisfied, ensures the registers assigned
-to each operand are different for the same active operands.
+In addition to creating the abstract \textit{operation} construct for an instruction, a
+similar construct is also created for the temporaries, aptly named an \textit{operand}.
+An operand can be connected to different temporaries between different solutions. In other
+words, to ensure different register allocation between solutions we post constraint that,
+when satisfied, ensure that not all \textit{operands} are connected to the same temporaries,
+and if they are, at least one temporary is allocated to a different register.
