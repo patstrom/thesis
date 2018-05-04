@@ -1,44 +1,120 @@
 \section{Strategies}
 
-When exploring combinations with a constraint solver similar solutions are found close to
-each-other (in-time).  The number of possible combinations for certain strategies might be
-far too large to handle efficiently so when limiting the number of binaries generated it is
-beneficial to discard an amount of binaries in between those kept. The contrasting approach
-is of course to stop the search after X amount of solutions are found or Y amount of time
-has passed, in which case the solutions might be too similar.
+For the purposes of this paper only a few strategies will be evaluated. The chosen
+strategies are \textit{difference}, \textit{instruction schedule} and
+\textit{register allocation}, and the motivation for each is presented in respective
+subsection.
 
-For the purposes of this paper only a few strategies will be evaluated.
+As described in \ref{sec:unison} the problem of integrated register allocation and
+instruction scheduling is modeled around \textit{operations} and \textit{operands}. The
+problem consists of around 20 variables (see \ref{sec:constraint}) in total so only the
+ones constrained will be presented for each strategy. These variables describe how the
+operations and their operands relate to the actual instructions, temporaries, registers
+and issue cycles.
 
-\subsection{Constraining Difference}
+\subsection{Evaluation}
 
-The trivial strategy for diversification with Unison is to simply require all executables
-to be \textit{different}. Unison can differ code in a few ways (see \ref{sec:unison}):
+Surviving gadgets,
+Static analysis of cycles (or even actual runtime?),
+Diversity space
+
+
+\subsection{Gecode Constraint Solver}
+
+
+Gecode is implemented such that a problem is modeled in a class inheriting from the
+\textit{Space} base class. It is in this derived class variables are defined and constraints
+are posted. When a solution is found by the Gecode branch and bound engine the virtual
+member function \textit{constrain(b)} is called, where \textit{b} is the latest solution.
+This function is expected to post constraints on future solutions based on the latest
+solution. These constraints accumulate so posting constraints based on the previous solution
+is sufficient for diversity.
+
+Each strategy is implemented by constraints that, when satisified, ensures the
+generated solutions differ in the correct manner. These constraints are posted in the
+\textit{constrain()} function. In general the constraints will make sure that future
+solutions does not contain the same combination of variable - value mapping for certain
+variables.
+
+Due to the nature of Unison and the Gecode constraint solver calling the implementations
+\textit{transformations}, which is the common nomenclature in software diversity, would be
+misleading. No code is being explicitly transformed, combinations are instead implicitly
+discarded when it is discovered that the constraints cannot be satisfied given a previous
+branching.
+
+
+\subsection{Difference}
+
+The name of this strategy comes from the fact that we are only concerned that the solutions
+are different, not how they differ. During search the Gecode search engine will never
+explore the same combination twice, and thus never generate two equal solutions. The
+strategy is thus to not post any constraints at all and let the solver generate all
+possible combinations.
+
+Unison can differ the solutions in four main ways:
 
 \begin{itemize}
-	\item The order of the instructions is different
-	\item Temporaries are connected to different registers
+	\item The order of the operations is different
+	\item Operands are connected to different registers
 	\item Execute a copy using a different instruction (or not at all)
 	\item Split live-ranges and spill temporaries differently
 \end{itemize}
 
-The triviality of this strategy comes from the ease of implementation. We simply don't post
-any more constraints when branching, which will cause all valid solutions to be generated.
-
-This strategy is expected to have \textit{a lot} of solutions. Several millions of them
-for a large input.
+The results of this strategy serve as a baseline for the program. It shows us how many
+executables Unison can, at most, generate for the program. In other words, the biggest
+diversity space for a given program (when using Unison).
 
 \subsection{Instruction Schedule}
 
-For reference, diversifying the instruction schedule will be implemented. This would be
-the equivalent of \textcite{large-scale-automated}'s randomizing of the instruction
-schedule. It is interesting to see the size of the diversity space (i.e number of binaries
-that can be generated) and how different the schedule must be to achieve similar results.
+Given the work of \textcite{large-scale-automated} we are given an opportunity to compare
+systematic diversity to randomized diversity. Generating all possible schedules is directly
+comparable to randomizing the instruction schedule. It is interesting to see how well
+the systematic approach performs, and how it must be tweaked to achieve results similar
+to the randomizing approach.
 
-As described in \ref{sec:unison} Unison operates on \textit{operations} rather than
-instructions, each of which can potentially be implemented by multiple instructions.
-Diversifying the instruction schedule thus have two aspects to it; Either the sequence of
+There are three variables of interest for this strategy. In the Unison documentation
+they are described as follow:
+
+\vspace{0.2cm}
+
+\begin{tabular}{cc}
+	\textbf{Name} & \textbf{Description} \\
+	$a_o \in \{0, 1\}$ & whether operation \textit{o} is active \\
+	$i_o \in instrs(o)$\footnote{instrs(o) is the set of instructions that can implement operation o} & instruction that implements operation \textit{o}  \\
+	$c_o \in \mathbb{N}_0$ & issue cycle of operation \textit{o} \\
+\end{tabular}
+
+\vspace{0.2cm}
+
+Also required is the set $O$, which consists of all operations in the program.
+
+\vspace{0.2cm}
+
+There are two aspects to diversifying the instruction schedule; Either the sequence of
 operations is different, or if they are equal at least one operation is implemented by a
 different instruction.
+
+In psuedo mathematical notation we want to post the constraint:
+
+\vspace{0.2cm}
+
+$\neg( (a_o = b.a_o) \land (i_m = b.i_m) \land (c_m = b.c_m) ) \quad \forall o \in O, \forall m \in \{ O | a_m = 1 \}$
+
+\vspace{0.2cm}
+
+Very important to note, and why I call it psuedo mathematical notation, is that the variables
+preceded by \textit{b.} (i.e $b.a_o, b.i_m and b.c_m$) represents an actual value. More
+precisely the value that is part of the previous solution. For example $b.c_m$ represents
+the issue cycle of operation m in the previous solution. The variables not preceded by
+\textit{b.} are variables in the constraint programming sense and their corresponding domains
+are make up the remaining combinations to explore.
+
+The constraint described with words is that we disallow the exact same combination of
+active operations, issue cycles and instructions that implement the operations. We are
+only concerned about the issue cycles and implementing instruction of active operations,
+but we do take into account that future solutions can have the same instructions issued
+at the same cycles if it has fewer or more active operations.
+
 
 \subsection{Registers}
 

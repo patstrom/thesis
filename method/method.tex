@@ -1,21 +1,42 @@
 \chapter{Diversification with Unison}
 
-The two strategies explored by \textcite{large-scale-automated} proved to be
-effective and Unison is very capable of employing both of them. Specifically, the two
-strategies where to randomize the instruction schedule and randomly inserting no-op
-instructions.
+The two strategies explored by \textcite{large-scale-automated} proved to be effective in
+the sense that very few gadgets survived between the emitted binaries. Specifically, the
+strategies consits of randoimizing the instruction schedule or inserting no-op instructions
+randomly in the emitted assembly.
 
-Perhaps the most compelling reason to use a constraint solver for software diversity is that
-for a combination to be considered a solution, \textit{all} constraints must be satisfied.
-Regardless of what unorthodox strategy we want to try out we do not need to consider it's
-effect on program functionality, since the constraints that ensure a valid program is
-generated must still be satisfied.
+Summarized, the prodecure \textcite{large-scale-automated} used to evaluate the individual
+strategies was to generate 25 different versions for each transformation and testing their
+performance, frequency of surviving gadgets and file size compared to the original. For
+our purposes the instruction schedule transformation is the most interesting, as it relates
+more directly to Unison.
+
+The presented result is that randomizing the instruction schedule resulted in an 9\%
+slowdown and that it removes on average 95\% of gadgets \textit{with respect to the original executable}.
+The file size test for the schedule transformation are described as "inconclusive" but
+also that "randomized instruction scheduling has only a negligible effect of file size".
+\footnote{More comprehensive tests were done on other transformations, including pairwise
+testing of surviving gadgets.}
+
+The problem with the above approach is first and foremost that the amount of generated
+binaries is very small. Presumably it will lose effectiveness after some number of
+generated binaries, and at some point the pidgeonhole principle will come into effect.
+What is not explored is how many different versions can be generated and how different do
+they have to be to achieve similar results. In this chapter we aim to explore this.
 
 \input{method/strategies.tex}
 
+\section{Solution Distance}
+When exploring combinations with a constraint solver similar solutions are found close to
+each-other (in-time).  The number of possible combinations for certain strategies might be
+far too large to handle efficiently so when limiting the number of binaries generated it is
+beneficial to discard an amount of binaries in between those kept. The contrasting approach
+is of course to stop the search after X amount of solutions are found or Y amount of time
+has passed, in which case the solutions might be too similar.
+
 \section{Performance}
 
-Unison's main purpose is to generate the most optimal solution. In an effort to achieve 
+Unison's main purpose is to generate the most optimal solution. In an effort to achieve
 this Unison accepts the basic LLVM-solution as an optional parameter, and posts constraints
 to only generate solutions that are \textit{better}. Better in this case is either that
 they can be executed in fewer cycles or the size of the binary is smaller. Which is optimized
