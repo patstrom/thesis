@@ -2,8 +2,8 @@
 
 For the purposes of this paper only a few strategies will be evaluated. The chosen
 strategies are \textit{difference}, \textit{instruction schedule} and
-\textit{register allocation}, and the motivation for each is presented in respective
-subsection.
+\textit{register allocation}, and the motivation for each is presented in the respective
+subsections.
 
 As described in \ref{sec:unison} the problem of integrated register allocation and
 instruction scheduling is modeled around \textit{operations} and \textit{operands}. The
@@ -11,8 +11,6 @@ problem consists of around 20 variables (see \ref{sec:constraint}) in total so o
 ones constrained will be presented for each strategy. These variables describe how the
 operations and their operands relate to the actual instructions, temporaries, registers
 and issue cycles.
-
-
 
 \subsection{Difference}
 
@@ -43,21 +41,23 @@ comparable to randomizing the instruction schedule. It is interesting to see how
 the systematic approach performs, and how it must be tweaked to achieve results similar
 to the randomizing approach.
 
-There are three variables of interest for this strategy. In the Unison documentation
+There are three variables and two sets of interest for this strategy. In the Unison documentation
 they are described as follow:
 
 \vspace{0.2cm}
 
-\begin{tabular}{cc}
-	\textbf{Name} & \textbf{Description} \\
-	$a_o \in \{0, 1\}$ & whether operation \textit{o} is active \\
-	$i_o \in instrs(o)$\footnote{instrs(o) is the set of instructions that can implement operation o} & instruction that implements operation \textit{o}  \\
-	$c_o \in \mathbb{N}_0$ & issue cycle of operation \textit{o} \\
-\end{tabular}
-
-\vspace{0.2cm}
-
-Also required is the set $O$, which consists of all operations in the program.
+\noindent\makebox[\textwidth]{
+	\begin{tabular}{c|lr}
+		\textbf{Type} & \textbf{Name} & \textbf{Description} \\ \hline
+		\multirow{2}{*}{\textbf{Set}}
+			& $O$ & The set of all operations in the program \\
+			& $instrs(o)$ & Set of instructions that can implement operation \textit{o} \\ \hline
+		\multirow{3}{*}{\textbf{Variable}}
+			& $a_o \in \{0, 1\}$ & whether operation \textit{o} is active (0 is false and 1 is true) \\
+			& $i_o \in instrs(o)$ & instruction that implements operation \textit{o}  \\
+			& $c_o \in \mathbb{N}_0$ & issue cycle of operation \textit{o} \\
+	\end{tabular}
+}
 
 \vspace{0.2cm}
 
@@ -68,9 +68,9 @@ different instruction.
 In psuedo mathematical notation we want to post the constraint:
 
 \vspace{0.2cm}
-
-$\neg( (a_o = b.a_o) \land (i_m = b.i_m) \land (c_m = b.c_m) ) \quad \forall o \in O, \forall m \in \{ O | b.a_m = 1 \}$
-
+\noindent\makebox[\textwidth]{
+	$\neg( (a_o = b.a_o) \land (i_m = b.i_m) \land (c_m = b.c_m) ) \quad \forall o \in O, \forall m \in \{ O | b.a_m = 1 \}$
+}
 \vspace{0.2cm}
 
 Very important to note is that the variables preceded by \textit{b.} (i.e $b.a_o$, $b.i_m$
@@ -92,16 +92,24 @@ The strategy to diversify the register allocation of the resulting binaries is a
 one due to causing no runtime overhead. Consequently, if it introduces significant diversity
 it is an excellent candidate.
 
-There are two variables that are of concern when posting constraints on the register
+There are two variables and two sets that are of concern when posting constraints on the register
 allocation. Their description from the Unison documentation are as follows:
 
 \vspace{0.2cm}
 
-\begin{tabular}{cc}
-	\textbf{Name} & \textbf{Description} \\
-	$x_p \in \{0, 1\}$ & whether operand \textit{p} is connected \\
-	$ry_p \in ?$  & register to which operand \textit{p} is assigned \\
-\end{tabular}
+\noindent\makebox[\textwidth]{
+	\begin{tabular}{c|lr}
+		\textbf{Type} & \textbf{Name} & \textbf{Description} \\ \hline
+		\multirow{2}{*}{\textbf{Set}}
+			& $P$ & The set of all operands in the program \\
+			& $?$ & (Presumably) The set of available registers \\ \hline
+		\multirow{2}{*}{\textbf{Variable}}
+			& $x_p \in \{0, 1\}$ & whether operand \textit{p} is connected (0 is false and 1 is true) \\
+			& $ry_p \in ?$ & register to which operand \textit{p} is assigned \\
+	\end{tabular}
+}
+
+\vspace{0.2cm}
 
 comment: The $ry_p$ variable is actually not part of the Unison manual so I don't know
 exactly which set it is part of (presumably the set of all registers). Will talk to
@@ -109,16 +117,12 @@ Roberto and amend.
 
 \vspace{0.2cm}
 
-Also required is the set $P$, which consists of all operands in the program.
-
-\vspace{0.2cm}
-
 In order to disallow the same register allocation we post the constraint:
 
 \vspace{0.2cm}
-
-$\neg( (x_p = b.x_p) \land (ry_p = b.ry_p) ) \quad \forall p \in P$
-
+\noindent\makebox[\textwidth]{
+	$\neg( (x_p = b.x_p) \land (ry_p = b.ry_p) ) \quad \forall p \in P$
+}
 \vspace{0.2cm}
 
 In words; We disallow the exact same combination of connected (used) operands and
