@@ -1,5 +1,6 @@
 \chapter{Diversification with Unison}
 
+
 The two strategies explored by \textcite{large-scale-automated} proved to be effective in
 the sense that very few gadgets survived between the emitted binaries. Specifically, the
 strategies consits of randoimizing the instruction schedule or inserting no-op instructions
@@ -23,6 +24,28 @@ binaries is very small. Presumably it will lose effectiveness after some number 
 generated binaries, and at some point the pidgeonhole principle will come into effect.
 What is not explored is how many different versions can be generated and how different do
 they have to be to achieve similar results. In this chapter we aim to explore this.
+
+\section{Gecode Constraint Solver}
+
+Gecode is implemented such that a problem is modeled in a class inheriting from the
+\textit{Space} base class. It is in this derived class variables are defined and constraints
+are posted. When a solution is found by the Gecode branch and bound engine the virtual
+member function \textit{constrain(b)} is called, where \textit{b} is the latest solution.
+This function is expected to post constraints on future solutions based on the latest
+solution. These constraints accumulate so posting constraints based on the previous solution
+is sufficient for diversity.
+
+Each strategy is implemented by constraints that, when satisified, ensures the
+generated solutions differ in the correct manner. These constraints are posted in the
+\textit{constrain()} function. In general the constraints will make sure that future
+solutions does not contain the same combination of variable - value mapping for certain
+variables.
+
+Due to the nature of Unison and the Gecode constraint solver calling the implementations
+\textit{transformations}, which is the common nomenclature in software diversity, would be
+misleading. No code is being explicitly transformed, combinations are instead implicitly
+discarded when it is discovered that the constraints cannot be satisfied given a previous
+branching.
 
 \input{method/strategies.tex}
 
@@ -55,3 +78,9 @@ are supported \cite{unison-src}. None of the supported architectures are complex
 set architecutres and thus hidden gadgets are not a problem. However, regular gadgets are
 still present and for the purposes of systematic strategies for diversity the supported
 architectures are sufficient.
+
+\section{Evaluation}
+
+Surviving gadgets,
+Static analysis of cycles (or even actual runtime?),
+Diversity space

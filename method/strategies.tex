@@ -12,35 +12,6 @@ ones constrained will be presented for each strategy. These variables describe h
 operations and their operands relate to the actual instructions, temporaries, registers
 and issue cycles.
 
-\subsection{Evaluation}
-
-Surviving gadgets,
-Static analysis of cycles (or even actual runtime?),
-Diversity space
-
-
-\subsection{Gecode Constraint Solver}
-
-
-Gecode is implemented such that a problem is modeled in a class inheriting from the
-\textit{Space} base class. It is in this derived class variables are defined and constraints
-are posted. When a solution is found by the Gecode branch and bound engine the virtual
-member function \textit{constrain(b)} is called, where \textit{b} is the latest solution.
-This function is expected to post constraints on future solutions based on the latest
-solution. These constraints accumulate so posting constraints based on the previous solution
-is sufficient for diversity.
-
-Each strategy is implemented by constraints that, when satisified, ensures the
-generated solutions differ in the correct manner. These constraints are posted in the
-\textit{constrain()} function. In general the constraints will make sure that future
-solutions does not contain the same combination of variable - value mapping for certain
-variables.
-
-Due to the nature of Unison and the Gecode constraint solver calling the implementations
-\textit{transformations}, which is the common nomenclature in software diversity, would be
-misleading. No code is being explicitly transformed, combinations are instead implicitly
-discarded when it is discovered that the constraints cannot be satisfied given a previous
-branching.
 
 
 \subsection{Difference}
@@ -98,33 +69,63 @@ In psuedo mathematical notation we want to post the constraint:
 
 \vspace{0.2cm}
 
-$\neg( (a_o = b.a_o) \land (i_m = b.i_m) \land (c_m = b.c_m) ) \quad \forall o \in O, \forall m \in \{ O | a_m = 1 \}$
+$\neg( (a_o = b.a_o) \land (i_m = b.i_m) \land (c_m = b.c_m) ) \quad \forall o \in O, \forall m \in \{ O | b.a_m = 1 \}$
 
 \vspace{0.2cm}
 
-Very important to note, and why I call it psuedo mathematical notation, is that the variables
-preceded by \textit{b.} (i.e $b.a_o, b.i_m and b.c_m$) represents an actual value. More
-precisely the value that is part of the previous solution. For example $b.c_m$ represents
-the issue cycle of operation m in the previous solution. The variables not preceded by
-\textit{b.} are variables in the constraint programming sense and their corresponding domains
-are make up the remaining combinations to explore.
+Very important to note is that the variables preceded by \textit{b.} (i.e $b.a_o$, $b.i_m$
+and $b.c_m$) represents an actual value. More precisely the value that is part of the
+previous solution. For example $b.c_m$ represents the issue cycle of operation m in the
+previous solution. The variables not preceded by \textit{b.} are variables in the
+constraint programming sense and their corresponding domains make up the remaining
+combinations to explore.
 
 The constraint described with words is that we disallow the exact same combination of
 active operations, issue cycles and instructions that implement the operations. We are
-only concerned about the issue cycles and implementing instruction of active operations,
-but we do take into account that future solutions can have the same instructions issued
-at the same cycles if it has fewer or more active operations.
-
+only concerned about the issue cycles and implementing instruction of the previous
+solution's active operations, but we do take into account that future solutions can have
+the same instructions issued at the same cycles if it has fewer or more active operations.
 
 \subsection{Registers}
 
-Constraining each binary to allocate registers in a different way is, if sufficient, an
-attractive strategy due to causing no overhead. The downside for a production release is
-minimal since there are usually no use-cases where knowing the register allocation is required.
+The strategy to diversify the register allocation of the resulting binaries is an attractive
+one due to causing no runtime overhead. Consequently, if it introduces significant diversity
+it is an excellent candidate.
 
-In addition to creating the abstract \textit{operation} construct for an instruction, a
-similar construct is also created for the temporaries, aptly named an \textit{operand}.
-An operand can be connected to different temporaries between different solutions. In other
-words, to ensure different register allocation between solutions we post constraint that,
-when satisfied, ensure that not all \textit{operands} are connected to the same temporaries,
-and if they are, at least one temporary is allocated to a different register.
+There are two variables that are of concern when posting constraints on the register
+allocation. Their description from the Unison documentation are as follows:
+
+\vspace{0.2cm}
+
+\begin{tabular}{cc}
+	\textbf{Name} & \textbf{Description} \\
+	$x_p \in \{0, 1\}$ & whether operand \textit{p} is connected \\
+	$ry_p \in ?$  & register to which operand \textit{p} is assigned \\
+\end{tabular}
+
+comment: The $ry_p$ variable is actually not part of the Unison manual so I don't know
+exactly which set it is part of (presumably the set of all registers). Will talk to
+Roberto and amend.
+
+\vspace{0.2cm}
+
+Also required is the set $P$, which consists of all operands in the program.
+
+\vspace{0.2cm}
+
+In order to disallow the same register allocation we post the constraint:
+
+\vspace{0.2cm}
+
+$\neg( (x_p = b.x_p) \land (ry_p = b.ry_p) ) \quad \forall p \in P$
+
+\vspace{0.2cm}
+
+In words; We disallow the exact same combination of connected (used) operands and
+operand to register mapping.
+
+Just as for the instruction schedule constraint, the variables preceded by \textit{b.}
+represents the actual value that is part of the previous solution, whereas the ones not
+preceded by \textit{b.} are the constraint programming variables used when searching for
+future solutions.
+
