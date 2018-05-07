@@ -12,6 +12,12 @@ ones constrained will be presented for each strategy. These variables describe h
 operations and their operands relate to the actual instructions, temporaries, registers
 and issue cycles.
 
+Regardless of what the strategies may indicate the possibilities for diversification are
+far broader than when approaching the problem in terms of register allocation and instruction 
+scheduling as seperate procedures. For the scope of this project, however, the more familiar
+approach will be taken, but keep in mind that more unorthodox strategies that exploit the
+combined approach are not much more complicated to implement.
+
 \subsection{Difference}
 
 The name of this strategy comes from the fact that we are only concerned that the solutions
@@ -92,7 +98,7 @@ The strategy to diversify the register allocation of the resulting binaries is a
 one due to causing no runtime overhead. Consequently, if it introduces significant diversity
 it is an excellent candidate.
 
-There are two variables and two sets that are of concern when posting constraints on the register
+There are two variables and one set that are of concern when posting constraints on the register
 allocation. Their description from the Unison documentation are as follows:
 
 \vspace{0.2cm}
@@ -100,12 +106,10 @@ allocation. Their description from the Unison documentation are as follows:
 \noindent\makebox[\textwidth]{
 	\begin{tabular}{c|lr}
 		\textbf{Type} & \textbf{Name} & \textbf{Description} \\ \hline
-		\multirow{2}{*}{\textbf{Set}}
-			& $P$ & The set of all operands in the program \\
-			& $?$ & (Presumably) The set of available registers \\ \hline
+		\textbf{Set} & $P$ & The set of all operands in the program \\ \hline
 		\multirow{2}{*}{\textbf{Variable}}
 			& $x_p \in \{0, 1\}$ & whether operand \textit{p} is connected (0 is false and 1 is true) \\
-			& $ry_p \in ?$ & register to which operand \textit{p} is assigned \\
+			& $ry_p \in \mathbb{N}_0$ & register to which operand \textit{p} is assigned \\
 	\end{tabular}
 }
 
