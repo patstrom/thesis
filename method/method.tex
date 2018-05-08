@@ -81,6 +81,32 @@ architectures are sufficient.
 
 \section{Evaluation}
 
-Surviving gadgets,
-Static analysis of cycles (or even actual runtime?),
-Diversity space
+Three key metrics will be evaluated. \textit{Diversity space}, \textit{estimated runtime},
+and \textit{surviving gadgets}.
+
+Diversity space and estimated runtime are simple metrics. The diversity space is simply
+the total number of solutions found, and the estimated runtime is the issue cycle of the
+last scheduled instruction.
+
+Surviving gadgets is chosen as a measure for diversity. This is a natural metric given 
+that the schedule strategy is chosen specifically due to being comparable to the work done
+by \textcite{large-scale-automated} and that is the measurement they chose. Their test
+was constructed as follows:
+
+\begin{itemize}
+	\item Generate an executable
+	\item Apply transformations to end up with 30 different versions
+	\item Compare the transformed executable to the original and count surviving gadgets
+		\begin{itemize}
+			\item A surviving gadget is a functionally equivalent sequence of instructions of
+			length at the same offset.
+		\end{itemize}
+\end{itemize}
+
+For our purposes the process is modified such that instead of generating one executable
+and applying transformation multiple versions will be generated directly and then tested
+pairwise.
+
+The program to be evaluated is 433.milc from the SPEC2006 benchmark, as \textcite{large-scale-automated}
+found it to be representative of the whole suite. It is fairly large (234 functions) and
+thus for feasibility I will evaluate X versions at solution distance Y.
