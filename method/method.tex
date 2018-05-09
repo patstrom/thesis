@@ -107,6 +107,8 @@ For our purposes the process is modified such that instead of generating one exe
 and applying transformation multiple versions will be generated directly and then tested
 pairwise.
 
-The program to be evaluated is 433.milc from the SPEC2006 benchmark, as \textcite{large-scale-automated}
-found it to be representative of the whole suite. It is fairly large (234 functions) and
-thus for feasibility I will evaluate X versions at solution distance Y.
+\textcite{large-scale-automated} found 433.milc from the SPEC2006 benchmark suite to be
+representative in terms of surviving gadgets. Unfortunately 433.milc is too large to run
+any feasible tests on my test machine, which runs a 4-core Intel(R) Core(TM) i7-4500U CPU
+@ 1.80GHz and 8 gigabytes of memory. Instead a much smaller program, X, will be the test
+subject.
