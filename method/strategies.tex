@@ -13,7 +13,7 @@ operations and their operands relate to the actual instructions, temporaries, re
 and issue cycles.
 
 Regardless of what the strategies may indicate the possibilities for diversification are
-far broader than when approaching the problem in terms of register allocation and instruction 
+far broader than when approaching the problem in terms of register allocation and instruction
 scheduling as seperate procedures. For the scope of this project, however, the more familiar
 approach will be taken, but keep in mind that more unorthodox strategies that exploit the
 combined approach are not much more complicated to implement.
@@ -47,7 +47,7 @@ comparable to randomizing the instruction schedule. It is interesting to see how
 the systematic approach performs, and how it must be tweaked to achieve results similar
 to the randomizing approach.
 
-There are three variables and two sets of interest for this strategy. In the Unison documentation
+There are two variables and one set of interest for this strategy. In the Unison documentation
 they are described as follow:
 
 \vspace{0.2cm}
@@ -57,40 +57,40 @@ they are described as follow:
 		\textbf{Type} & \textbf{Name} & \textbf{Description} \\ \hline
 		\multirow{2}{*}{\textbf{Set}}
 			& $O$ & The set of all operations in the program \\
-			& $instrs(o)$ & Set of instructions that can implement operation \textit{o} \\ \hline
 		\multirow{3}{*}{\textbf{Variable}}
 			& $a_o \in \{0, 1\}$ & whether operation \textit{o} is active (0 is false and 1 is true) \\
-			& $i_o \in instrs(o)$ & instruction that implements operation \textit{o}  \\
 			& $c_o \in \mathbb{N}_0$ & issue cycle of operation \textit{o} \\
 	\end{tabular}
 }
 
 \vspace{0.2cm}
 
-There are two aspects to diversifying the instruction schedule; Either the sequence of
-operations is different, or if they are equal at least one operation is implemented by a
-different instruction.
 
 In psuedo mathematical notation we want to post the constraint:
 
 \vspace{0.2cm}
 \noindent\makebox[\textwidth]{
-	$\neg( (a_o = b.a_o) \land (i_m = b.i_m) \land (c_m = b.c_m) ) \quad \forall o \in O, \forall m \in \{ O | b.a_m = 1 \}$
+	$\neg( (a_o = b.a_o) \land (c_m = b.c_m) ) \quad \forall o \in O, \forall m \in \{ O | b.a_m = 1 \}$
 }
 \vspace{0.2cm}
 
-Very important to note is that the variables preceded by \textit{b.} (i.e $b.a_o$, $b.i_m$
-and $b.c_m$) represents an actual value. More precisely the value that is part of the
-previous solution. For example $b.c_m$ represents the issue cycle of operation m in the
-previous solution. The variables not preceded by \textit{b.} are variables in the
-constraint programming sense and their corresponding domains make up the remaining
-combinations to explore.
+Very important to note is that the variables preceded by \textit{b.} (i.e $b.a_o$ and
+$b.c_m$) represents an actual value. More precisely the value that is part of the previous
+solution. For example $b.c_m$ represents the issue cycle of operation m in the previous
+solution. The variables not preceded by \textit{b.} are variables in the constraint
+programming sense and their corresponding domains make up the remaining combinations to
+explore.
 
 The constraint described with words is that we disallow the exact same combination of
-active operations, issue cycles and instructions that implement the operations. We are
-only concerned about the issue cycles and implementing instruction of the previous
-solution's active operations, but we do take into account that future solutions can have
-the same instructions issued at the same cycles if it has fewer or more active operations.
+active operations and their corresponding issue cycle. We are only concerned about the
+issue cycle of the prvious solution's active operations, but we do take into account that
+future solutions can have the same inctructions issued at the same cycles if it has fewer
+or more active operations.
+
+As mentioned in \ref{sec:unison}, some operations can be implemented by multiple
+instructions. For the purpose of breaking gadgets we do not want to allow functionally
+equivalent instructions. While they would indeed make the sequence of bytes differ, the
+functionality would be the same and the gadget would survive.
 
 \subsection{Registers}
 
