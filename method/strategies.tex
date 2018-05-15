@@ -1,7 +1,7 @@
 \section{Strategies}
 
 For the purposes of this paper only a few strategies will be evaluated. The chosen
-strategies are \textit{difference}, \textit{instruction schedule} and
+strategies are \textit{enumeration}, \textit{instruction schedule} and
 \textit{register allocation}, and the motivation for each is presented in the respective
 subsections.
 
@@ -18,13 +18,13 @@ scheduling as seperate procedures. For the scope of this project, however, the m
 approach will be taken, but keep in mind that more unorthodox strategies that exploit the
 combined approach are not much more complicated to implement.
 
-\subsection{Difference}
+\subsection{Enumeration}
 
 The name of this strategy comes from the fact that we are only concerned that the solutions
 are different, not how they differ. During search the Gecode search engine will never
 explore the same combination twice, and thus never generate two equal solutions. The
 strategy is thus to not post any constraints at all and let the solver generate all
-possible combinations.
+possible combinations. We \textit{enumerate} the solutions.
 
 Unison can differ the solutions in four main ways:
 
@@ -35,9 +35,8 @@ Unison can differ the solutions in four main ways:
 	\item Split live-ranges and spill temporaries differently
 \end{itemize}
 
-The results of this strategy serve as a baseline for the program. It shows us how many
-executables Unison can, at most, generate for the program. In other words, the biggest
-diversity space for a given program (when using Unison).
+The results of this strategy serve as a baseline for the program. It it quite literally
+what would happen if we do nothing.
 
 \subsection{Instruction Schedule}
 

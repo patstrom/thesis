@@ -81,12 +81,8 @@ architectures are sufficient.
 
 \section{Evaluation}
 
-Three key metrics will be evaluated. \textit{Diversity space}, \textit{estimated runtime},
-and \textit{surviving gadgets}.
-
-Diversity space and estimated runtime are simple metrics. The diversity space is simply
-the total number of solutions found, and the estimated runtime is the issue cycle of the
-last scheduled instruction.
+The key metric to be evaluated are surviving gadgets and \textit{cost}. The cost of an
+executable will be measured in cycles and 
 
 Surviving gadgets is chosen as a measure for diversity. This is a natural metric given
 that the schedule strategy is chosen specifically due to being comparable to the work done
@@ -110,5 +106,19 @@ pairwise.
 \textcite{large-scale-automated} found 433.milc from the SPEC2006 benchmark suite to be
 representative in terms of surviving gadgets. Unfortunately 433.milc is too large to run
 any feasible tests on my test machine, which runs a 4-core Intel(R) Core(TM) i7-4500U CPU
-@ 1.80GHz and 8 gigabytes of memory. Instead a much smaller program, X, will be the test
-subject.
+@ 1.80GHz and 8 gigabytes of memory. The Unison test suite will be used instead, which is
+a sample of functions from the SPEC2006 benchmarks. There are 25 functions and their names
+are listed in \ref{appendix:function_names}.
+
+These functions will together make a \textit{program}. Since they are not from the same
+benchmark they cannot be linked together. Instead linking will be simulated by placing
+them in the same order every time. Our method of testing is thus as follows:
+
+\begin{itemize}
+	\item For every function generate 1000 versions
+	\item Version 0 of every function will make up program 0, Version 1 will make up program
+		1 and so on and so forth
+	\item For every program find all gadgets and its cost (in cycles)
+	\item Create plots to visualize the data.
+
+\end{itemize}
