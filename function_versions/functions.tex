@@ -1,19 +1,110 @@
 % For all functions not present here 1000 versions was found. 
 
-\begin{Table}
-	\begin{tabular}{c|c|c}
-		\textbf{Function Name} & & \textbf{Strategy} \textbf{# versions(1,10,100,1000)} \ \hline
-		gcc.insn-output.output\_51 & sched & (1000, 1000, 1000, 743) \
-		gcc.jump.unsigned\_condition & sched & 243, 23, 3, 1 \
-		gobmk.barriers.autohelperbarrierspat145 & sched & 1000, 1000, 485, 53 \
-		gobmk.interface.init\_gnugo & difference & 792, 80, 8, 1 \
-		gobmk.interface.init\_gnugo & registers & 1, 1, 1, 1 \
-		gobmk.interface.init\_gnugo & schedule & 792, 80, 8, 1 \
-		gobmk.owl\_attackpat.autohelperowl\_attackpat68 & schedule & 1000, 1000, 1000, 917 \
-		gobmk.patterns.autohelperpat1088 & schedule & (100, 1000, 1000, 842) \
-		gobmk.patterns.autohelperpat301 & schedule & (1000, 1000, 1000, 936) \
-		hmmer.tophits.AllocFancyAli & all & (0,0,0,0) \
-		gcc.xexit.xexit & all & (0,0,0,0) \
-		sphinx3.profile.ptmr\_init & registers & (17, 17, 17, 17) \
-	\end{tabular}
-\end{Table}
+\section{Functions and Statistics}
+
+\begin{center}
+	\begingroup
+	\setlength{\LTleft}{-20cm plus -1fill}
+	\setlength{\LTright}{\LTleft}
+	\begin{longtable}{c|c|c|c|c|c|c}
+		\multirow{2}{*}{\textbf{Benchmark}} & \multirow{2}{*}{\textbf{Function}} & \multirow{2}{*}{\textbf{Strategy}} & \multicolumn{4}{c}{\textbf{Sampling Rate}} \\
+		\cline{4-7}
+		& & & 1 & 10 & 100 & 1000 \\ \hline
+		\endhead
+		Unison & cond-transfer & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		Unison & cond-transfer & registers & 1000 & 1000 & 1000 & 1000 \\
+		Unison & cond-transfer & schedule & 1000 & 1000 & 1000 & 1000 \\
+		\hline
+		gcc & alias.get\_frame\_alias\_set & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		gcc & alias.get\_frame\_alias\_set & registers & 1000 & 1000 & 1000 & 1000 \\
+		gcc & alias.get\_frame\_alias\_set & schedule & 1000 & 1000 & 1000 & 1000 \\
+		\hline
+		gcc & c-decl.pushdecl\_top\_level & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		gcc & c-decl.pushdecl\_top\_level & registers & 1000 & 1000 & 1000 & 1000 \\
+		gcc & c-decl.pushdecl\_top\_level & schedule & 1000 & 1000 & 1000 & 1000 \\
+		\hline
+		gcc & expmed.ceil\_log2 & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		gcc & expmed.ceil\_log2 & registers & 1000 & 1000 & 1000 & 1000 \\
+		gcc & expmed.ceil\_log2 & schedule & 1000 & 1000 & 1000 & 1000 \\
+		\hline
+		gcc & insn-output.output\_51 & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		gcc & insn-output.output\_51 & registers & 1000 & 1000 & 1000 & 1000 \\
+		gcc & insn-output.output\_51 & schedule & 1000 & 1000 & 1000 & 743 \\
+		\hline
+		gcc & jump.unsigned\_condition & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		gcc & jump.unsigned\_condition & registers & 1000 & 1000 & 1000 & 1000 \\
+		gcc & jump.unsigned\_condition & schedule & 243 & 23 & 3 & 1 \\
+		\hline
+		gcc & rtlanal.insn\_dependent\_p\_1 & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		gcc & rtlanal.insn\_dependent\_p\_1 & registers & 1000 & 1000 & 1000 & 1000 \\
+		gcc & rtlanal.insn\_dependent\_p\_1 & schedule & 1000 & 1000 & 1000 & 1000 \\
+		\hline
+		gcc & rtlanal.parms\_set & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		gcc & rtlanal.parms\_set & registers & 1000 & 1000 & 1000 & 1000 \\
+		gcc & rtlanal.parms\_set & schedule & 1000 & 1000 & 1000 & 1000 \\
+		\hline
+		gcc & varasm.data\_section & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		gcc & varasm.data\_section & registers & 1000 & 1000 & 1000 & 1000 \\
+		gcc & varasm.data\_section & schedule & 1000 & 1000 & 1000 & 1000 \\
+		\hline
+		gobmk & barriers.autohelperbarrierspat145 & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		gobmk & barriers.autohelperbarrierspat145 & registers & 1000 & 1000 & 1000 & 1000 \\
+		gobmk & barriers.autohelperbarrierspat145 & schedule & 1000 & 1000 & 485 & 53 \\
+		\hline
+		gobmk & board.get\_last\_player & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		gobmk & board.get\_last\_player & registers & 1000 & 1000 & 1000 & 1000 \\
+		gobmk & board.get\_last\_player & schedule & 1000 & 1000 & 1000 & 1000 \\
+		\hline
+		gobmk & interface.init\_gnugo & enumerate & 792 & 80 & 8 & 1 \\
+		gobmk & interface.init\_gnugo & registers & 1 & 1 & 1 & 1 \\
+		gobmk & interface.init\_gnugo & schedule & 792 & 80 & 8 & 1 \\
+		\hline
+		gobmk & owl\_attackpat.autohelperowl\_attackpat68 & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		gobmk & owl\_attackpat.autohelperowl\_attackpat68 & registers & 1000 & 1000 & 1000 & 1000 \\
+		gobmk & owl\_attackpat.autohelperowl\_attackpat68 & schedule & 1000 & 1000 & 1000 & 917 \\
+		\hline
+		gobmk & owl\_defendpat.autohelperowl\_defendpat421 & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		gobmk & owl\_defendpat.autohelperowl\_defendpat421 & registers & 1000 & 1000 & 1000 & 1000 \\
+		gobmk & owl\_defendpat.autohelperowl\_defendpat421 & schedule & 1000 & 1000 & 1000 & 1000 \\
+		\hline
+		gobmk & owl\_vital\_apat.autohelperowl\_vital\_apat34 & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		gobmk & owl\_vital\_apat.autohelperowl\_vital\_apat34 & registers & 1000 & 1000 & 1000 & 1000 \\
+		gobmk & owl\_vital\_apat.autohelperowl\_vital\_apat34 & schedule & 1000 & 1000 & 1000 & 1000 \\
+		\hline
+		gobmk & patterns.autohelperpat1088 & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		gobmk & patterns.autohelperpat1088 & registers & 1000 & 1000 & 1000 & 1000 \\
+		gobmk & patterns.autohelperpat1088 & schedule & 1000 & 1000 & 1000 & 842 \\
+		\hline
+		gobmk & patterns.autohelperpat301 & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		gobmk & patterns.autohelperpat301 & registers & 1000 & 1000 & 1000 & 1000 \\
+		gobmk & patterns.autohelperpat301 & schedule & 1000 & 1000 & 1000 & 936 \\
+		\hline
+		h264ref & memalloc.no\_mem\_exit & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		h264ref & memalloc.no\_mem\_exit & registers & 1000 & 1000 & 1000 & 1000 \\
+		h264ref & memalloc.no\_mem\_exit & schedule & 1000 & 1000 & 1000 & 1000 \\
+		\hline
+		h264ref & sei.UpdateRandomAccess & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		h264ref & sei.UpdateRandomAccess & registers & 1000 & 1000 & 1000 & 1000 \\
+		h264ref & sei.UpdateRandomAccess & schedule & 1000 & 1000 & 1000 & 1000 \\
+		\hline
+		h264ref & vlc.symbol2uvlc & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		h264ref & vlc.symbol2uvlc & registers & 1000 & 1000 & 1000 & 1000 \\
+		h264ref & vlc.symbol2uvlc & schedule & 1000 & 1000 & 1000 & 1000 \\
+		\hline
+		mesa.api & glIndexd & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		mesa.api & glIndexd & registers & 1000 & 1000 & 1000 & 1000 \\
+		mesa.api & glIndexd & schedule & 1000 & 1000 & 1000 & 1000 \\
+		\hline
+		sphinx3 & glist.glist\_tail & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		sphinx3 & glist.glist\_tail & registers & 1000 & 1000 & 1000 & 1000 \\
+		sphinx3 & glist.glist\_tail & schedule & 1000 & 1000 & 1000 & 1000 \\
+		\hline
+		sphinx3 & profile.ptmr\_init & enumerate & 1000 & 1000 & 1000 & 1000 \\
+		sphinx3 & profile.ptmr\_init & registers & 17 & 17 & 17 & 17 \\
+		sphinx3 & profile.ptmr\_init & schedule & 1000 & 1000 & 1000 & 1000 \\
+		\hline
+		hmmer & tophits.AllocFancyAli & all & 0 &0 &0 &0 \\
+		gcc & xexit.xexit & all & 0 &0 &0 &0 \\
+	\end{longtable}
+	\endgroup
+\end{center}
