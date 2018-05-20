@@ -12,6 +12,7 @@ ones constrained will be presented for each strategy. These variables describe h
 operations and their operands relate to the actual instructions, temporaries, registers
 and issue cycles.
 
+% This should be in the discussion
 Regardless of what the strategies may indicate the possibilities for diversification are
 far broader than when approaching the problem in terms of register allocation and instruction
 scheduling as seperate procedures. For the scope of this project, however, the more familiar
@@ -114,12 +115,6 @@ allocation. Their description from the Unison documentation are as follows:
 
 \vspace{0.2cm}
 
-comment: The $ry_p$ variable is actually not part of the Unison manual so I don't know
-exactly which set it is part of (presumably the set of all registers). Will talk to
-Roberto and amend.
-
-\vspace{0.2cm}
-
 In order to disallow the same register allocation we post the constraint:
 
 \vspace{0.2cm}
@@ -135,4 +130,3 @@ Just as for the instruction schedule constraint, the variables preceded by \text
 represents the actual value that is part of the previous solution, whereas the ones not
 preceded by \textit{b.} are the constraint programming variables used when searching for
 future solutions.
-
