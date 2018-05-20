@@ -27,6 +27,7 @@ they have to be to achieve similar results. In this chapter we aim to explore th
 
 \section{Gecode Constraint Solver}
 
+% This might need tweaking if restart based search is used.
 Gecode is implemented such that a problem is modeled in a class inheriting from the
 \textit{Space} base class. It is in this derived class variables are defined and constraints
 are posted. When a solution is found by the Gecode branch and bound engine the virtual
@@ -49,27 +50,57 @@ branching.
 
 \input{method/strategies.tex}
 
-\section{Sampling Rate}
-When exploring combinations with a constraint solver similar solutions are found close to
-each-other (in-time).  The number of possible combinations for certain strategies might be
-far too large to handle efficiently so when limiting the number of binaries generated it is
-beneficial to discard an amount of binaries in between those kept. The contrasting approach
-is of course to stop the search after X amount of solutions are found or Y amount of time
-has passed, in which case the solutions might be too similar.
 
 \section{Performance}
+\label{sec:performance}
 
-Unison's main purpose is to generate the most optimal solution. In an effort to achieve
-this Unison accepts the basic LLVM-solution as an optional parameter, and posts constraints
-to only generate solutions that are \textit{better}. Better in this case is either that
-they can be executed in fewer cycles or the size of the binary is smaller. Which is optimized
-for is specified as a parameter.
+An important variable in Unison's original model is cost. It is the deciding factor of
+whether a solution is better than another during the branch and bound search. It is a sum
+of the estimated cost of each basic block, weighted by the estimated execution frequencies
+\cite{unison-docs}. Cost can be either cycles of file size depending on the optimization
+goal.
 
-For our purposes, we limit our diversification strategies to only generate solutions
-that execute in fewer (or the same amount of) cycles than the LLVM solution. In other words
-we generate executables with zero overhead \textit{with respect to LLVM's solution}.
-Certain strategies would of course have an overhead, but with respect to the \textit{optimal
-solution}.
+% IS THIS TRUE?!?!?!?
+Unison accepts the basic LLVM-solution as an optional parameter, and posts constraints to
+only generate solutions that are \textit{better}. For our purposes, we limit our
+diversification strategies to only generate solutions that execute in fewer (or the same
+amount of) cycles than the LLVM solution. In other words we generate executables with zero
+overhead \textit{with respect to LLVM's solution}.  Certain strategies would of course
+have an overhead, but with respect to the \textit{optimal solution}.
+
+\section{Sampling Rate}
+When exploring combinations with a constraint solver similar solutions are found close to
+each-other (in-time). A factor in diversification might be to exploit this property
+alongside the diversification strategy. Certain strategies might be favourable when
+considering execution time but not particularly good at breaking gadgets. However, if
+e.g 100 solutions are discarded between every emitted executable perhaps more gadgets are
+broken.
+
+An important factor to consider when discarding solutions is that in the Unison model
+branching tries to minimize the cost of the program. Discarding solutions can thus impact
+performance in a negative way in the sense that the later version might have a wider
+distribution for the cost variable.
+
+Sampling rates of 1, 10, 100 and 1000 will be evaluated for every strategy, where a
+sampling rate of 100 means that every 100th solution is kept. Generating 1000 versions
+at a sampling rate of 100 would mean that 100000 solutions are explored, 1000 are emitted
+and 99000 are discarded.
+
+\section{Number of Possible Versions}
+
+The number of possible combinations is of course not limitless. 1000 version at a sampling
+rate of 1000 means that there needs to be at least 1000000 must be found. Unison works
+at the function level and for every function there might not be 1000000 possible versions.
+
+Total number of possible combination would be an interesting metric to evaluate, unfortunately
+it varies widely between functions and for some it might require days of search. Empirically,
+most functions in the suite to be used do have 1000000 versions, so 1000 versions appears
+to be a good number of versions to generate.
+
+For those function where the 1000 versions cannot be generated for the given strategy and
+sampling rate the ones that have been generated will be re-used so that 1000 programs can
+still be generated. More information about these functions can be seen in the
+\ref{appendix:functions_names}.
 
 \section{Architecture}
 
@@ -77,48 +108,49 @@ Unison does not currently support the x86 or x86-64 architecture. Only ARM, Hexa
 are supported \cite{unison-src}. None of the supported architectures are complex instruction
 set architecutres and thus hidden gadgets are not a problem. However, regular gadgets are
 still present and for the purposes of systematic strategies for diversity the supported
-architectures are sufficient.
+architectures are sufficient. The tests will be conducted on programs compiled for the
+Hexagon architecture.
 
 \section{Evaluation}
 
-The key metric to be evaluated are surviving gadgets and \textit{cost}. The cost of an
-executable will be measured in cycles and 
+The key metric to be evaluated are surviving gadgets and \textit{cost} (See
+\ref{sec:performance}). For the experiment the optimization goal will be speed, and thus
+cost will be the estimated execution time of the program.
 
-Surviving gadgets is chosen as a measure for diversity. This is a natural metric given
-that the schedule strategy is chosen specifically due to being comparable to the work done
-by \textcite{large-scale-automated} and that is the measurement they chose. Their test
-was constructed as follows:
-
-\begin{itemize}
-	\item Generate an executable
-	\item Apply transformations to end up with 30 different versions
-	\item Compare the transformed executable to the original and count surviving gadgets
-		\begin{itemize}
-			\item A surviving gadget is a functionally equivalent sequence of instructions of
-			length at the same offset.
-		\end{itemize}
-\end{itemize}
-
-For our purposes the process is modified such that instead of generating one executable
-and applying transformation multiple versions will be generated directly and then tested
-pairwise.
+Surviving gadgets will be calculated as the ratio of which each gadget appears in the program
+versions. In other words a ratio of 100\% means that the gadget appears in all version
+and the strategy was not effective at removing that gadget. Similarly a very low ratio
+(close to 0\%) would mean that the strategy was effective as the gadget only appears in
+a small number of the programs.
 
 \textcite{large-scale-automated} found 433.milc from the SPEC2006 benchmark suite to be
 representative in terms of surviving gadgets. Unfortunately 433.milc is too large to run
 any feasible tests on my test machine, which runs a 4-core Intel(R) Core(TM) i7-4500U CPU
 @ 1.80GHz and 8 gigabytes of memory. The Unison test suite will be used instead, which is
-a sample of functions from the SPEC2006 benchmarks. There are 25 functions and their names
-are listed in \ref{appendix:function_names}.
+a sample of functions from the SPEC2006 benchmarks. There are 23 functions and their names
+are listed in \ref{appendix:function_names}. These functions will together make a
+\textit{program}. Since they are not from the same benchmark they cannot be linked
+together. Instead linking will be simulated by placing them in the same order every time.
 
-These functions will together make a \textit{program}. Since they are not from the same
-benchmark they cannot be linked together. Instead linking will be simulated by placing
-them in the same order every time. Our method of testing is thus as follows:
+Our method of testing is thus as follows:
 
 \begin{itemize}
 	\item For every function generate 1000 versions
 	\item Version 0 of every function will make up program 0, Version 1 will make up program
 		1 and so on and so forth
 	\item For every program find all gadgets and its cost (in cycles)
-	\item Create plots to visualize the data.
-
+	\item Calculate our metrics
+	\item Repeat for all strategies
+		\begin{itemize}
+			\item enumerate
+			\item registers
+			\item schedule
+		\end{itemize}
+	\item Repeat for all sampling rates
+		\begin{itemize}
+			\item 1
+			\item 10
+			\item 100
+			\item 1000
+		\end{itemize}
 \end{itemize}
