@@ -12,13 +12,6 @@ ones constrained will be presented for each strategy. These variables describe h
 operations and their operands relate to the actual instructions, temporaries, registers
 and issue cycles.
 
-% This should be in the discussion
-Regardless of what the strategies may indicate the possibilities for diversification are
-far broader than when approaching the problem in terms of register allocation and instruction
-scheduling as seperate procedures. For the scope of this project, however, the more familiar
-approach will be taken, but keep in mind that more unorthodox strategies that exploit the
-combined approach are not much more complicated to implement.
-
 \subsection{Enumeration}
 
 The name of this strategy comes from the fact that we are only concerned that the solutions
@@ -36,8 +29,8 @@ Unison can differ the solutions in four main ways:
 	\item Split live-ranges and spill temporaries differently
 \end{itemize}
 
-The results of this strategy serve as a baseline for the program. It it quite literally
-what would happen if we do nothing.
+The results of this strategy serve as a baseline for the program. It it literally happens
+if we do nothing.
 
 \subsection{Instruction Schedule}
 
