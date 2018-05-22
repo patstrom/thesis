@@ -45,7 +45,10 @@ Given the work of \textcite{large-scale-automated} we are given an opportunity t
 systematic diversity to randomized diversity. Generating all possible schedules is directly
 comparable to randomizing the instruction schedule. It is interesting to see how well
 the systematic approach performs, and how it must be tweaked to achieve results similar
-to the randomizing approach.
+to the randomizing approach. Do note that this strategy is applied during the compilation
+process and not on an already fixed instruction schedule. The strategy is not limited to
+finding combinations of a set sequence of instructions; A shorter or longer schedule can
+be generated.
 
 There are two variables and one set of interest for this strategy. In the Unison documentation
 they are described as follow:
