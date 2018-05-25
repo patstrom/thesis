@@ -112,6 +112,12 @@ tool implements support for the x86-64 architecture, or at the very least an arc
 with a complex instruction set, the experiment would have be repeated on that platform to
 test whether or not the strategies are equally performant at breaking hidden gadgets.
 
+Another shortcoming is the difficulty of compiling a large program even without applying
+diversification strategies. Most of the functions of 433.milc were too large to find even
+one solution. This is an obvious problem for any practical purpose of the systematic
+approach. One solution to this problem is to modify the search heuristics of the Unison
+model even further. Unfortunately it would be difficult, if not impossible, to find an
+optimal, generally-applicable search strategy.
 
 Regardless of what the selection of strategies may indicate the possibilities for
 diversification are far broader than when approaching the problem in terms of register
