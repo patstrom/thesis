@@ -5,9 +5,26 @@
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\textwidth,height=0.5\textheight]{results/figures/generator_time}
-	\caption{The execution time of the code generator at sampling rate 1000 (i.e 1000000 solutions for every function). Each marker represents the finished generation of a function.}
+	\caption{The execution time of the code generator at sampling rate 1000 (i.e 1000000 solutions for every function). Each marker represents the finished generation of a function. The markers are ordered so that the nth marker on every line represents the same function. Total time is annotated as hours andminutes.}
 	\label{fig:time}
 \end{figure}
+
+The execution times of the constraint solver at sampling rate 1000 are shown in Figure
+\ref{fig:time}. Each marker represents the completed generation of a function. I.e for each
+marker 1000000 (one million) solutions have been explored. For a few functions fewer than
+1000 solutions were found (for a complete breakdown see appendix \ref{appendix:function_names}).
+
+While the total execution time is daunting, it does represent about 23 million solutions
+found (but only 23000 emitted). The enumerate strategy is fairly quick; 51 minutes for one
+million solutions of every function means that on average, one solution was found every
+139ns. The same number for registers and schedule is 343ns and 1095ns respectively. To
+mitigate the long execution time the solutions can be emitted directly when found.
+
+disUnison uses the same branching and search heuristics as the base Unison model. This is
+not necessarily the most performant. The problem with tweaking parts of the model is that
+there their performance will largely have to be determined empirically. Supposedly, the
+optimal search heuristic for the registers strategy would not be the same as the optimal
+search heuristic for the schedule strategy.
 
 \section{Cost}
 
@@ -48,41 +65,39 @@ Interesting to note is that all strategies and sampling rates have found a solut
 an equally low cost. This is presumably the very first solution found; When no strategy
 related constraints have been posted yet.
 
-\section{Surviving Gadgets} 
+\section{Surviving Gadgets}
+
 \begin{figure}[htp]
 	\centering
 	\includegraphics[width=\textwidth,height=\textheight]{results/figures/gadgets}
 	\caption{The ratio of occurence for each gadget broken down by strategy and sampling rate.
-Each bar shows the occurence ratio for one particular gadget.}
+Each dot shows the occurence ratio for one particular gadget. The data is sorted.}
 	\label{fig:gadgets}
 \end{figure}
 
 Figure \ref{fig:gadgets} shows the occurence ratio of each gadget for the different
-strategies and sampling rates. There were around 21000 gadgets in total for every program
-across all versions. The x-axis shows a gadget id and there is no definitive correlation
-between the gadgets across strategies and sampling rates. I.e gadget 0 for the enumerate
-strategy at sampling rate 1 is not necessarily the same gadget 0 as the registers strategy
-at sampling rate 10.
+strategies and sampling rates. The x-axis shows a gadget id and there is no definitive
+correlation between the gadgets across strategies and sampling rates. I.e gadget 0 for the
+enumerate strategy at sampling rate 1 is not necessarily the same gadget 0 as the registers
+strategy at sampling rate 10.
 
+% Rewrite this. They are actually pretty decent.
 As seen in figure \ref{fig:gadgets}, neither the enumeration nor the registers strategy
 were particularly effective at breaking gadgets for any sampling rate. There is a slight
 improvement for higher sampling rates but it is not particularly impressive even at
 sampling rate 1000. There are still many gadgets that survives between versions.
 
-Curiously, there seems to be little difference between sampling rate 10 and 100 for both
-enumerate and registers. Sampling rate of 100 appears to be even worse at breaking gadgets
-than sampling rate 10. This is surprising and there is no definitive explanation for it.
-I suspect this is because.... ?
-
-As mentioned, \textcite{large-scale-automated} found that randomizing the instruction
-schedule broke on average more than 95\% gadgets with respect to the original, undiversifed
-binary. This would then mean that on average less than 5\% of gadgets survive the
-diversification process and are present in all versions, compared to our results where
-\textit{no} gadget is present is all versions. In fact, no gadget is present in even
-50\% of versions. The strategy is even more effective at higher sampling rates, which is
-in accordance with the expected behaviour described in section \ref{sec:sampling_rate}.
+Unfortunately, due to the shortcomings of the experiment this results is not comparable to
+the ones presented in other literature. However, it does hint at the potential gadget-
+breaking properties of each strategy. Enumerate and registers show decent potental and the
+schedule strategy shows great potential but it would have to be verified on a proper
+executable for the x86-64 architecture.
 
 \section{Conclusion and Future Work}
+
+% Have a parahgraph that talks about the implementation difficulty and that the constraint
+% solver approach makes sense. Then talk about the shortcomings (proper executable, x86-64,
+% size etc)
 
 While both the enumerate and registers strategies showed great results in terms of cost,
 neither of them were effective at breaking gadgets. With regards to both the gadget
@@ -97,12 +112,6 @@ tool implements support for the x86-64 architecture, or at the very least an arc
 with a complex instruction set, the experiment would have be repeated on that platform to
 test whether or not the strategies are equally performant at breaking hidden gadgets.
 
-Another shortcoming is the difficulty of compiling a large program even without applying
-diversification strategies. Most of the functions of 433.milc were too large to find even
-one solution. This is an obvious problem for any practical purpose of the systematic
-approach. One solution to this problem is to modify the search heuristics of the Unison
-model even further. Unfortunately it would be difficult, if not impossible, to find an
-optimal, generally-applicable search strategy.
 
 Regardless of what the selection of strategies may indicate the possibilities for
 diversification are far broader than when approaching the problem in terms of register
