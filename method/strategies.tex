@@ -65,7 +65,7 @@ In psuedo mathematical notation we want to post the constraint:
 
 \vspace{0.2cm}
 \noindent\makebox[\textwidth]{
-	$\neg( (a_o = b.a_o) \land (c_m = b.c_m) ) \quad \forall o \in O, \forall m \in \{ O | b.a_m = 1 \}$
+	$\neg ( (\bigwedge\limits_{o \in O} (a_o = b.a_o)) \land (\bigwedge\limits_{m \in \{O | b.a_m = 1\}} (c_m = b.c_m)) )$
 }
 \vspace{0.2cm}
 
@@ -114,7 +114,7 @@ In order to disallow the same register allocation we post the constraint:
 
 \vspace{0.2cm}
 \noindent\makebox[\textwidth]{
-	$\neg( (x_p = b.x_p) \land (ry_p = b.ry_p) ) \quad \forall p \in P$
+	$\neg (\bigwedge\limits_{p \in P} ( (x_p = b.x_p) \land (ry_p = b.ry_p) ))$
 }
 \vspace{0.2cm}
 
