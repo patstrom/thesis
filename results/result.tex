@@ -1,40 +1,13 @@
 \chapter{Results}
 
-\section{Surviving Gadgets}
+\section{Generation Time}
 
-\begin{figure}[htp]
+\begin{figure}[h]
 	\centering
-	\includegraphics[width=\textwidth,height=\textheight]{results/figures/gadgets}
-	\caption{The ratio of occurence for each gadget broken down by strategy and sampling rate.
-Each bar shows the occurence ratio for one particular gadget.}
-	\label{fig:gadgets}
+	\includegraphics[width=\textwidth,height=0.5\textheight]{results/figures/generator_time}
+	\caption{The execution time of the code generator at sampling rate 1000 (i.e 1000000 solutions for every function). Each marker represents the finished generation of a function.}
+	\label{fig:time}
 \end{figure}
-
-Figure \ref{fig:gadgets} shows the occurence ratio of each gadget for the different
-strategies and sampling rates. There were around 21000 gadgets in total for every program
-across all versions. The x-axis shows a gadget id and there is no definitive correlation
-between the gadgets across strategies and sampling rates. I.e gadget 0 for the enumerate
-strategy at sampling rate 1 is not necessarily the same gadget 0 as the registers strategy
-at sampling rate 10.
-
-As seen in figure \ref{fig:gadgets}, neither the enumeration nor the registers strategy
-were particularly effective at breaking gadgets for any sampling rate. There is a slight
-improvement for higher sampling rates but it is not particularly impressive even at
-sampling rate 1000. There are still many gadgets that survives between versions.
-
-Curiously, there seems to be little difference between sampling rate 10 and 100 for both
-enumerate and registers. Sampling rate of 100 appears to be even worse at breaking gadgets
-than sampling rate 10. This is surprising and there is no definitive explanation for it.
-I suspect this is because.... ?
-
-As mentioned, \textcite{large-scale-automated} found that randomizing the instruction
-schedule broke on average more than 95\% gadgets with respect to the original, undiversifed
-binary. This would then mean that on average less than 5\% of gadgets survive the
-diversification process and are present in all versions, compared to our results where
-\textit{no} gadget is present is all versions. In fact, no gadget is present in even
-50\% of versions. The strategy is even more effective at higher sampling rates, which is
-in accordance with the expected behaviour described in section \ref{sec:sampling_rate}.
-
 
 \section{Cost}
 
@@ -74,6 +47,40 @@ those with lower cost than LLVM.
 Interesting to note is that all strategies and sampling rates have found a solution with
 an equally low cost. This is presumably the very first solution found; When no strategy
 related constraints have been posted yet.
+
+\section{Surviving Gadgets} 
+\begin{figure}[htp]
+	\centering
+	\includegraphics[width=\textwidth,height=\textheight]{results/figures/gadgets}
+	\caption{The ratio of occurence for each gadget broken down by strategy and sampling rate.
+Each bar shows the occurence ratio for one particular gadget.}
+	\label{fig:gadgets}
+\end{figure}
+
+Figure \ref{fig:gadgets} shows the occurence ratio of each gadget for the different
+strategies and sampling rates. There were around 21000 gadgets in total for every program
+across all versions. The x-axis shows a gadget id and there is no definitive correlation
+between the gadgets across strategies and sampling rates. I.e gadget 0 for the enumerate
+strategy at sampling rate 1 is not necessarily the same gadget 0 as the registers strategy
+at sampling rate 10.
+
+As seen in figure \ref{fig:gadgets}, neither the enumeration nor the registers strategy
+were particularly effective at breaking gadgets for any sampling rate. There is a slight
+improvement for higher sampling rates but it is not particularly impressive even at
+sampling rate 1000. There are still many gadgets that survives between versions.
+
+Curiously, there seems to be little difference between sampling rate 10 and 100 for both
+enumerate and registers. Sampling rate of 100 appears to be even worse at breaking gadgets
+than sampling rate 10. This is surprising and there is no definitive explanation for it.
+I suspect this is because.... ?
+
+As mentioned, \textcite{large-scale-automated} found that randomizing the instruction
+schedule broke on average more than 95\% gadgets with respect to the original, undiversifed
+binary. This would then mean that on average less than 5\% of gadgets survive the
+diversification process and are present in all versions, compared to our results where
+\textit{no} gadget is present is all versions. In fact, no gadget is present in even
+50\% of versions. The strategy is even more effective at higher sampling rates, which is
+in accordance with the expected behaviour described in section \ref{sec:sampling_rate}.
 
 \section{Conclusion and Future Work}
 
