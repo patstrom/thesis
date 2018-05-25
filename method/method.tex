@@ -20,7 +20,7 @@ testing of surviving gadgets.}
 
 The problem with the above approach is first and foremost that the amount of generated
 binaries is very small. Presumably it will lose effectiveness after some number of
-generated binaries, and at some point the pidgeonhole principle will come into effect.
+generated binaries, and at some point the pigeonhole principle will come into effect.
 What is not explored is how many different versions can be generated and how different do
 they have to be to achieve similar results. In this chapter we aim to explore this.
 
@@ -35,7 +35,7 @@ This function is expected to post constraints on future solutions based on the l
 solution. These constraints accumulate so posting constraints based on the previous solution
 is sufficient for diversity.
 
-Each strategy is implemented by constraints that, when satisified, ensures the
+Each strategy is implemented by constraints that, when satisfied, ensures the
 generated solutions differ in the correct manner. These constraints are posted in the
 \textit{constrain()} function. In general the constraints will make sure that future
 solutions does not contain the same combination of variable - value mapping for certain
@@ -48,7 +48,7 @@ discarded when it is discovered that the constraints cannot be satisfied given a
 branching.
 
 The implementation that makes up the following strategies that are used in the experiment
-is henceforth refered to as disUnison (from the word disunity). It is a variation of the
+is henceforth referred to as disUnison (from the word disunity). It is a variation of the
 original Unison model, where the key difference is that the behaviour of \textit{constrain()}
 is modified. The bulk of the Unison model is still present in the disUnison model.
 
@@ -84,7 +84,7 @@ factor to consider for future work.
 
 When exploring combinations with a constraint solver similar solutions are found close to
 each-other (in-time). A factor in diversification might be to exploit this property
-alongside the diversification strategy. Certain strategies might be favourable when
+alongside the diversification strategy. Certain strategies might be favorable when
 considering execution time but not particularly good at breaking gadgets. However, if
 e.g 100 solutions are discarded between every emitted executable perhaps more gadgets are
 broken.
@@ -120,7 +120,7 @@ still be generated. More information about these functions can be seen in the
 
 Unison does not currently support the x86 or x86-64 architecture. Only ARM, Hexagon and MIPS
 are supported \cite{unison-src}. None of the supported architectures are complex instruction
-set architecutres and thus hidden gadgets are not a problem. However, regular gadgets are
+set architectures and thus hidden gadgets are not a problem. However, regular gadgets are
 still present and for the purposes of systematic strategies for diversity the supported
 architectures are sufficient. The tests will be conducted on programs compiled for the
 Hexagon architecture.

@@ -5,7 +5,7 @@
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\textwidth,height=0.5\textheight]{results/figures/generator_time}
-	\caption{The execution time of the code generator at sampling rate 1000 (i.e 1000000 solutions for every function). Each marker represents the finished generation of a function. The markers are ordered so that the nth marker on every line represents the same function. Total time is annotated as hours andminutes.}
+	\caption{The execution time of the code generator at sampling rate 1000 (i.e 1000000 solutions for every function). Each marker represents the finished generation of a function. The markers are ordered so that the nth marker on every line represents the same function. Total time is annotated as hours and minutes.}
 	\label{fig:time}
 \end{figure}
 
@@ -70,12 +70,12 @@ related constraints have been posted yet.
 \begin{figure}[htp]
 	\centering
 	\includegraphics[width=\textwidth,height=\textheight]{results/figures/gadgets}
-	\caption{The ratio of occurence for each gadget broken down by strategy and sampling rate.
-Each dot shows the occurence ratio for one particular gadget. The data is sorted.}
+	\caption{The ratio of occurrence for each gadget broken down by strategy and sampling rate.
+Each dot shows the occurrence ratio for one particular gadget. The data is sorted.}
 	\label{fig:gadgets}
 \end{figure}
 
-Figure \ref{fig:gadgets} shows the occurence ratio of each gadget for the different
+Figure \ref{fig:gadgets} shows the occurrence ratio of each gadget for the different
 strategies and sampling rates. The x-axis shows a gadget id and there is no definitive
 correlation between the gadgets across strategies and sampling rates. I.e gadget 0 for the
 enumerate strategy at sampling rate 1 is not necessarily the same gadget 0 as the registers
@@ -89,7 +89,7 @@ sampling rate 1000. There are still many gadgets that survives between versions.
 
 Unfortunately, due to the shortcomings of the experiment this results is not comparable to
 the ones presented in other literature. However, it does hint at the potential gadget-
-breaking properties of each strategy. Enumerate and registers show decent potental and the
+breaking properties of each strategy. Enumerate and registers show decent potential and the
 schedule strategy shows great potential but it would have to be verified on a proper
 executable for the x86-64 architecture.
 
@@ -121,7 +121,7 @@ optimal, generally-applicable search strategy.
 
 Regardless of what the selection of strategies may indicate the possibilities for
 diversification are far broader than when approaching the problem in terms of register
-allocation and instruction scheduling as seperate procedures. It is important to keep in
+allocation and instruction scheduling as separate procedures. It is important to keep in
 mind that more unorthodox strategies that exploit the combined approach might be even
 more performant.
 

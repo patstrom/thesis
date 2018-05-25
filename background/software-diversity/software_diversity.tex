@@ -34,8 +34,8 @@ a human is not involved in the process (other than devising the process).
 What all of these techniques have in common is that they introduce some kind of chance into
 the development toolchain, which will not be the approach taken in this paper. Instead
 the focus will be on systematic and deterministic generation of \textit{static} diversity.
-Static diversity entails generating several, diverse executables; In constrast to
-\textit{dynamic} diversity which involves providing diverse runtimes\cite{survey}.
+Static diversity entails generating several, diverse executables; In contrast to
+\textit{dynamic} diversity which involves providing diverse run-times\cite{survey}.
 
 The motivation is that by employing diversification techniques one can break the
 reactive nature of software security and shift the advantage from the attacker to the
@@ -64,11 +64,11 @@ and chaining them together one can achieve arbitrary code execution \cite{rop}.
 For instruction set architectures with varying instruction sizes there can be
 \textit{hidden} gadgets. These are gadgets not placed there by the compiler. \textcite{rop}
 explains them with an analogy to the English language; Where the word "dress" can be found
-in "Address" and the word "head" can be found in "The Adress" depending on where you start
+in "Address" and the word "head" can be found in "The Address" depending on where you start
 and stop reading. When instructions can be of varying lengths then the same sequence of
 bytes can be interpreted as different instructions depending on where one starts reading.
 If you can find a hidden "ret" instruction you can potentially find a whole gadget not
-explicitly placed there by ther compiler.
+explicitly placed there by the compiler.
 
 \textcite{large-scale-automated} explored two static compiler techniques to break these
 gadgets. By inserting NOP instructions randomly in the code and by randomizing the
