@@ -18,13 +18,15 @@ While the total execution time is daunting, it does represent about 23 million s
 found (but only 23000 emitted). The enumerate strategy is fairly quick; 51 minutes for one
 million solutions of every function means that on average, one solution was found every
 139ns. The same number for registers and schedule is 343ns and 1095ns respectively. To
-mitigate the long execution time the solutions can be emitted directly when found.
+mitigate the impact of a long execution time the solutions can be emitted directly when
+found.
 
-disUnison uses the same branching and search heuristics as the base Unison model. This is
-not necessarily the most performant. The problem with tweaking parts of the model is that
-there their performance will largely have to be determined empirically. Supposedly, the
-optimal search heuristic for the registers strategy would not be the same as the optimal
-search heuristic for the schedule strategy.
+disUnison does not use the same search heuristics as the base Unison model. The disUnison
+search heuristics makes implementation easier at the potential cost of execution time. The
+problem with optimizing the branching and search heuristics of the model is that the
+performance impact will largely have to be determined empirically. Supposedly, the optimal
+search heuristic for the registers strategy would not be the same as the optimal search
+heuristic for the schedule strategy.
 
 \section{Cost}
 
@@ -95,36 +97,43 @@ executable for the x86-64 architecture.
 
 \section{Conclusion and Future Work}
 
-% Have a parahgraph that talks about the implementation difficulty and that the constraint
-% solver approach makes sense. Then talk about the shortcomings (proper executable, x86-64,
-% size etc)
-
-While both the enumerate and registers strategies showed great results in terms of cost,
-neither of them were effective at breaking gadgets. With regards to both the gadget
-breaking properties and estimated cost of the schedule strategy the hypothesis definitely
-holds true. More gadgets are broken and the overhead with respect to the LLVM solution
-is negligible.
-
-For a more proper comparison of the systematic approach tests would have to be repeated
-targeting the 86-64 architecture. As mentioned in Section \ref{sec:arch} Unison in its
-current state does not support the x86-64 architecture. If or when Unison or a similar
-tool implements support for the x86-64 architecture, or at the very least an architecture
-with a complex instruction set, the experiment would have be repeated on that platform to
-test whether or not the strategies are equally performant at breaking hidden gadgets.
-
-Another shortcoming is the difficulty of compiling a large program even without applying
-diversification strategies. Most of the functions of 433.milc were too large to find even
-one solution. This is an obvious problem for any practical purpose of the systematic
-approach. One solution to this problem is to modify the search heuristics of the Unison
-model even further. Unfortunately it would be difficult, if not impossible, to find an
-optimal, generally-applicable search strategy.
+The core of the disUnison model, the three strategies, are implemented in just a handful
+lines of code and, thanks to being an extension of the Unison model, there is never a risk
+of breaking the functionality of the generated code. This is not to say that every
+diversification strategy allows for proper executable code to be generated, but thanks to
+the nature of constraint solving the result will either be all possible solutions
+(given enough execution time) or a proof that no solution, and thus no proper executable,
+exists.
 
 Regardless of what the selection of strategies may indicate the possibilities for
 diversification are far broader than when approaching the problem in terms of register
 allocation and instruction scheduling as separate procedures. It is important to keep in
 mind that more unorthodox strategies that exploit the combined approach might be even
-more performant.
+more performant. As mentioned in \ref{sec:strategies} the Unison model consists of more
+variables than the 4 explored in this experiment, all of which offers potential for
+diversity.
 
-Summarized, the conclusion is that systematically generating diverse binaries definitely
-has potential. However, the shortcomings of the experiment and the tool are a testament to
-the future work required.
+By exploring lower cost solutions first and applying tiny, incremental changes between
+solutions the resulting code is relatively performant. There is also an opportunity to
+add constraints to the model that steers this cost in some direction. By not randomizing
+we have full control of the process and can limit the resulting code in whatever way is
+appropriate.
+
+For a more proper comparison of the systematic approach tests would have to be repeated
+targeting the 86-64 architecture. As mentioned in Section \ref{sec:arch} Unison in its
+current state does not support the x86-64 architecture. If or when Unison or a similar
+tool implements support for the x86-64 architecture, the experiment would have be repeated
+on that platform to test whether or not the strategies are equally performant.
+
+Another shortcoming is the difficulty of compiling a large program even without applying
+diversification strategies. Most of the functions of 433.milc were too large to find even
+one solution (when searching for about one hour). This is an obvious problem for any
+practical purpose of the systematic approach. One solution to this problem is to modify
+the search heuristics of the disUnison model even further. Unfortunately it would be
+difficult, if not impossible, to find an optimal, generally-applicable search strategy.
+
+Using a constraint solver to generate diverse binaries is an attractive approach given
+the ease of implementation and the quality of the generated code. The resulting population
+of diversified programs shows that the systematic approach has great potential at breaking
+gadgets. However, the shortcomings of the experiment and the tool are a testament to the
+future work required.
