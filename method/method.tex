@@ -26,20 +26,17 @@ they have to be to achieve similar results. In this chapter we aim to explore th
 
 \section{Gecode Constraint Solver}
 
-% This might need tweaking if restart based search is used.
-Gecode is implemented such that a problem is modeled in a class inheriting from the
-\textit{Space} base class. It is in this derived class variables are defined and constraints
-are posted. When a solution is found by the Gecode branch and bound engine the virtual
-member function \textit{constrain(b)} is called, where \textit{b} is the latest solution.
-This function is expected to post constraints on future solutions based on the latest
-solution. These constraints accumulate so posting constraints based on the previous solution
-is sufficient for diversity.
+\section{The Gecode Constraint Solver}
+
+A branch and bound search can be implemented in Gecode by overriding a virtual member
+function. This function take the most recently found solution as an argument and posts
+constraints on the next solution based on the values of the argument. These constraints
+accumulate so that all future solutions will be affected by all already found solutions.
 
 Each strategy is implemented by constraints that, when satisfied, ensures the
-generated solutions differ in the correct manner. These constraints are posted in the
-\textit{constrain()} function. In general the constraints will make sure that future
-solutions does not contain the same combination of variable - value mapping for certain
-variables.
+future solutions differ in the sought after manner. These constraints are posted in this
+virtual function. In general the constraints will make sure that future solutions does not
+contain the same combination of variable - value mapping for certain variables.
 
 Due to the nature of Unison and the Gecode constraint solver calling the implementations
 \textit{transformations}, which is the common nomenclature in software diversity, would be
@@ -49,11 +46,11 @@ branching.
 
 The implementation that makes up the following strategies that are used in the experiment
 is henceforth referred to as disUnison (from the word disunity). It is a variation of the
-original Unison model, where the key difference is that the behaviour of \textit{constrain()}
-is modified. The bulk of the Unison model is still present in the disUnison model.
+original Unison model, where the key difference is that the behaviour of the branch and
+bound search is modified. The bulk of the Unison model, that ensures functional code is
+emitted, is still present in the disUnison model.
 
 \input{method/strategies.tex}
-
 
 \section{Performance}
 \label{sec:performance}
@@ -102,7 +99,7 @@ and 99000 are discarded.
 \section{Number of Possible Versions}
 
 The number of possible combinations is of course not limitless. 1000 version at a sampling
-rate of 1000 means that there needs to be at least 1000000 must be found. Unison works
+rate of 1000 means that there needs to be at least 1000000 possible solutions. Unison works
 at the function level and for every function there might not be 1000000 possible versions.
 
 Total number of possible combination would be an interesting metric to evaluate, unfortunately
@@ -119,15 +116,16 @@ still be generated. More information about these functions can be seen in the
 \label{sec:arch}
 
 Unison does not currently support the x86 or x86-64 architecture. Only ARM, Hexagon and MIPS
-are supported \cite{unison-src}. None of the supported architectures are complex instruction
-set architectures and thus hidden gadgets are not a problem. However, regular gadgets are
-still present and for the purposes of systematic strategies for diversity the supported
-architectures are sufficient. The tests will be conducted on programs compiled for the
-Hexagon architecture.
+are supported \cite{unison-src}. None of the supported architectures are generally considered
+when testing automated software diversity, but for the purposes of evaluating the use of
+a systematic approach the supported architectures offers a glimpse at the potential. For
+the experiment the code will be compiled for the Hexagon architecture.
 
-One factor to keep in mind is that the diversification strategies are applied globally.
-The strategies are thus supposedly equally effective at destroying hidden gadgets as
-regular gadgets.
+Hexagon functions very differently from x86 but for our purposes targeting Hexagon will
+still hint at the gadget-breaking potential of the systematic approach. After all,
+breaking gadgets is about shifting, adding or removing \textit{any} instruction in the
+program, and since the diversification strategies are applied globally they are supposedly
+equally effective regardless of the placement or structure of the instruction.
 
 \section{Experiment}
 
@@ -160,7 +158,7 @@ Our method of testing is thus as follows:
 \begin{enumerate}
 	\item For every function generate 1000 versions
 	\item Version 0 of every function will make up program 0, version 1 will make up program
-		1 and so on and so forth
+		1 and so forth
 	\item For every program find all gadgets and its cost (in cycles)
 	\item Calculate our metrics
 	\item Repeat for all strategies
