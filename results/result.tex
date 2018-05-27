@@ -65,7 +65,8 @@ those with lower cost than LLVM.
 
 Interesting to note is that all strategies and sampling rates have found a solution with
 an equally low cost. This is presumably the very first solution found; When no strategy
-related constraints have been posted yet.
+related constraints have been posted yet. Thanks to the search heuristic, where lower cost
+solutions are explored first, this is also the optimal cost.
 
 \section{Surviving Gadgets}
 
@@ -73,7 +74,8 @@ related constraints have been posted yet.
 	\centering
 	\includegraphics[width=\textwidth,height=\textheight]{results/figures/gadgets}
 	\caption{The ratio of occurrence for each gadget broken down by strategy and sampling rate.
-Each dot shows the occurrence ratio for one particular gadget. The data is sorted.}
+Each dot shows the occurrence ratio for one particular gadget. The data is sorted to allow
+	for a better overview.}
 	\label{fig:gadgets}
 \end{figure}
 
@@ -83,11 +85,13 @@ correlation between the gadgets across strategies and sampling rates. I.e gadget
 enumerate strategy at sampling rate 1 is not necessarily the same gadget 0 as the registers
 strategy at sampling rate 10.
 
-% Rewrite this. They are actually pretty decent.
 As seen in figure \ref{fig:gadgets}, neither the enumeration nor the registers strategy
 were particularly effective at breaking gadgets for any sampling rate. There is a slight
 improvement for higher sampling rates but it is not particularly impressive even at
-sampling rate 1000. There are still many gadgets that survives between versions.
+sampling rate 1000. There are still many gadgets that survives across a large percentage of
+versions. The schedule strategy, however, performed well with no gadget being present
+in even 50\% of all versions for the lowest sampling rate and for sampling rate 1000
+about 82\% of gadgets only appear in one version.
 
 Unfortunately, due to the shortcomings of the experiment this results is not comparable to
 the ones presented in other literature. However, it does hint at the potential gadget-
@@ -120,7 +124,7 @@ we have full control of the process and can limit the resulting code in whatever
 appropriate.
 
 For a more proper comparison of the systematic approach tests would have to be repeated
-targeting the 86-64 architecture. As mentioned in Section \ref{sec:arch} Unison in its
+targeting the x86-64 architecture. As mentioned in Section \ref{sec:arch} Unison in its
 current state does not support the x86-64 architecture. If or when Unison or a similar
 tool implements support for the x86-64 architecture, the experiment would have be repeated
 on that platform to test whether or not the strategies are equally performant.
