@@ -5,23 +5,25 @@ a diverse discipline and there is a wide range of research all with different fo
 set of goals. The one common factor is that they all explore the potential benefits of
 diverse engineering \cite{survey}.
 
-Software diversity is a relatively common approach to certain security issues such as
-memory errors exploits and different approaches have been taken. For example \textcite{os-randomization}
-randomizes the interface between user space applications and the operating system, \textcite{mem-exploits}
-introduces a level of indirection to function call to randomize static data at the C source
-code level and \textcite{add-obfuscation} obfuscates the code and data of an executable by
-randomizing the absolute locations.
+Software diversity has a myriad of applications ranging from fault-tolerance to re-usability
+to security \cite{survery}. For security puposes it is a relatively common approach to
+certain issues such as memory error exploits and different approaches have been taken.
+For example \textcite{os-randomization} randomizes the interface between user space
+applications and the operating system, \textcite{mem-exploits} introduces a level of
+indirection to function call to randomize static data at the C source code level and
+\textcite{add-obfuscation} obfuscates the code and data of an executable by randomizing
+the absolute locations.
 % Stuff about memory errors
 %\cite{os-randomization,mem-exploits,add-obfuscation,compiler-generated-sw-div}
 
 Failing to defend against certain memory errors can introduce new attack vectors for a
 determined adversary. Some of these attacks are based on the availability to reverse engineer
-an vulnerable executable, where software diversity can once again prove an effective defense.
-To defend against reverse-engineering \textcite{binary-stirring} dynamically determine the
-addresses of basic blocks at load time, \textcite{smashing-gadgets} performs in-place code
-randomization to make each executable look different without incurring significant overhead
-and \textcite{librando} implements a library to transparently diversify code compiled and
-executed by JIT-compilers.
+a vulnerable executable, where software diversity can once again prove an effective defense.
+To defend against reverse-engineering based attacks \textcite{binary-stirring} dynamically
+determine the addresses of basic blocks at load time, \textcite{smashing-gadgets} performs
+in-place code randomization to make each executable look different without incurring
+significant overhead and \textcite{librando} implements a library to transparently
+diversify code compiled and executed by JIT-compilers.
 
 Many more strategies and techniques exist for what is known as
 \textit{automated software diversity} and \textcite{SoK} provides an overview of different
@@ -32,15 +34,14 @@ a human is not involved in the process (other than devising the process).
 %\cite{SoK,binary-stirring,large-scale-automated,readactor,smashing-gadgets,synthetic-diversity,librando},
 
 What all of these techniques have in common is that they introduce some kind of chance into
-the development toolchain, which will not be the approach taken in this paper. Instead
-the focus will be on systematic and deterministic generation of \textit{static} diversity.
-Static diversity entails generating several, diverse executables; In contrast to
-\textit{dynamic} diversity which involves providing diverse run-times\cite{survey}.
+the development toolchain, which as mentioned will not be the approach taken in this paper.
+Instead the focus will be on systematic and deterministic generation of \textit{static}
+diversity.  Static diversity entails generating several, diverse executables; In contrast
+to \textit{dynamic} diversity which involves providing diverse run-times\cite{survey}.
 
 The motivation is that by employing diversification techniques one can break the
 reactive nature of software security and shift the advantage from the attacker to the
-defender \cite{compiler-generated-sw-div}, and by doing it without randomization one has
-greater control over the process.
+defender \cite{compiler-generated-sw-div}.
 
 \subsection{Return Oriented Programming}
 \label{rop}
@@ -51,10 +52,12 @@ execution without the limitation of calling complete functions.
 
 A typical return-into-libc attack involves somehow diverting the program control
 flow to transfer control to code that already exists in the program's address space,
-it could e.g be the system() library function, allowing the adversary to, for example, spawn
-a shell without injecting any code. By first jumping to a sequence of instructions such as
-"pop reg; pop reg; ret;" it is possible to chain together several of these function calls,
-performing more complex operations \cite{non-exec-stack,advanced-return-into-libc}.
+it could e.g be the system() library function, and use it in an unintended manner. For
+example an adversary could utilize a buffer overflow to overwrite the return address on
+the stack so that it instead points to a function call that leaks sensitive information.
+. By first jumping to a sequence of instructions such as "pop reg; pop reg; ret;" it is
+possible to chain together several of these function calls, performing more complex
+operations \cite{non-exec-stack,advanced-return-into-libc}.
 
 \textcite{rop} builds upon this concept by instead diverting the control flow to just a short
 sequence of instruction, usually just two or three instructions, typically ending with a
