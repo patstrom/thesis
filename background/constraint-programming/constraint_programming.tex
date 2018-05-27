@@ -3,7 +3,7 @@
 
 Constraint programming is a programming paradigm for solving combinatorial problems.
 By declaring all variable's possible values and their \textit{constraints}, the relationship
-between them when part of a solution, a \textit{constraint solver} can search the solution
+between them when part of a solution, a \textit{constraint solver} can search the combinatorial
 space and find an assignment of variables to values that is consistent with the constraints.
 A constraint solver effectively explores different possible combinations systematically,
 by a potentially incomplete local inference (also known as \textit{constraint propagation})
@@ -45,7 +45,7 @@ in Gecode.
 
 \textit{Branch and bound} is an efficient strategy to find the optimal solution to a
 combinatorial problem which in essence constitutes comparing potential solutions to the
-currently best found solution, choosing the better of the two\cite{BaB}.
+currently best found solution, keeping the better of the two\cite{BaB}.
 
 We will adopt a similar strategy, but instead of constraining solutions to be better we
 will require them to be \textit{different}. In addition, no solutions will be discarded.
