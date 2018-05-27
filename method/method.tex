@@ -1,32 +1,8 @@
 \chapter{Diversification with Unison}
 
-The two strategies explored by \textcite{large-scale-automated} proved to be effective in
-the sense that very few gadgets survived between the emitted binaries. Specifically, the
-strategies consists of randomizing the instruction schedule or inserting no-op instructions
-randomly in the emitted assembly.
-
-Summarized, the prodecure \textcite{large-scale-automated} used to evaluate the individual
-strategies was to generate 25 different versions for each transformation and testing their
-performance, frequency of surviving gadgets and file size compared to the original. For
-our purposes the instruction schedule transformation is the most interesting, as it relates
-more directly to Unison.
-
-The presented result is that randomizing the instruction schedule resulted in an 9\%
-slowdown and that it removes on average 95\% of gadgets \textit{with respect to the original executable}.
-The file size test for the schedule transformation are described as "inconclusive" but
-also that "randomized instruction scheduling has only a negligible effect of file size".
-\footnote{More comprehensive tests were done on other transformations, including pairwise
-testing of surviving gadgets.}
-
-The problem with the above approach is first and foremost that the amount of generated
-binaries is very small. Presumably it will lose effectiveness after some number of
-generated binaries, and at some point the pigeonhole principle will come into effect.
-What is not explored is how many different versions can be generated and how different do
-they have to be to achieve similar results. In this chapter we aim to explore this.
-
-\section{Gecode Constraint Solver}
-
-\section{The Gecode Constraint Solver}
+As mentioned briefly in Section \ref{sec:constraint}, the only constraint solver currently
+supported by Unison is Gecode. While Unison in it's entirety is more than the solver it is
+exclusively in the solver our diversification process takes place.
 
 A branch and bound search can be implemented in Gecode by overriding a virtual member
 function. This function take the most recently found solution as an argument and posts
@@ -51,6 +27,22 @@ bound search is modified. The bulk of the Unison model, that ensures functional 
 emitted, is still present in the disUnison model.
 
 \input{method/strategies.tex}
+
+\section{Number of Possible Versions}
+
+The number of possible combinations is of course not limitless. 1000 version at a sampling
+rate of 1000 means that there needs to be at least 1000000 possible solutions. Unison works
+at the function level and for every function there might not be 1000000 possible versions.
+
+Total number of possible combination would be an interesting metric to evaluate, unfortunately
+it varies widely between functions and for some it might require days of search. Empirically,
+most functions in the suite to be used do have 1000000 versions, so 1000 versions appears
+to be a good number of versions to generate.
+
+For those function where the 1000 versions cannot be generated for the given strategy and
+sampling rate the ones that have been generated will be re-used so that 1000 programs can
+still be generated. More information about these functions can be seen in the
+\ref{appendix:function_names}.
 
 \section{Performance}
 \label{sec:performance}
@@ -87,30 +79,14 @@ e.g 100 solutions are discarded between every emitted executable perhaps more ga
 broken.
 
 An important factor to consider when discarding solutions is that in the disUnison model
-branching tries explores lower cost solutions first (see \ref{sec:performance}.
-Discarding solutions can thus impact performance in a negative way in the sense that the
-later version might have a wider distribution for the cost variable.
+branching explores lower cost solutions first (see \ref{sec:performance}. Discarding
+solutions can thus impact performance in a negative way in the sense that the later
+version might have a wider distribution for the cost variable.
 
 Sampling rates of 1, 10, 100 and 1000 will be evaluated for every strategy, where a
 sampling rate of 100 means that every 100th solution is kept. Generating 1000 versions
 at a sampling rate of 100 would mean that 100000 solutions are explored, 1000 are emitted
 and 99000 are discarded.
-
-\section{Number of Possible Versions}
-
-The number of possible combinations is of course not limitless. 1000 version at a sampling
-rate of 1000 means that there needs to be at least 1000000 possible solutions. Unison works
-at the function level and for every function there might not be 1000000 possible versions.
-
-Total number of possible combination would be an interesting metric to evaluate, unfortunately
-it varies widely between functions and for some it might require days of search. Empirically,
-most functions in the suite to be used do have 1000000 versions, so 1000 versions appears
-to be a good number of versions to generate.
-
-For those function where the 1000 versions cannot be generated for the given strategy and
-sampling rate the ones that have been generated will be re-used so that 1000 programs can
-still be generated. More information about these functions can be seen in the
-\ref{appendix:function_names}.
 
 \section{Architecture}
 \label{sec:arch}
@@ -123,9 +99,10 @@ the experiment the code will be compiled for the Hexagon architecture.
 
 Hexagon functions very differently from x86 but for our purposes targeting Hexagon will
 still hint at the gadget-breaking potential of the systematic approach. After all,
-breaking gadgets is about shifting, adding or removing \textit{any} instruction in the
-program, and since the diversification strategies are applied globally they are supposedly
-equally effective regardless of the placement or structure of the instruction.
+breaking gadgets is about shifting, adding, removing or otherwise modifying \textit{any}
+instruction in the program, and since the diversification strategies are applied globally
+they are supposedly equally effective regardless of the placement or structure of the
+instruction.
 
 \section{Experiment}
 
@@ -150,8 +127,9 @@ any feasible tests on my test machine, which runs a 4-core Intel(R) Core(TM) i7-
 @ 1.80GHz and 8 gigabytes of memory. The Unison test suite will be used instead, which is
 a sample of functions from the SPEC2006 benchmarks. There are 23 functions and their names
 are listed in \ref{appendix:function_names}. These functions will together make a
-\textit{program}. Since they are not from the same benchmark they cannot be linked
-together. Instead linking will be simulated by placing them in the same order every time.
+\textit{program}. Since they do not make up a complete executable they cannot be linked
+together. Instead linking will be simulated by placing them in the same order every time
+to ensure a fair comparison between them.
 
 Our method of testing is thus as follows:
 
@@ -175,3 +153,7 @@ Our method of testing is thus as follows:
 			\item 1000
 		\end{itemize}
 \end{enumerate}
+
+In other words, for every combination of strategy and sampling rate (12 in total) 1000
+different versions of all 23 functions will be generated. These function versions will
+then be combined to yield 1000 different program versions.
