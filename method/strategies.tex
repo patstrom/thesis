@@ -30,69 +30,15 @@ Unison can differ the solutions in four main ways:
 	\item Split live-ranges and spill temporaries differently
 \end{itemize}
 
-The results of this strategy serve as a baseline for the program. It it literally happens
-if we do nothing.
-
-\subsection{Instruction Schedule}
-
-Given the work of \textcite{large-scale-automated} we are given an opportunity to compare
-systematic diversity to randomized diversity. Generating all possible schedules is directly
-comparable to randomizing the instruction schedule. It is interesting to see how well
-the systematic approach performs, and how it must be tweaked to achieve results similar
-to the randomizing approach. Do note that this strategy is applied during the compilation
-process and not on an already fixed instruction schedule. The strategy is not limited to
-finding combinations of a set sequence of instructions; A shorter or longer schedule can
-be generated.
-
-There are two variables and one set of interest for this strategy. In the Unison documentation
-they are described as follow:
-
-\vspace{0.2cm}
-
-\noindent\makebox[\textwidth]{
-	\begin{tabular}{c|lr}
-		\textbf{Type} & \textbf{Name} & \textbf{Description} \\ \hline
-		\textbf{Set} & $O$ & The set of all operations in the program \\ \hline
-		\multirow{2}{*}{\textbf{Variable}}
-			& $a_o \in \{0, 1\}$ & whether operation \textit{o} is active (0 is false and 1 is true) \\
-			& $c_o \in \mathbb{N}_0$ & issue cycle of operation \textit{o} \\
-	\end{tabular}
-}
-
-\vspace{0.2cm}
-
-
-In pseudo mathematical notation we want to post the constraint:
-
-\vspace{0.2cm}
-\noindent\makebox[\textwidth]{
-	$\neg ( (\bigwedge\limits_{o \in O} (a_o = b.a_o)) \land (\bigwedge\limits_{m \in \{O | b.a_m = 1\}} (c_m = b.c_m)) )$
-}
-\vspace{0.2cm}
-
-Very important to note is that the variables preceded by \textit{b.} (i.e $b.a_o$ and
-$b.c_m$) represents an actual value. More precisely the value that is part of the previous
-solution. For example $b.c_m$ represents the issue cycle of operation m in the previous
-solution. The variables not preceded by \textit{b.} are variables in the constraint
-programming sense and their corresponding domains make up the remaining combinations to
-explore.
-
-The constraint described with words is that we disallow the exact same combination of
-active operations and their corresponding issue cycle. We are only concerned about the
-issue cycle of the previous solution's active operations, but we do take into account that
-future solutions can have the same instructions issued at the same cycles if it has fewer
-or more active operations.
-
-As mentioned in \ref{sec:unison}, some operations can be implemented by multiple
-instructions. For the purpose of breaking gadgets we do not want to allow functionally
-equivalent instructions. While they would indeed make the sequence of bytes differ, the
-functionality would be the same and the gadget would survive.
+The results of this strategy serve as a baseline for the program. It is literally what
+happens if we do nothing.
 
 \subsection{Registers}
 
 The strategy to diversify the register allocation of the resulting binaries is an attractive
 one due to causing no run-time overhead. Consequently, if it introduces significant diversity
-it is an excellent candidate.
+it is an excellent candidate. As register allocation is one of Unison's primary purpose it
+feels like a natural strategy to explore.
 
 There are two variables and one set that are of concern when posting constraints on the register
 allocation. Their description from the Unison documentation are as follows:
@@ -115,14 +61,67 @@ In order to disallow the same register allocation we post the constraint:
 
 \vspace{0.2cm}
 \noindent\makebox[\textwidth]{
-	$\neg (\bigwedge\limits_{p \in P} ( (x_p = b.x_p) \land (ry_p = b.ry_p) ))$
+	$\neg (\bigwedge\limits_{p \in P} ( (x_p = prev.x_p) \land (ry_p = prev.ry_p) ))$
 }
 \vspace{0.2cm}
+
+Very important to note is that the variables preceded by \textit{prev.} (i.e $prev.x_p$ and
+$prev.ry_p$) represents an actual value. More precisely the value that is part of the previous
+solution. For example $prev.xy_p$ represents the register to which operand $p$ is assigned
+in the previous solution. The variables not preceded by \textit{prev.} are variables in
+the constraint programming sense and their corresponding domains make up the remaining
+combinations to explore.
 
 In words; We disallow the exact same combination of connected (used) operands and
 operand to register mapping.
 
-Just as for the instruction schedule constraint, the variables preceded by \textit{b.}
+\subsection{Instruction Schedule}
+
+Given how Unison functions diversifying the instruction schedule is an exciting strategy.
+As mentioned in Section \ref{sec:unison} Unison explores optional copies. In practice this
+means that during pre-processing optional \textit{operations} are inserted so not only
+does Unison decide on the order the instructions are executed, but in a limited capacity
+Unison also inserts instructions (or deems instructions unnecessary). For the purposes
+of breaking gadgets shifting instructions can help immensely as an adversary is reliant
+on the exact addresses of the gadgets.
+
+There are two variables and one set of interest for this strategy. In the Unison
+documentation they are described as follow:
+
+\vspace{0.2cm}
+
+\noindent\makebox[\textwidth]{
+	\begin{tabular}{c|lr}
+		\textbf{Type} & \textbf{Name} & \textbf{Description} \\ \hline
+		\textbf{Set} & $O$ & The set of all operations in the program \\ \hline
+		\multirow{2}{*}{\textbf{Variable}}
+			& $a_o \in \{0, 1\}$ & whether operation \textit{o} is active (0 is false and 1 is true) \\
+			& $c_o \in \mathbb{N}_0$ & issue cycle of operation \textit{o} \\
+	\end{tabular}
+}
+
+\vspace{0.2cm}
+
+In pseudo mathematical notation we want to post the constraint:
+
+\vspace{0.2cm}
+\noindent\makebox[\textwidth]{
+	$\neg ( (\bigwedge\limits_{o \in O} (a_o = prev.a_o)) \land (\bigwedge\limits_{m \in \{O | prev.a_m = 1\}} (c_m = prev.c_m)) )$
+}
+\vspace{0.2cm}
+
+Just as for the registers strategy constraint, the variables preceded by \textit{prev.}
 represents the actual value that is part of the previous solution, whereas the ones not
-preceded by \textit{b.} are the constraint programming variables used when searching for
+preceded by \textit{prev.} are the constraint programming variables used when searching for
 future solutions.
+
+The constraint described with words is that we disallow the exact same combination of
+active operations and their corresponding issue cycle. We are only concerned about the
+issue cycle of the previous solution's active operations, but we do take into account that
+future solutions can have the same instructions issued at the same cycles if it has fewer
+or more active operations.
+
+As mentioned in \ref{sec:unison}, some operations can be implemented by multiple
+instructions. For the purpose of breaking gadgets we do not want to allow functionally
+equivalent instructions. While they would indeed make the sequence of bytes differ, the
+functionality would be the same and the gadget would survive.
