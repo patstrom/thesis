@@ -33,7 +33,6 @@ temporaries as domains, respectively.
 
 With Unison we have control over every decision made related to instruction scheduling and
 register allocation, and more importantly we can base decisions on previously found solutions.
-A solution in this case being an executable. While LLVM MIR is not close enough to the
-emitted assembly to do any gadget searching we can still implement the strategies done by
-\textcite{large-scale-automated} (who also worked on the LLVM MIR level), but instead of
-e.g randomizing the schedule we can deliberately vary it from one solution to another.
+Unison works on the function level and a solution in this case refers to an instruction
+schedule and register allocation for the given function that is executable on the target
+architecture.
