@@ -28,6 +28,26 @@ emitted, is still present in the disUnison model.
 
 \input{method/strategies.tex}
 
+\section{Sampling Rate}
+\label{sec:sampling_rate}
+
+When exploring combinations with a constraint solver similar solutions are found close to
+each-other (in-time). A factor in diversification might be to exploit this property
+alongside the diversification strategy. Certain strategies might be favorable when
+considering execution time but not particularly good at breaking gadgets. However, if
+e.g 100 solutions are discarded between every emitted executable perhaps more gadgets are
+broken.
+
+An important factor to consider when discarding solutions is that in the disUnison model
+branching explores lower cost solutions first (see Section \ref{sec:performance}). Discarding
+solutions can thus impact performance in a negative way in the sense that the later
+version might have a wider distribution for the cost variable.
+
+Sampling rates of 1, 10, 100 and 1000 will be evaluated for every strategy, where a
+sampling rate of 100 means that every 100th solution is kept. Generating 1000 versions
+at a sampling rate of 100 would mean that 100000 solutions are explored, 1000 are emitted
+and 99000 are discarded.
+
 \section{Number of Possible Versions}
 
 The number of possible combinations is of course not limitless. 1000 version at a sampling
@@ -41,7 +61,7 @@ to be a good number of versions to generate.
 
 For those function where the 1000 versions cannot be generated for the given strategy and
 sampling rate the ones that have been generated will be re-used so that 1000 programs can
-still be generated. More information about these functions can be seen in the
+still be generated. More information about these functions can be seen in appendix
 \ref{appendix:function_names}.
 
 \section{Performance}
@@ -68,25 +88,6 @@ Certain strategies would of course have an overhead, but with respect to the
 optional parameter will not be used during the experiment. It is however an exciting
 factor to consider for future work.
 
-\section{Sampling Rate}
-\label{sec:sampling_rate}
-
-When exploring combinations with a constraint solver similar solutions are found close to
-each-other (in-time). A factor in diversification might be to exploit this property
-alongside the diversification strategy. Certain strategies might be favorable when
-considering execution time but not particularly good at breaking gadgets. However, if
-e.g 100 solutions are discarded between every emitted executable perhaps more gadgets are
-broken.
-
-An important factor to consider when discarding solutions is that in the disUnison model
-branching explores lower cost solutions first (see \ref{sec:performance}. Discarding
-solutions can thus impact performance in a negative way in the sense that the later
-version might have a wider distribution for the cost variable.
-
-Sampling rates of 1, 10, 100 and 1000 will be evaluated for every strategy, where a
-sampling rate of 100 means that every 100th solution is kept. Generating 1000 versions
-at a sampling rate of 100 would mean that 100000 solutions are explored, 1000 are emitted
-and 99000 are discarded.
 
 \section{Architecture}
 \label{sec:arch}
@@ -128,8 +129,8 @@ any feasible tests on my test machine, which runs a 4-core Intel(R) Core(TM) i7-
 a sample of functions from the SPEC2006 benchmarks. There are 23 functions and their names
 are listed in \ref{appendix:function_names}. These functions will together make a
 \textit{program}. Since they do not make up a complete executable they cannot be linked
-together. Instead linking will be simulated by placing them in the same order every time
-to ensure a fair comparison between them.
+nor executed. Instead linking will be simulated by placing them in the same order every time
+estimated to ensure a fair comparison between them.
 
 Our method of testing is thus as follows:
 

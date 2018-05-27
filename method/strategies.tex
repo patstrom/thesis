@@ -40,7 +40,7 @@ one due to causing no run-time overhead. Consequently, if it introduces signific
 it is an excellent candidate. As register allocation is one of Unison's primary purpose it
 feels like a natural strategy to explore.
 
-There are two variables and one set that are of concern when posting constraints on the register
+There are two variables and one set that are of concern when diversifying the register
 allocation. Their description from the Unison documentation are as follows:
 
 \vspace{0.2cm}
@@ -121,7 +121,7 @@ issue cycle of the previous solution's active operations, but we do take into ac
 future solutions can have the same instructions issued at the same cycles if it has fewer
 or more active operations.
 
-As mentioned in \ref{sec:unison}, some operations can be implemented by multiple
+As mentioned in Section \ref{sec:unison}, some operations can be implemented by multiple
 instructions. For the purpose of breaking gadgets we do not want to allow functionally
 equivalent instructions. While they would indeed make the sequence of bytes differ, the
 functionality would be the same and the gadget would survive.
