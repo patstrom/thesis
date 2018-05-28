@@ -70,9 +70,9 @@ still be generated. More information about these functions can be seen in append
 An important variable in Unison's original model is cost. It is the deciding factor of
 whether a solution is better than another during the branch and bound search. It is a sum
 of the estimated cost of each basic block, weighted by the estimated execution frequencies
-\cite{unison-docs}. Cost can be either cycles of file size depending on the optimization
-goal. For the experiment the optimization goal will be speed, and thus cost will be
-measured in cycles.
+\cite{unison-docs}. Cost can be either cycles or code size depending on the optimization
+goal. For the experiment the optimization goal will be speed, but both metrics will be
+presented in the result.
 
 In the original Unison model the cost variable is used both for branching and during the
 branch and bound process. In the disUnison model it is still used for branching, but future
