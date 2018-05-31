@@ -14,7 +14,7 @@ indirection to function call to randomize static data at the C source code level
 \textcite{add-obfuscation} obfuscates the code and data of an executable by randomizing
 the absolute locations.
 % Stuff about memory errors
-%\cite{os-randomization,mem-exploits,add-obfuscation,compiler-generated-sw-div}
+% \cite{os-randomization,mem-exploits,add-obfuscation,compiler-generated-sw-div}
 
 Failing to defend against certain memory errors can introduce new attack vectors for a
 determined adversary. Some of these attacks are based on the availability to reverse engineer
@@ -48,27 +48,111 @@ defender \cite{compiler-generated-sw-div}.
 
 \textcite{rop} introduces \textit{return-oriented programming} (ROP) as an extension of
 the \textit{return-to-libc}\cite{return-into-libc} attack that allows arbitrary code
-execution without the limitation of calling complete functions.
+execution without the limitation of calling complete functions. All examples in this
+subsection is only concerned with the x86 and x86-64 architecture.
 
 A typical return-into-libc attack involves somehow diverting the program control
 flow to transfer control to code that already exists in the program's address space,
 it could e.g be the system() library function, and use it in an unintended manner. For
 example an adversary could utilize a buffer overflow to overwrite the return address on
 the stack so that it instead points to a function call that leaks sensitive information.
-. By first jumping to a sequence of instructions such as "pop reg; pop reg; ret;" it is
+By first jumping to a sequence of instructions such as "pop reg; pop reg; ret;" it is
 possible to chain together several of these function calls, performing more complex
 operations \cite{non-exec-stack,advanced-return-into-libc}.
 
-\textcite{rop} builds upon this concept by instead diverting the control flow to just a short
-sequence of instruction, usually just two or three instructions, typically ending with a
-"ret" instruction. These sequences are dubbed \textit{gadgets} and by carefully choosing
-and chaining them together one can achieve arbitrary code execution \cite{rop}.
+\textcite{rop} builds upon this concept by instead diverting the control flow to just these
+short sequences of instructions, usually just two or three instructions, typically ending
+with a "ret" instruction. These sequences are dubbed \textit{gadgets} and by carefully
+choosing and chaining them together one can achieve arbitrary code execution \cite{rop}.
 
 For instruction set architectures with varying instruction sizes there can be gadgets not
 explicitly placed there by the compiler. \textcite{rop} explains them with an analogy to
 the English language; Where the word "dress" can be found in "Address" and the word "head"
 can be found in "The Address" depending on where you start and stop reading. When
 instructions can be of varying lengths then the same sequence of bytes can be interpreted
-as different instructions depending on where one starts reading.  If you can find a hidden
+as different instructions depending on where one starts reading. If you can find a hidden
 "ret" instruction you can potentially find a whole gadget not explicitly placed there by
 the compiler.
+
+The reason that the "ret" instrution is convenient is because it transfers control flow
+to the instruction pointed to by the value at the top of the stack. I.e the "ret" instruction
+reads the top of the stack as a memory address and transfers the control flow to continue
+from that address. If an adversary can control the stack he or she can also control the
+control flow. Gadgets can end with other instructions depending on what is desirable.
+
+\subsubsection{A return-into-libc/ROP-attack Example}
+
+As an example attack consider the x86-64 version of the "split" challenge on ROP emporium
+\footnote{https://ropemporium.com/challenge/split.html}. The challenge consists of two
+files, a binary that is vulnerable to a buffer overflow and a "flag.txt" file. The goal
+is to provide a payload to the stdin of the binary that executes the command
+"/bin/cat flag.txt". It is a simple challenge in the sense that the string "/bin/cat flag.txt"
+and a call to the \textit{system()} function (which executes a shell command) are already
+present in the binary.
+
+In order to call the \textit{system()} function in an unindented manner we can exploit
+the buffer overflow vulnerability. Specifically in this example, the vulnerability is that
+a buffer of size 32 bytes is allocated and 96 bytes is read into it. The string will grow
+from lower memory addresses to higher while the stack grows from higher addresses to
+lower. In other words, by writing 92 bytes to the buffer, the top 60 bytes of the stack
+will be overwritten. Included in these 60 bytes is the \textit{return address} and by
+overwriting this to the location of the \textit{system()} function call we can call the
+function in an unindented manner.
+
+The calling convention of the AMD64 Linux Kernel is to load the arguments to the kernel
+interface in registers \textit{rdi, rsi, rdx, r10, r8 and r9} in that order\cite{system-v-abi}.
+In other words, we want the \texti{rdi} register to point to the "/bin/cat flag.txt" string
+before we call the \textit{system()} function. In order to do this we must find the sequence
+"pop rdi; ret" somewhere in the binary. If we manage to execute this gadget when the
+address of the "/bin/cat flag.txt" is at the top of the stack and the address of the call to 
+\textit{system()} is at the penultimate position the "pop rdi" instruction will load the
+address into the rdi register and increment the stack pointer (remember that the stack
+grows downwards). The "ret" instruction will then read the now current value at the top of
+the stack, which is the address to the \textit{system()} call, and transfer the program
+control there.
+
+Putting this together, we want to overwrite the return address of the vulnerable function
+with the address of our gadget (i.e the address of the "pop rdi" instruction). When control
+is transfered to the gadget the top of the stack should be the address of the "/bin/cat flag.txt"
+string, followed by the address of the \textit{system()} call.
+
+To find the offset of the return address we can run the program in a debugger and enter
+garbage to the stdin, e.g "AAAABBBBCCCCDDDDEEEEFFFF" and so on. If we overwrite the return
+address the program will most likely raise a segmentation fault, and from the core dump we
+can read what address it tried to divert control flow to. If it is e.g "0x45454545" (which
+is the ascii encoding of "EEEE") we know that by padding our payload with 16 characters we
+overwrite the return address. There are more clever ways to do this but the simple way
+also work. In this case the padding required is 40 bytes.
+
+The address of the gadget (the "pop rdi" instruction) to be used is 0x400883, the address
+of the "/bin/cat flag.txt" string is 0x601060 and the address of the system call is
+0x400810. All of these addresses were found using the radare2\footnote{https://github.com/radare/radare2}
+utility. We want to place the address of the gadget at the return address, followed by
+the address of the "/bin/cat flag.txt" followed by the address of the system call. We know
+from forcing a segmentation fault that to overwrite the return address we need 40 bytes of
+padding. We also know that since the input buffer and the stack grows in different directions
+the stack will read our values in the order we write them.
+
+The hexadecimal encoded payload for this example is thus "414141414141414141414141414141
+4141414141414141414141414141414141414141414141414183084000000000006010600000000000
+1008400000000000", which includes 40 "A"s (0x41) as padding, followed by the little endian
+representation of the addresses, each of which is 8 bytes (16 hexadecimal digits). When
+this payload is posted the stack will look like Figure \ref{fig:after-payload}. The
+function requesting the input will reach its "ret" instruction, 0x400883 will be popped
+from the stack and the control flow will be transfered there. The stack will now look like
+presented in Figure \ref{fig:after-first}. The "pop rdi" instruction will be executed and
+0x601060 will be loaded into register rdi and the stack pointer is incremented. 0x400810
+is now at the top of the stack and when the following ret instruction is executed the
+control flow will be transfered to the instruction at address 0x400810, which is a call
+to the system function. The system function, whose argument is located in the rdi register,
+will read the "/bin/cat flag.txt" string and execute the command and the contents of
+flag.txt will be printed.
+
+Appendix \reg{appendix:rop-exploit} contains the source code of a python script that
+executes this attack.
+
+\subsubsection{Defending against return-into-libc/ROP-attacks}
+
+
+
+% TODO: Explain how diversity and ROP relates to each other.
