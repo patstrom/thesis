@@ -24,6 +24,15 @@ have to disassemble all variations and construct a unique payload for every targ
 techniques that provide diversity between executables and/or runtimes have been researched
 as a defense to these code re-use attacks\cite{survey}.
 
+To understand how two executables can be semantically different but functionally equal
+consider an example pertaining the instruction schedule. Say there are two independent
+instructions, one of which is part of a gadget. By swapping the place of these two
+instructions the gadget is now different, but since the instructions are independent
+program functionality is the same. There are many decisions taken by the compiler that are
+not necessarily the only valid decision, and if one could explore all combinations of
+decisions one could systematically generate the entire population of semantically different
+but functionally equivalent executables.
+
 Constraint programming is a paradigm for solving combinatorial search problems wherein
 the relationship between variables are expressed as \textit{constraints}. It solves problems
 such as scheduling, vehicle routing and, in our case, compiling
