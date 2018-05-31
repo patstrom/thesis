@@ -92,7 +92,7 @@ present in the binary.
 
 In order to call the \textit{system()} function in an unindented manner we can exploit
 the buffer overflow vulnerability. Specifically in this example, the vulnerability is that
-a buffer of size 32 bytes is allocated and 96 bytes is read into it. The string will grow
+a buffer of size 32 bytes is allocated and 92 bytes is read into it. The string will grow
 from lower memory addresses to higher while the stack grows from higher addresses to
 lower. In other words, by writing 92 bytes to the buffer, the top 60 bytes of the stack
 will be overwritten. Included in these 60 bytes is the \textit{return address} and by
@@ -101,15 +101,15 @@ function in an unindented manner.
 
 The calling convention of the AMD64 Linux Kernel is to load the arguments to the kernel
 interface in registers \textit{rdi, rsi, rdx, r10, r8 and r9} in that order\cite{system-v-abi}.
-In other words, we want the \texti{rdi} register to point to the "/bin/cat flag.txt" string
+In other words, we want the \textit{rdi} register to point to the "/bin/cat flag.txt" string
 before we call the \textit{system()} function. In order to do this we must find the sequence
 "pop rdi; ret" somewhere in the binary. If we manage to execute this gadget when the
-address of the "/bin/cat flag.txt" is at the top of the stack and the address of the call to 
+address of the "/bin/cat flag.txt" is at the top of the stack and the address of the call to
 \textit{system()} is at the penultimate position the "pop rdi" instruction will load the
-address into the rdi register and increment the stack pointer (remember that the stack
-grows downwards). The "ret" instruction will then read the now current value at the top of
-the stack, which is the address to the \textit{system()} call, and transfer the program
-control there.
+address of the argument into the rdi register and increment the stack pointer (remember
+that the stack grows downwards). The "ret" instruction will then read the now current
+value at the top of the stack, which is the address to the \textit{system()} call, and
+transfer the program control there.
 
 Putting this together, we want to overwrite the return address of the vulnerable function
 with the address of our gadget (i.e the address of the "pop rdi" instruction). When control
@@ -126,33 +126,85 @@ also work. In this case the padding required is 40 bytes.
 
 The address of the gadget (the "pop rdi" instruction) to be used is 0x400883, the address
 of the "/bin/cat flag.txt" string is 0x601060 and the address of the system call is
-0x400810. All of these addresses were found using the radare2\footnote{https://github.com/radare/radare2}
-utility. We want to place the address of the gadget at the return address, followed by
-the address of the "/bin/cat flag.txt" followed by the address of the system call. We know
-from forcing a segmentation fault that to overwrite the return address we need 40 bytes of
-padding. We also know that since the input buffer and the stack grows in different directions
-the stack will read our values in the order we write them.
+0x400810. All of these addresses as well as the required padding were found using the
+radare2\footnote{https://github.com/radare/radare2} utility. We want to place the address
+of the gadget at the return address, followed by the address of the "/bin/cat flag.txt"
+followed by the address of the system call. We know from forcing a segmentation fault that
+to overwrite the return address we need 40 bytes of padding. We also know that since the
+input buffer and the stack grows in different directions the stack will read our values in
+the order we write them.
 
-The hexadecimal encoded payload for this example is thus "414141414141414141414141414141
-4141414141414141414141414141414141414141414141414183084000000000006010600000000000
-1008400000000000", which includes 40 "A"s (0x41) as padding, followed by the little endian
+The hexadecimal encoded payload for this example is thus:
+
+\seqsplit{41414141414141414141414141414141414141414141414141414141414141414141414141414141830840000000000060106000000000001008400000000000}
+
+which includes 40 "A"s (0x41) as padding, followed by the little endian
 representation of the addresses, each of which is 8 bytes (16 hexadecimal digits). When
-this payload is posted the stack will look like Figure \ref{fig:after-payload}. The
-function requesting the input will reach its "ret" instruction, 0x400883 will be popped
-from the stack and the control flow will be transfered there. The stack will now look like
-presented in Figure \ref{fig:after-first}. The "pop rdi" instruction will be executed and
-0x601060 will be loaded into register rdi and the stack pointer is incremented. 0x400810
-is now at the top of the stack and when the following ret instruction is executed the
-control flow will be transfered to the instruction at address 0x400810, which is a call
-to the system function. The system function, whose argument is located in the rdi register,
-will read the "/bin/cat flag.txt" string and execute the command and the contents of
-flag.txt will be printed.
+this payload is posted the stack will look like Figure \ref{fig:after-payload}.
 
-Appendix \reg{appendix:rop-exploit} contains the source code of a python script that
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{background/software-diversity/figures/after-payload}
+	\caption{The contents of the stack and pointer references after the payload has been posted.}
+	\label{fig:after-payload}
+\end{figure}
+
+The function requesting the input will reach its "ret" instruction, 0x400883 will be popped
+from the stack and the control flow will be transfered there. The stack will now look like
+presented in Figure \ref{fig:after-first}.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{background/software-diversity/figures/after-first}
+	\caption{The contents of the stack, the stack pointer and pointer references after the first ret instruction.}
+	\label{fig:after-first}
+\end{figure}
+
+The "pop rdi" instruction will be executed and 0x601060 will be loaded into register rdi
+and the stack pointer is incremented. 0x400810 is now at the top of the stack and when the
+following ret instruction is executed the control flow will be transfered to the
+instruction at address 0x400810, which is a call to the system function (see Figure
+\ref{fig:after-second}).
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{background/software-diversity/figures/after-second}
+	\caption{The contents of the stack, the stack pointer, pointer references and contents of the rdi register after the second ret instruction.}
+	\label{fig:after-second}
+\end{figure}
+
+The system function, whose argument is located in the rdi register, will read the
+"/bin/cat flag.txt" string and execute the command and the contents of flag.txt will be
+printed.
+
+Appendix \ref{appendix:rop-exploit} contains the source code of a python script that
 executes this attack.
+
+This "attack" does not actually do anything malicious, as it is just an example. As mentioned
+it was also fairly simple in the sense that the argument to be passed to \textit{system()}
+was already present in the binary. One could supply this argument with the payload. In
+fact, including a "/bin/sh" string in the payload and providing it as an argument to the
+\textit{execve()} function is one of the examples described by \textcite{rop} when
+introducing the return oriented programming concept. In this example \textcite{rop} performs
+a number of computations to set up the arguments, showing that if one is clever enough
+there are few limits to what code can be executed simply be re-using the code already
+present in the binary.
 
 \subsubsection{Defending against return-into-libc/ROP-attacks}
 
+Defending against a technique such as the one exemplified above is difficult. Gadgets will
+always be present in every binary. But as mentioned software diversity can provide some
+manner of protection. The idea is that since an adversary is reliant of the exact
+addresses of these gadgets a way to limit the possible attack surface is by creating a
+population of binaries who share as few of these gadgets as possible, and then distribute
+these evenly among all users. An adversary would then have to identify which version the
+target is running, obtain and analyze that version and create a tailored payload. This
+payload can then \textit{not} be re-used on any other version of this program.
 
-
-% TODO: Explain how diversity and ROP relates to each other.
+For example, the payload crafted for the example above only works on that binary. If a
+compiler could generate two binaries, the one "attacked" above and one where the
+\textit{system()} call is shifted to the address 0x00400808 I would have to create a new,
+different payload since the payload crafted above would not work if the \textit{system()}
+call is not located at 0x00400810. In fact, the payload crafted in the example would not
+work if the address of the gadget, the system call \textit{or} the address of the command
+string changed.

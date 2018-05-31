@@ -21,8 +21,8 @@
 \usepackage{multirow}
 \usepackage{longtable}
 \usepackage{textcomp}
+\usepackage{seqsplit}
 
-%\usepackage{amsmath}
 
 
 \title{A Systematic Approach to Automated Software Diversity using Unison}
@@ -77,6 +77,18 @@
 % Appendix A
 \chapter{Functions}
 \label{appendix:function_names}
-\input{function_versions/functions.tex}
+\input{appendices/functions.tex}
+
+% Appendix B
+\chapter{ROP Exploit}
+\label{appendix:rop-exploit}
+
+Python code that executes a ROP exploit for the ROP emporium 64-bit split challenge.
+\footnote{https://ropemporium.com/challenge/split.html}. Requires the pwntools and the
+challenge files to be located in the same directory as the script.
+\footnote{https://github.com/Gallopsled/pwntools} package.
+
+\lstinputlisting[tabsize=2,frame=single,breaklines=true,showstringspaces=false]
+{appendices/rop-exploit.py}
 
 \end{document}
