@@ -203,8 +203,8 @@ payload can then \textit{not} be re-used on any other version of this program.
 
 For example, the payload crafted for the example above only works on that binary. If a
 compiler could generate two binaries, the one "attacked" above and one where the
-\textit{system()} call is shifted to the address 0x00400808 I would have to create a new,
-different payload since the payload crafted above would not work if the \textit{system()}
-call is not located at 0x00400810. In fact, the payload crafted in the example would not
-work if the address of the gadget, the system call \textit{or} the address of the command
-string changed.
+\textit{system()} call is shifted to the address 0x00400808. I would have to create a new,
+different payload for the latter binary since the payload crafted above would not work if
+the \textit{system()} call is not located at 0x00400810. In fact, the payload crafted in
+the example would not work if the address of the gadget, the system call \textit{or} the
+address of the command string changed.
