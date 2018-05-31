@@ -185,10 +185,10 @@ it was also fairly simple in the sense that the argument to be passed to \textit
 was already present in the binary. One could supply this argument with the payload. In
 fact, including a "/bin/sh" string in the payload and providing it as an argument to the
 \textit{execve()} function is one of the examples described by \textcite{rop} when
-introducing the return oriented programming concept. In this example \textcite{rop} performs
-a number of computations to set up the arguments, showing that if one is clever enough
-there are few limits to what code can be executed simply be re-using the code already
-present in the binary.
+introducing the concept of return oriented programming. In this example \textcite{rop}
+performs a number of computations to set up the arguments (including calculating the address
+of the "/bin/sh" string on the stack), showing that if one is clever enough there are few
+limits to what code can be executed simply be re-using the code already present in the binary.
 
 \subsubsection{Defending against return-into-libc/ROP-attacks}
 
