@@ -53,8 +53,8 @@ subsection is only concerned with the x86 and x86-64 architecture.
 
 A typical return-into-libc attack involves somehow diverting the program control
 flow to transfer control to code that already exists in the program's address space,
-it could e.g be the system() library function, and use it in an unintended manner. For
-example an adversary could utilize a buffer overflow to overwrite the return address on
+it could e.g be the \textit{system()} library function, and use it in an unintended manner.
+For example an adversary could utilize a buffer overflow to overwrite the return address on
 the stack so that it instead points to a function call that leaks sensitive information.
 By first jumping to a sequence of instructions such as "pop reg; pop reg; ret;" it is
 possible to chain together several of these function calls, performing more complex
@@ -119,10 +119,10 @@ string, followed by the address of the \textit{system()} call.
 To find the offset of the return address we can run the program in a debugger and enter
 garbage to the stdin, e.g "AAAABBBBCCCCDDDDEEEEFFFF" and so on. If we overwrite the return
 address the program will most likely raise a segmentation fault, and from the core dump we
-can read what address it tried to divert control flow to. If it is e.g "0x45454545" (which
-is the ascii encoding of "EEEE") we know that by padding our payload with 16 characters we
-overwrite the return address. There are more clever ways to do this but the simple way
-also work. In this case the padding required is 40 bytes.
+can read what address it tried to divert control flow to. If it is e.g "0x4545454546464646"
+(which is the ascii encoding of "EEEEFFFF") we know that by padding our payload with 16
+characters we overwrite the return address. There are more clever ways to do this but the
+simple way also work. In this case the padding required is 40 bytes.
 
 The address of the gadget (the "pop rdi" instruction) to be used is 0x400883, the address
 of the "/bin/cat flag.txt" string is 0x601060 and the address of the system call is
