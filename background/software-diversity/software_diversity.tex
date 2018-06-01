@@ -87,7 +87,8 @@ The challenge consists of two files, a binary that is vulnerable to a buffer ove
 a "flag.txt" file. The goal is to provide a payload to the stdin of the binary that executes
 the command "/bin/cat flag.txt". It is a simple challenge in the sense that the string
 "/bin/cat flag.txt" and a call to the \textit{system()} function (which executes a shell
-command) are already present in the binary.
+command) are already present in the binary. The intended behaviour of the binary is to
+execute \textit{system()} with the argument "/bin/ls".
 
 In order to call the \textit{system()} function in an unindented manner we can exploit
 the buffer overflow vulnerability. Specifically in this example, the vulnerability is that
@@ -99,16 +100,18 @@ overwriting this to the location of the \textit{system()} function call we can c
 function in an unindented manner.
 
 The calling convention of the AMD64 Linux Kernel is to load the arguments to the kernel
-interface in registers \textit{rdi, rsi, rdx, r10, r8 and r9} in that order\cite{system-v-abi}.
+interface in registers \textit{rdi, rsi, rdx, r10, r8} and \textit{r9} in that order\cite{system-v-abi}.
 In other words, we want the \textit{rdi} register to point to the "/bin/cat flag.txt" string
 before we call the \textit{system()} function. In order to do this we must find the sequence
 "pop rdi; ret" somewhere in the binary. If we manage to execute this gadget when the
 address of the "/bin/cat flag.txt" is at the top of the stack and the address of the call to
-\textit{system()} is at the penultimate position the "pop rdi" instruction will load the
-address of the argument into the rdi register and increment the stack pointer (remember
-that the stack grows downwards). The "ret" instruction will then read the now current
-value at the top of the stack, which is the address to the \textit{system()} call, and
-transfer the program control there.
+\textit{system()} is at the penultimate position we will execute the shell command and print
+the contents of "flag.txt". The "pop rdi" instruction will load the address of the argument
+into the rdi register and increment the stack pointer (remember that the stack grows
+downwards). The "ret" instruction will then read the now current value at the top of the
+stack, which is the address to the \textit{system()} call, and transfer the program
+control there. The \textit{system()} call will read the argument in the \textit{rdi}
+register and execute the command.
 
 Putting this together, we want to overwrite the return address of the vulnerable function
 with the address of our gadget (i.e the address of the "pop rdi" instruction). When control
@@ -139,7 +142,7 @@ The hexadecimal encoded payload for this example is thus:
 
 which includes 40 "A"s (0x41) as padding, followed by the little endian
 representation of the addresses, each of which is 8 bytes (16 hexadecimal digits). When
-this payload is posted the stack will look like Figure \ref{fig:after-payload}.
+this payload is posted the stack will look as depicted in Figure \ref{fig:after-payload}.
 
 \begin{figure}[h]
 	\centering
@@ -168,7 +171,7 @@ instruction at address 0x400810, which is a call to the system function (see Fig
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\textwidth]{background/software-diversity/figures/after-second}
-	\caption{The contents of the stack, the stack pointer, pointer references and contents of the rdi register after the second ret instruction.}
+	\caption{The contents of the stack, the stack pointer, pointer references and contents of the rdi register after the "pop rdi" instruction.}
 	\label{fig:after-second}
 \end{figure}
 
@@ -202,8 +205,8 @@ payload can then \textit{not} be re-used on any other version of this program.
 
 For example, the payload crafted for the example above only works on that binary. If a
 compiler could generate two binaries, the one "attacked" above and one where the
-\textit{system()} call is shifted to the address 0x00400808. I would have to create a new,
-different payload for the latter binary since the payload crafted above would not work if
+\textit{system()} call is shifted to the address 0x00400808 I would have to create a new,
+different payload for the latter binary. The payload crafted above would not work if
 the \textit{system()} call is not located at 0x00400810. In fact, the payload crafted in
 the example would not work if the address of the gadget, the system call \textit{or} the
 address of the command string changed.
