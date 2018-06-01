@@ -3,8 +3,11 @@
 \section{Automatic Diversity Synthesis with Unison}
 \label{sec:unison-model}
 
-% Write how Unison works a single function and llc (llvm code generator) should link these
-% together.
+In its current state Unison accepts input in the form of the LLVM MIR (see Section
+\ref{sec:unison}) of a single function\cite{unison-docs} and outputs LLVM MIR of the same
+function with allocated registers and scheduled instructions. It is then to job of
+\textit{llc}, the LLVM static compiler to emit architecture specific assembly, which can
+be passed through a native assembler and linker to generate an executable\cite{llvm-llc}.
 
 As described in Section \ref{sec:unison} the problem of integrated register allocation and
 instruction scheduling in Unison is modeled around \textit{operations} and \textit{operands}.
