@@ -80,7 +80,7 @@ reads the top of the stack as a memory address and transfers the control flow to
 from that address. If an adversary can control the stack he or she can also control the
 control flow. Gadgets can end with other instructions depending on what is desirable.
 
-\subsubsection{A return-into-libc/ROP-attack Example}
+\subsubsection{Example of code re-use attack}
 
 As an example attack consider the x86-64 version of the "split" challenge on ROP emporium
 \footnote{https://ropemporium.com/challenge/split.html}. The challenge consists of two
@@ -190,7 +190,7 @@ performs a number of computations to set up the arguments (including calculating
 of the "/bin/sh" string on the stack), showing that if one is clever enough there are few
 limits to what code can be executed simply be re-using the code already present in the binary.
 
-\subsubsection{Defending against return-into-libc/ROP-attacks}
+\subsubsection{Defending against code re-use attacks}
 
 Defending against a technique such as the one exemplified above is difficult. Gadgets will
 always be present in every binary. But as mentioned software diversity can provide some
