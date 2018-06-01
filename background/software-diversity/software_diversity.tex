@@ -82,13 +82,12 @@ control flow. Gadgets can end with other instructions depending on what is desir
 
 \subsubsection{Example of code re-use attack}
 
-As an example attack consider the x86-64 version of the "split" challenge on ROP emporium
-\footnote{https://ropemporium.com/challenge/split.html}. The challenge consists of two
-files, a binary that is vulnerable to a buffer overflow and a "flag.txt" file. The goal
-is to provide a payload to the stdin of the binary that executes the command
-"/bin/cat flag.txt". It is a simple challenge in the sense that the string "/bin/cat flag.txt"
-and a call to the \textit{system()} function (which executes a shell command) are already
-present in the binary.
+As an example attack consider the x86-64 version of the "split" challenge on ROP emporium\footnote{https://ropemporium.com/challenge/split.html}.
+The challenge consists of two files, a binary that is vulnerable to a buffer overflow and
+a "flag.txt" file. The goal is to provide a payload to the stdin of the binary that executes
+the command "/bin/cat flag.txt". It is a simple challenge in the sense that the string
+"/bin/cat flag.txt" and a call to the \textit{system()} function (which executes a shell
+command) are already present in the binary.
 
 In order to call the \textit{system()} function in an unindented manner we can exploit
 the buffer overflow vulnerability. Specifically in this example, the vulnerability is that
