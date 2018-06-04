@@ -1,5 +1,7 @@
 \chapter{Results}
 
+% TODO: Intro
+
 \section{Generation Time}
 
 \begin{figure}[h]
@@ -29,6 +31,9 @@ search heuristic for the registers strategy would not be the same as the optimal
 heuristic for the schedule strategy.
 
 \section{Cost}
+
+%TODO: Clarify that this distribution is for all programs versions, and the cost of one
+%version is the geometric mean of the functions
 
 \begin{figure}[h]
 	\centering
@@ -66,6 +71,8 @@ solutions are explored first, this is also the optimal cost.
 
 \section{Surviving Gadgets}
 
+% Todo: explain y-axis log scale (make all go to 100% as well). Explain why x axis is different
+
 \begin{figure}[htp]
 	\centering
 	\includegraphics[width=\textwidth,height=\textheight]{results/figures/gadgets}
@@ -81,6 +88,11 @@ correlation between the gadgets across strategies and sampling rates. I.e gadget
 enumerate strategy at sampling rate 1 is not necessarily the same gadget 0 as the registers
 strategy at sampling rate 10.
 
+% TODO: Discuss why strategies behave differently with concrete examples
+% Perhaps mention that they all find the same first solution and from there the schedule
+% strategy makes them differ more. Perhaps mention that for some strategies only 1 solution
+% was found (or at least fewer) and explain why. It might make their behaviour clear.
+
 As seen in figure \ref{fig:gadgets}, neither the enumeration nor the registers strategy
 were particularly effective at breaking gadgets for any sampling rate. There is a slight
 improvement for higher sampling rates but it is not particularly impressive even at
@@ -89,55 +101,9 @@ versions. The schedule strategy, however, performed well with no gadget being pr
 in even 50\% of all versions for the lowest sampling rate and for sampling rate 1000
 about 82\% of gadgets only appear in one version.
 
+% TODO: revise. Super vague
 Unfortunately, due to the shortcomings of the experiment this results is not comparable to
 the ones presented in other literature. However, it does hint at the potential gadget-
 breaking properties of each strategy. Enumerate and registers show decent potential and the
 schedule strategy shows great potential but it would have to be verified on a proper
 executable for the x86-64 architecture.
-
-\section{Conclusion and Future Work}
-
-The core of the disUnison model, the three strategies, are implemented in just a handful
-lines of code and, thanks to being an extension of the Unison model, there is never a risk
-of breaking the functionality of the generated code. This is not to say that every
-diversification strategy allows for proper executable code to be generated, but thanks to
-the nature of constraint solving the result will either be all possible solutions
-(given enough execution time) or a proof that no solution, and thus no proper executable,
-exists.
-
-Regardless of what the selection of strategies may indicate the possibilities for
-diversification are far broader than when approaching the problem in terms of register
-allocation and instruction scheduling as separate procedures. It is important to keep in
-mind that more unorthodox strategies that exploit the combined approach might be even
-more performant. As mentioned in \ref{sec:strategies} the Unison model consists of more
-variables than the 4 explored in this experiment, all of which offers potential for
-diversity.
-
-By exploring lower cost solutions first and applying tiny, incremental changes between
-solutions the performance of the resulting code is widely distributed but also relatively
-good. Only the highest sampling rates for the schedule strategy incurs a significant
-overhead. There is also an opportunity to add constraints to the model that steers this
-cost in some direction. As mentioned briefly in Section \ref{sec:performance} we could
-limit our executable to have a smaller cost than the LLVM solution, or to only incur an
-overhead of e.g 5\% compared to the LLVM solution if we want more versions. By not
-randomizing we have full control of the process and can limit the resulting code in
-whatever way is appropriate.
-
-For a more proper comparison of the systematic approach tests would have to be repeated
-targeting the x86-64 architecture. As mentioned in Section \ref{sec:arch} Unison in its
-current state does not support the x86-64 architecture. If or when Unison or a similar
-tool implements support for the x86-64 architecture, the experiment would have be repeated
-on that platform to test whether or not the strategies are equally performant.
-
-Another shortcoming is the difficulty of compiling a large program even without applying
-diversification strategies. Most of the functions of 433.milc were too large to find even
-one solution (when searching for about one hour). This is an obvious problem for any
-practical purpose of the systematic approach. One solution to this problem is to modify
-the search heuristics of the disUnison model even further. Unfortunately it would be
-difficult, if not impossible, to find an optimal, generally-applicable search strategy.
-
-Using a constraint solver to generate diverse binaries is an attractive approach given
-the ease of implementation and the quality of the generated code. The resulting population
-of diversified programs shows that the systematic approach has great potential at breaking
-gadgets. However, the shortcomings of the experiment and the tool are a testament to the
-future work required.

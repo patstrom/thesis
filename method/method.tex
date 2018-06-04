@@ -21,31 +21,24 @@ branch and bound search can be implemented in Gecode by using a branch-and-bound
 engine and overriding the virtual member function \textit{constrain()} of the model. The
 \textit{constrain()} function is invoked by the search engine whenever a solution is found
 and takes the most recently found solution as an argument. The idea is to post constraints
-on the next solution based on the values of the argument. These constraints accumulate so
+on the next solution based on the previous solution. These constraints accumulate so
 that all future solutions will be affected by all already found solutions.
 
-An important variable in the Unison model is \texit{cost}. It is the deciding factor
+An important variable in the Unison model is \textit{cost}. It is the deciding factor
 of whether a solution is better than another during the branch and bound search. It is a
 sum of the estimated cost of each basic block, weighted by the estimated execution
-frequencies \cite{unison-docs}. Cost can be either cycles or code size depending on the
-optimization goal. I.e the \textit{constrain()} function of the Unison model post the
-constraint that for future combinations to be considered solutions, in addition to the
-original constraints, the cost must be less than the cost of the previously found solution.
-Given enough execution time, Unison will thus find the optimal solution with regards to
-the \textit{cost} variable.
+frequencies \cite{unison-docs}. Cost can be either cycles or code size depending on if the
+optimization goal is speed or size, respectively. I.e the \textit{constrain()} function of
+the Unison model post the constraint that for future combinations to be considered
+solutions, in addition to the original constraints, the cost must be less than the cost of
+the previously found solution.  Given enough execution time, Unison will thus find the
+optimal solution with regards to the \textit{cost} variable.
 
 As mentioned, our intention is to replace the current \textit{contrain()} function of
 Unison with one that instead posts constraints to ensure that future solutions are
 \textit{different} in some regard.
 
 % Do I want to mention branching and such?
-
-% Revise(?)
-%Due to the nature of Unison and the Gecode constraint solver calling the implementations
-%\textit{transformations}, which is the common nomenclature in software diversity, would be
-%misleading. No code is being explicitly transformed, combinations are instead implicitly
-%discarded when it is discovered that the constraints cannot be satisfied given a previous
-%branching.
 
 \section{disUnison}
 
@@ -67,11 +60,12 @@ considering execution time but not particularly good at breaking gadgets. Howeve
 e.g 100 solutions are discarded between every emitted executable perhaps more gadgets are
 broken.
 
-An important factor to consider when discarding solutions is that in the disUnison model
-branching explores lower cost solutions first (see Section \ref{sec:unison-model,sec:performance}).
-Discarding solutions can thus impact performance in a negative way in the sense that the
-later versions might have a higher cost, resulting in a wider cost distribution across all
-program versions.
+In the original Unison model the cost variable is used both for branching and during the
+branch and bound process. In the disUnison model it is still used for branching. Lower
+cost combinations are explores first. However, future solutions are not bound to have
+lower cost. Discarding solutions can thus impact performance in a negative way in the
+sense that the later versions might have a higher cost, resulting in a wider cost
+distribution across all program versions.
 
 Sampling rates of 1, 10, 100 and 1000 will be evaluated for every strategy, where a
 sampling rate of 100 means that every 100th solution is kept. Generating 1000 versions
@@ -92,25 +86,6 @@ sampling rate the ones that have been generated will be re-used so that 1000 pro
 still be generated. More information about these functions can be seen in appendix
 \ref{appendix:function_names}.
 
-\subsection{Performance}
-\label{sec:performance}
-
-% This should/could be in the previous subsection
-In the original Unison model the cost variable is used both for branching and during the
-branch and bound process. In the disUnison model it is still used for branching, but future
-solutions are not bound to have lower cost. When used for branching lower values of cost
-are explored before higher ones, and thus lower cost solutions are found before higher
-cost solutions.
-
-% This should probably be in the Unison section
-Unison (and disUnison) accepts the basic LLVM-solution as an optional parameter, and can
-post constraints to only generate solutions that are \textit{better}. In other words, we
-can generate executables with zero overhead \textit{with respect to LLVM's solution}.
-Certain strategies would of course have an overhead, but with respect to the
-\textit{optimal solution}. As this would limit the number of possible version this
-optional parameter will not be used during the experiment. It is however an exciting
-factor to consider for future work.
-
 \subsection{Architecture}
 \label{sec:arch}
 
@@ -127,19 +102,23 @@ instruction in the program, and since the diversification strategies are applied
 they are supposedly equally effective regardless of the placement or structure of the
 instruction.
 
-% Experimental Protocol (kasst namn)
 \section{Experimental Protocol}
+
+The goal of the experiment is to provide an brief evaluation of both the code generator as
+well as the generated code.
+
+The experiment will be carried out on a computer running a 4-core Intel(R) Core(TM)
+i7-4500U CPU @ 1.80GHz and 8 gigabytes of memory.
 
 % TODO: Intro to section
 % TODO: Subsection of dataset
 
 \subsection{Metrics}
 
-% Why are these key? Are they key? Rephrase paragraph
-The key metric to be evaluated are surviving gadgets, \textit{cost} (See
-\ref{sec:performance}) and the execution time of the code generator. For the experiment
-the optimization goal will be speed, and thus cost will be the estimated execution time of
-the program (in cycles).
+The metrics to be evaluated are surviving gadgets, both \textit{cost} (See
+\ref{sec:unison-model}) metrics and the execution time of the code generator. For the
+experiment the optimization goal will be speed, and thus solutions that are estimated to
+execute faster is generated first.
 
 % Make a more formal definition of the metric. It is calculated on a population of
 % programs and I enumerate gadgets present in the population.
@@ -151,18 +130,21 @@ a small number of the programs.
 
 \subsection{Data Set}
 
+The data set to be used is the Unison test suite for Hexagon. In total 23 function will be
+used, each of which is from a benchmark in the SPEC2006 suite. These function will together
+make up a \textit{program}. Since they do not make up a complete executable they cannot be
+linked nor executed. Linking will instead be simulated by placing them in the same order
+every time to ensure a fair comparison between strategies and sampling rates.
+
+As mentioned in Section \ref{sec:unison-model} Unison works on the function level, and so
+does disUnison. 1000 versions of each function will be generated and labeled from 0 through
+999. Version 0 of each function will make up program version 0, version 1 of each
+function will make up program version 1 and so forth. I.e one program version consists of
+23 functions, and there will be a total of 1000 program versions for each strategy and
+sampling rate, yielding a total of 12 programs with 1000 versions each.
+
 \subsection{Process}
 
-% Don't talk about what I Don't do here. This should be in the discussion.
-\textcite{large-scale-automated} found 433.milc from the SPEC2006 benchmark suite to be
-representative in terms of surviving gadgets. Unfortunately 433.milc is too large to run
-any feasible tests on my test machine, which runs a 4-core Intel(R) Core(TM) i7-4500U CPU
-@ 1.80GHz and 8 gigabytes of memory. The Unison test suite will be used instead, which is
-a sample of functions from the SPEC2006 benchmarks. There are 23 functions and their names
-are listed in \ref{appendix:function_names}. These functions will together make a
-\textit{program}. Since they do not make up a complete executable they cannot be linked
-nor executed. Instead linking will be simulated by placing them in the same order every time
-estimated to ensure a fair comparison between them.
 
 Our method of testing is thus as follows:
 
