@@ -24,6 +24,10 @@ and takes the most recently found solution as an argument. The idea is to post c
 on the next solution based on the previous solution. These constraints accumulate so
 that all future solutions will be affected by all already found solutions.
 
+As mentioned, our intention is to replace the current \textit{contrain()} function of
+Unison with one that instead posts constraints to ensure that future solutions are
+\textit{different} in some regard.
+
 An important variable in the Unison model is \textit{cost}. It is the deciding factor
 of whether a solution is better than another during the branch and bound search. It is a
 sum of the estimated cost of each basic block, weighted by the estimated execution
@@ -31,12 +35,9 @@ frequencies \cite{unison-docs}. Cost can be either cycles or code size depending
 optimization goal is speed or size, respectively. I.e the \textit{constrain()} function of
 the Unison model post the constraint that for future combinations to be considered
 solutions, in addition to the original constraints, the cost must be less than the cost of
-the previously found solution.  Given enough execution time, Unison will thus find the
+the previously found solution. Given enough execution time, Unison will thus find the
 optimal solution with regards to the \textit{cost} variable.
 
-As mentioned, our intention is to replace the current \textit{contrain()} function of
-Unison with one that instead posts constraints to ensure that future solutions are
-\textit{different} in some regard.
 
 % Do I want to mention branching and such?
 
