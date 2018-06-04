@@ -105,6 +105,13 @@
 	organization = "LLVM",
 }
 
+@manual {llvm-llc,
+	title = "llc - LLVM static compiler",
+	url = "https://llvm.org/docs/CommandGuide/llc.html",
+	urldate = "2018-06-01",
+	organization = "LLVM",
+}
+
 @article {alloc-deconstructed,
 	author = "David Ryan Koes and Seth Copen Goldstein",
 	title = "Register Allocation Deconstructed",
@@ -183,4 +190,3 @@ pages="247--262",
 abstract="An algorithm for integrating instruction scheduling and register allocation must support mechanisms for detecting excessive register and functional unit demands and applying reductions for lessening these demands. The excessive demands for functional units can be detected by identifying the instructions that can execute in parallel, and can be reduced by scheduling some of these instructions sequentially. The excessive demands for registers can be detected on-the-fly while scheduling by maintaining register pressure values or may be detected prior to scheduling using an appropriate representation such as parallel interference graphs or register reuse dags. Reductions in excessive register demands can be achieved by live range spilling or live range splitting. However, existing integrated algorithms that are based upon mechanisms other than register reuse dags do not employ live range splitting. In this paper, we demonstrate that for integrated algorithms, register reuse dags are more effective than either on-the-fly computation of register pressure or interference graphs and that live range splitting is more effective than live range spilling. Moreover the choice of mechanisms greatly impacts on the performance of an integrated algorithm.",
 isbn="978-3-540-48319-9"
 }
-
