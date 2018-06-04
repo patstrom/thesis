@@ -1,4 +1,4 @@
-\section{Strategies}
+\subsection{Strategies}
 \label{sec:strategies}
 
 % Revise: "In this thesis we define and compare three strategies to automatically
@@ -9,7 +9,7 @@ strategies are \textit{enumeration}, \textit{instruction schedule} and
 subsections.
 
 
-\subsection{Enumeration}
+\subsubsection{Enumeration}
 
 The name of this strategy comes from the fact that we are only concerned that the solutions
 are different, not how they differ. During search the Gecode search engine will never
@@ -29,7 +29,7 @@ Unison can differ the solutions in four main ways:
 The results of this strategy serve as a baseline for the program. It is literally what
 happens if we do nothing.
 
-\subsection{Registers}
+\subsubsection{Registers}
 
 The strategy to diversify the register allocation of the resulting binaries is an attractive
 one due to causing no run-time overhead. Consequently, if it introduces significant diversity
@@ -71,7 +71,7 @@ combinations to explore.
 In words; We disallow the exact same combination of connected (used) operands and
 operand to register mapping.
 
-\subsection{Instruction Schedule}
+\subsubsection{Instruction Schedule}
 
 Given how Unison functions diversifying the instruction schedule is an exciting strategy.
 As mentioned in Section \ref{sec:unison} Unison explores optional copies. In practice this
