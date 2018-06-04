@@ -28,6 +28,9 @@ As mentioned, our intention is to replace the current \textit{contrain()} functi
 Unison with one that instead posts constraints to ensure that future solutions are
 \textit{different} in some regard.
 
+\subsection{Cost}
+\label{sec:cost}
+
 An important variable in the Unison model is \textit{cost}. It is the deciding factor
 of whether a solution is better than another during the branch and bound search. It is a
 sum of the estimated cost of each basic block, weighted by the estimated execution
@@ -37,9 +40,6 @@ the Unison model post the constraint that for future combinations to be consider
 solutions, in addition to the original constraints, the cost must be less than the cost of
 the previously found solution. Given enough execution time, Unison will thus find the
 optimal solution with regards to the \textit{cost} variable.
-
-
-% Do I want to mention branching and such?
 
 \section{disUnison}
 
@@ -51,7 +51,7 @@ emitted, is still present in the disUnison model.
 
 \input{method/strategies.tex}
 
-\section{Sampling Rate}
+\subsection{Sampling Rate}
 \label{sec:sampling_rate}
 
 When exploring combinations with a constraint solver similar solutions are found close to
@@ -87,7 +87,7 @@ sampling rate the ones that have been generated will be re-used so that 1000 pro
 still be generated. More information about these functions can be seen in appendix
 \ref{appendix:function_names}.
 
-\section{Architecture}
+\subsection{Architecture}
 \label{sec:arch}
 
 Unison does not currently support the x86 or x86-64 architecture. Only ARM, Hexagon and MIPS
@@ -105,29 +105,13 @@ instruction.
 
 \section{Experimental Protocol}
 
-The goal of the experiment is to provide an brief evaluation of both the code generator as
-well as the generated code.
+In order to evaluate both the code generator and the generated code for each strategy a
+population of programs for each strategy is required. In this section the data set, the
+evaluation metrics and the process for generating the program populations will be
+presented.
 
 The experiment will be carried out on a computer running a 4-core Intel(R) Core(TM)
 i7-4500U CPU @ 1.80GHz and 8 gigabytes of memory.
-
-% TODO: Intro to section
-% TODO: Subsection of dataset
-
-\subsection{Metrics}
-
-The metrics to be evaluated are surviving gadgets, both \textit{cost} (See
-\ref{sec:unison-model}) metrics and the execution time of the code generator. For the
-experiment the optimization goal will be speed, and thus solutions that are estimated to
-execute faster is generated first.
-
-% Make a more formal definition of the metric. It is calculated on a population of
-% programs and I enumerate gadgets present in the population.
-Surviving gadgets will be calculated as the ratio of which each gadget appears in the program
-versions. In other words a ratio of 100\% means that the gadget appears in all version
-and the strategy was not effective at removing that gadget. Similarly a very low ratio
-(close to 0\%) would mean that the strategy was effective as the gadget only appears in
-a small number of the programs.
 
 \subsection{Data Set}
 
@@ -139,37 +123,59 @@ every time to ensure a fair comparison between strategies and sampling rates.
 
 As mentioned in Section \ref{sec:unison-model} Unison works on the function level, and so
 does disUnison. 1000 versions of each function will be generated and labeled from 0 through
-999. Version 0 of each function will make up program version 0, version 1 of each
-function will make up program version 1 and so forth. I.e one program version consists of
-23 functions, and there will be a total of 1000 program versions for each strategy and
+999. Version 0 of each function will make up program version 0, version 1 of each function
+will make up program version 1 and so forth. I.e one program version consists of 23
+functions, and there will be a total of 1000 program versions for each strategy and
 sampling rate, yielding a total of 12 programs with 1000 versions each.
 
-\subsection{Process}
+\subsection{Metrics}
 
+The metrics to be evaluated are surviving gadgets, \textit{cost} (See \ref{sec:cost}),
+both speed and size, and the execution time of the code generator.
 
-Our method of testing is thus as follows:
+The \textit{cost} metric is calculated by a tool called \textit{uni analyze}, which is a
+part of the Unison toolchain. It accepts the LLVM MIR of a function as input and outputs
+the estimated cost for each optimization goal as described in Section \ref{sec:cost}. The
+cost of a program version will be calculated as the geometric mean of the cost for each
+function version that makes up the program version in question.
+
+For the experiment the optimization goal will be speed, and thus solutions that are
+estimated to execute faster are generated first. However, both cost in speed and cost in
+size will be presented in the results section.
+
+Surviving gadgets will be calculated as the ratio of which each gadget appears among the
+population of program versions. All gadgets present in any of the 1000 program versions
+will be enumerated. The ratio is calculated as the occurence of every unique gadget
+divided by the number of versions, which in this case is 1000. In other words a ratio of
+100\% means that the gadget appears in all version and the strategy was not effective at
+breaking that gadget. Similarly a very low ratio (close to 0\%) would mean that the
+strategy was effective as the gadget only appears in a small number of the programs.
+
+\subsection{Generation Process}
+
+Our process to generate our teset data is as follows:
 
 \begin{enumerate}
-	\item For every function generate 1000 versions
+	\item For every function generate 1000 versions with "speed" as the optimization goal.
 	\item Version 0 of every function will make up program 0, version 1 will make up program
-		1 and so forth
-	\item For every program find all gadgets and its cost (in cycles)
-	\item Calculate our metrics
-	\item Repeat for all strategies
+		1 and so forth.
+	\item For every program find all gadgets and its cost (in cycles).
+	\item Calculate our metrics.
+	\item Repeat for all strategies.
 		\begin{itemize}
-			\item enumerate
-			\item registers
-			\item schedule
+			\item Enumerate.
+			\item Registers.
+			\item Schedule.
 		\end{itemize}
-	\item Repeat for all sampling rates
+	\item Repeat for all sampling rates.
 		\begin{itemize}
-			\item 1
-			\item 10
-			\item 100
-			\item 1000
+			\item 1.
+			\item 10.
+			\item 100.
+			\item 1000.
 		\end{itemize}
 \end{enumerate}
 
 In other words, for every combination of strategy and sampling rate (12 in total) 1000
-different versions of all 23 functions will be generated. These function versions will
-then be combined to yield 1000 different program versions.
+different versions of each of the 23 functions will be generated. These function versions
+will then be combined to yield 1000 different program versions.
