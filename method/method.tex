@@ -115,11 +115,12 @@ i7-4500U CPU @ 1.80GHz and 8 gigabytes of memory.
 
 \subsection{Data Set}
 
-The data set to be used is the Unison test suite for Hexagon. In total 23 function will be
-used, each of which is from a benchmark in the SPEC2006 suite. These function will together
-make up a \textit{program}. Since they do not make up a complete executable they cannot be
-linked nor executed. Linking will instead be simulated by placing them in the same order
-every time to ensure a fair comparison between strategies and sampling rates.
+The data set to be used is part of the Unison test suite for the Hexagon architecture. In
+total 23 functions will be used, each of which is from a benchmark in the SPEC2006 suite.
+These function will together make up a \textit{program}. Since they do not make up a
+complete executable they cannot be linked nor executed. Linking will instead be simulated
+by placing them in the same order every time to ensure a fair comparison between
+strategies and sampling rates.
 
 As mentioned in Section \ref{sec:unison-model} Unison works on the function level, and so
 does disUnison. 1000 versions of each function will be generated and labeled from 0 through
@@ -133,7 +134,7 @@ sampling rate, yielding a total of 12 programs with 1000 versions each.
 The metrics to be evaluated are surviving gadgets, \textit{cost} (See \ref{sec:cost}),
 both speed and size, and the execution time of the code generator.
 
-The \textit{cost} metric is calculated by a tool called \textit{uni analyze}, which is a
+The \textit{cost} metric is calculated by a tool called \textit{uni analyze}, which is
 part of the Unison toolchain. It accepts the LLVM MIR of a function as input and outputs
 the estimated cost for each optimization goal as described in Section \ref{sec:cost}. The
 cost of a program version will be calculated as the geometric mean of the cost for each
