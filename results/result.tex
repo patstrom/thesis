@@ -32,9 +32,6 @@ heuristic for the schedule strategy.
 
 \section{Cost}
 
-%TODO: Clarify that this distribution is for all programs versions, and the cost of one
-%version is the geometric mean of the functions
-
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\textwidth,height=0.5\textheight]{results/figures/cost_speed}
@@ -50,9 +47,12 @@ heuristic for the schedule strategy.
 \end{figure}
 
 Figure \ref{fig:cost-speed} and Figure \ref{fig:cost-size} shows the distributions of the
-estimated cost in cycles and the code size respectively. Both the cost in cycles and the
-code size for a program version is calculated as the geometric mean between the cost or
-code size of the functions.
+estimated cost in cycles and the estimated code size for each strategy and sampling rate
+respectively. Both the cost in cycles and the code size for a program version is
+calculated as the geometric mean between the cost of the individual functions that make
+up a program versions. I.e for every strategy and sampling rate there are 1000 values for
+each cost metric, where each value is a geometric mean between the cost values of 23
+functions.
 
 All strategies perform better for lower sampling rates both in terms of speed and in terms
 of code size. As described in section \ref{sec:sampling_rate}, this is expected. Both the
