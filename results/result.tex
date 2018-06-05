@@ -1,6 +1,8 @@
 \chapter{Results}
 
-% TODO: Intro
+In this chapter each metric mentioned in Section \ref{sec:metrics} will be presented in
+its own section. An interpretation of the result will also be presented for each
+metric, but all general discussion will be in chapter \ref{chapter:discussion}.
 
 \section{Generation Time}
 
@@ -31,6 +33,7 @@ search heuristic for the registers strategy would not be the same as the optimal
 heuristic for the schedule strategy.
 
 \section{Cost}
+\label{sec:cost_result}
 
 \begin{figure}[h]
 	\centering
@@ -65,8 +68,8 @@ refering to the optimization goal used, which was speed. The code size has not b
 into account during branching and no attempt has been made to optimize it.
 
 Interesting to note is that all strategies and sampling rates have found a solution with
-an equally low speed. This is presumably the very first solution found; When no strategy
-related constraints have been posted yet. Thanks to the search heuristic, where lower cost
+an equally low speed. This is the very first solution found; When no strategy related
+constraints have been posted yet. Thanks to the search heuristic, where lower cost
 solutions are explored first, this is also the optimal cost.
 
 \section{Surviving Gadgets}
@@ -93,11 +96,6 @@ sampling rates that were more effective have a higher number of unique gadgets. 
 is set to a logarithmic scale since the bulk of the data is below 1\%. The frequency of
 the most frequent gadget is annotated.
 
-% TODO: Discuss why strategies behave differently with concrete examples
-% Perhaps mention that they all find the same first solution and from there the schedule
-% strategy makes them differ more. Perhaps mention that for some strategies only 1 solution
-% was found (or at least fewer) and explain why. It might make their behaviour clear.
-
 As seen in figure \ref{fig:gadgets}, neither the enumeration nor the registers strategy
 were particularly effective at breaking gadgets for any sampling rate. There is a slight
 improvement for higher sampling rates but it is not particularly impressive even at
@@ -105,6 +103,27 @@ sampling rate 1000. There are still many gadgets that survives across a large pe
 versions. The schedule strategy, however, performed well with no gadget being present
 in even 50\% of all versions for the lowest sampling rate and for sampling rate 1000
 about 82\% of gadgets only appear in one version.
+
+As mentioned in Section \ref{sec:cost_result}, all strategies and sampling rates finds
+the same initial solution, and then posts the respective constraints for each strategy.
+All three strategies begin at the same starting point and since the same branching strategy
+is used for all strategies (see Section \ref{sec:branch_strategy}), they vary the same
+variables in the same way for each branch. This means that e.g the enumerate strategy will
+exhaust all possible variations of the initial set of active instructions before exploring
+a new set of active instructions. In a similar manner the registers strategy will explore
+all possible register allocations of the intial set of active operations before exploring
+solutions with a different set of active operations.
+
+Apart from cost, the set of active operations is the first variable to be assigned during
+search. This explains the long execution time of the code generator for the schedule
+strategy; For each solution found all branching decisions following the cost are
+discarded. In contrast the registers strategy can keep the decisions relating to active
+operations and which instruction implements which operation.
+
+% TODO: Discuss why strategies behave differently with concrete examples
+% Perhaps mention that they all find the same first solution and from there the schedule
+% strategy makes them differ more. Perhaps mention that for some strategies only 1 solution
+% was found (or at least fewer) and explain why. It might make their behaviour clear.
 
 % TODO: revise. Super vague
 Unfortunately, due to the shortcomings of the experiment this results is not comparable to

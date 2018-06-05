@@ -111,6 +111,22 @@ sampling rate the ones that have been generated will be re-used so that 1000 pro
 still be generated. More information about these functions can be seen in appendix
 \ref{appendix:function_names}.
 
+\subsection{Branching Strategy}
+\label{sec:branch_strategy}
+
+The disUnison models uses the same branching strategy as the original Unison model.When
+the search engine reaches a state where branching is necessary the first decision is to
+assign the \textit{cost} (see Section \ref{sec:cost}) variable to its lowest possible
+value. If the \textit{cost} variable is already assigned, the strategy branching is done
+as follows, in the order listed:
+
+\begin{enumerate}
+	\item assign the active operations. (the $a_o$ variable)
+	\item assign which instruction should implement each operation.
+	\item assign which temporary is connected to each operand. (the $y_p$ variable)
+	\item assign which cycle each operation is issued. (the $c_o$ variable)
+	\item assign which register is assigned to which temporary. (the $r_t$ variable)
+\end{enumerate}
 
 \section{Experimental Protocol}
 

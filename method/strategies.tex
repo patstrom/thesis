@@ -52,7 +52,7 @@ allocation. Their description from the Unison documentation are as follows:
 
 \vspace{0.2cm}
 
-In order to disallow the same register allocation we post the constraint:
+In pseudo mathematical notation we want to post the constraint:
 
 \vspace{0.2cm}
 \noindent\makebox[\textwidth]{
@@ -69,6 +69,12 @@ combinations to explore.
 
 In words; We disallow the exact same combination of connected (used) operands and
 operand to register mapping.
+
+The $ry_p$ variable of the model is actually an auxiliary variable that combines the
+$r_t$ and $y_p$ variables. The $r_t$ variable represents which register temporary $t$ is
+assigned, and $y_p$ represents which temporary is connected to operand $p$. In other words,
+$ry_p$ is implemented as $r(y(p))$. This distinction is important during search, and in
+particular when branching.
 
 \subsubsection{Instruction Schedule}
 
@@ -97,7 +103,8 @@ documentation they are described as follow:
 
 \vspace{0.2cm}
 
-In pseudo mathematical notation we want to post the constraint:
+In order to disallow the same set of active operations combined with the same issue cycles
+we post the constraint: 
 
 \vspace{0.2cm}
 \noindent\makebox[\textwidth]{
