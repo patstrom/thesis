@@ -1,5 +1,13 @@
 \chapter{Diversification with Unison}
 
+In this chapter the relevant parts of the Unison model, the modification to the models that
+will be implemented and the experimental protocol will be presented.
+
+The first section, \textit{Automatic Diversity Synthesis with Unison} briefly presents the
+Unison model and how to implement our extension of it. The \textit{disUnison} section
+describes how we extend the model to provide software diversity, and the
+\textit{Experimental Protocol} section describes how the experiment will be conducted.
+
 \section{Automatic Diversity Synthesis with Unison}
 \label{sec:unison-model}
 
@@ -40,6 +48,22 @@ the Unison model post the constraint that for future combinations to be consider
 solutions, in addition to the original constraints, the cost must be less than the cost of
 the previously found solution. Given enough execution time, Unison will thus find the
 optimal solution with regards to the \textit{cost} variable.
+
+\subsection{Architecture}
+\label{sec:arch}
+
+Unison does not currently support the x86 or x86-64 architecture. Only ARM, Hexagon and MIPS
+are supported \cite{unison-src}. None of the supported architectures are generally considered
+when testing automated software diversity, but for the purposes of evaluating the use of
+a systematic approach the supported architectures offers a glimpse at the potential. For
+the experiment the code will be compiled for the Hexagon architecture.
+
+Hexagon functions very differently from x86 but for our purposes targeting Hexagon will
+still hint at the gadget-breaking potential of the systematic approach. After all,
+breaking gadgets is about shifting, adding, removing or otherwise modifying \textit{any}
+instruction in the program, and since the diversification strategies are applied globally
+they are supposedly equally effective regardless of the placement or structure of the
+instruction.
 
 \section{disUnison}
 
@@ -87,21 +111,6 @@ sampling rate the ones that have been generated will be re-used so that 1000 pro
 still be generated. More information about these functions can be seen in appendix
 \ref{appendix:function_names}.
 
-\subsection{Architecture}
-\label{sec:arch}
-
-Unison does not currently support the x86 or x86-64 architecture. Only ARM, Hexagon and MIPS
-are supported \cite{unison-src}. None of the supported architectures are generally considered
-when testing automated software diversity, but for the purposes of evaluating the use of
-a systematic approach the supported architectures offers a glimpse at the potential. For
-the experiment the code will be compiled for the Hexagon architecture.
-
-Hexagon functions very differently from x86 but for our purposes targeting Hexagon will
-still hint at the gadget-breaking potential of the systematic approach. After all,
-breaking gadgets is about shifting, adding, removing or otherwise modifying \textit{any}
-instruction in the program, and since the diversification strategies are applied globally
-they are supposedly equally effective regardless of the placement or structure of the
-instruction.
 
 \section{Experimental Protocol}
 
@@ -130,6 +139,7 @@ functions, and there will be a total of 1000 program versions for each strategy 
 sampling rate, yielding a total of 12 programs with 1000 versions each.
 
 \subsection{Metrics}
+\label{sec:metrics}
 
 The metrics to be evaluated are surviving gadgets, \textit{cost} (See \ref{sec:cost}),
 both speed and size, and the execution time of the code generator.
