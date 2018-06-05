@@ -47,7 +47,7 @@ heuristic for the schedule strategy.
 \end{figure}
 
 Figure \ref{fig:cost-speed} and Figure \ref{fig:cost-size} shows the distributions of the
-estimated cost in cycles and the estimated code size for each strategy and sampling rate
+estimated cost in cycles and the code size for each strategy and sampling rate
 respectively. Both the cost in cycles and the code size for a program version is
 calculated as the geometric mean between the cost of the individual functions that make
 up the program version. I.e for every strategy and sampling rate there are 1000 values for
@@ -56,7 +56,7 @@ functions.
 
 All strategies perform better for lower sampling rates both in terms of speed and in terms
 of code size. As described in section \ref{sec:sampling_rate}, this is expected. Both the
-enumerate and registers strategy performs very well in terms compared to the LLVM solution
+enumerate and registers strategy performs very well compared to the LLVM solution
 in terms of speed. The schedule strategy incurs a slight overhead for the lowest sampling
 rate and a significant overhead for the three higher sampling rates.
 
@@ -71,22 +71,27 @@ solutions are explored first, this is also the optimal cost.
 
 \section{Surviving Gadgets}
 
-% Todo: explain y-axis log scale (make all go to 100% as well). Explain why x axis is different
-
 \begin{figure}[htp]
 	\centering
 	\includegraphics[width=\textwidth,height=\textheight]{results/figures/gadgets}
 	\caption{The ratio of occurrence for each gadget broken down by strategy and sampling rate.
-Each dot shows the occurrence ratio for one particular gadget. The data is sorted to allow
-	for a better overview.}
+The x-axis displays the gadget ids. The first non-zero x-tick and the second non-zero x-tick
+displays the first gadget that only appear in one program version and the total number
+of unique gadgets, respectively. The data is sorted from most to least frequent to allow
+for a better overview.}
 	\label{fig:gadgets}
 \end{figure}
 
 Figure \ref{fig:gadgets} shows the occurrence ratio of each gadget for the different
 strategies and sampling rates. The x-axis shows a gadget id and there is no definitive
-correlation between the gadgets across strategies and sampling rates. I.e gadget 0 for the
-enumerate strategy at sampling rate 1 is not necessarily the same gadget 0 as the registers
-strategy at sampling rate 10.
+correlation between the gadgets across strategies and sampling rates. The ids are ordered
+from most frequent to least frequent to better facilitate comparison. The first non-zero
+x-tick refers to the id of the first gadget that only appear once and the second non-zero
+x-tick is the total number of unique gadgets. E.g the enumerate strategy at sampling rate
+1 has $1561-906=655$ gadgets that only appear in one program version. Strategies and
+sampling rates that were more effective have a higher number of unique gadgets. The y-axis
+is set to a logarithmic scale since the bulk of the data is below 1\%. The frequency of
+the most frequent gadget is annotated.
 
 % TODO: Discuss why strategies behave differently with concrete examples
 % Perhaps mention that they all find the same first solution and from there the schedule
