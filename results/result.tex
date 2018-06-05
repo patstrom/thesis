@@ -64,7 +64,7 @@ in terms of speed. The schedule strategy incurs a slight overhead for the lowest
 rate and a significant overhead for the three higher sampling rates.
 
 The fact that no solution has a size lower than the LLVM solution can be explained by
-refering to the optimization goal used, which was speed. The code size has not been taken
+referring to the optimization goal used, which was speed. The code size has not been taken
 into account during branching and no attempt has been made to optimize it.
 
 Interesting to note is that all strategies and sampling rates have found a solution with
@@ -111,7 +111,7 @@ is used for all strategies (see Section \ref{sec:branch_strategy}), they vary th
 variables in the same way for each branch. This means that e.g the enumerate strategy will
 exhaust all possible variations of the initial set of active instructions before exploring
 a new set of active instructions. In a similar manner the registers strategy will explore
-all possible register allocations of the intial set of active operations before exploring
+all possible register allocations of the initial set of active operations before exploring
 solutions with a different set of active operations.
 
 Apart from cost, the set of active operations is the first variable to be assigned during

@@ -32,7 +32,7 @@ and takes the most recently found solution as an argument. The idea is to post c
 on the next solution based on the previous solution. These constraints accumulate so
 that all future solutions will be affected by all already found solutions.
 
-As mentioned, our intention is to replace the current \textit{contrain()} function of
+As mentioned, our intention is to replace the current \textit{constrain()} function of
 Unison with one that instead posts constraints to ensure that future solutions are
 \textit{different} in some regard.
 
@@ -172,7 +172,7 @@ size will be presented in the results section.
 
 Surviving gadgets will be calculated as the ratio of which each gadget appears among the
 population of program versions. All gadgets present in any of the 1000 program versions
-will be enumerated. The ratio is calculated as the occurence of every unique gadget
+will be enumerated. The ratio is calculated as the occurrence of every unique gadget
 divided by the number of versions, which in this case is 1000. In other words a ratio of
 100\% means that the gadget appears in all version and the strategy was not effective at
 breaking that gadget. Similarly a very low ratio (close to 0\%) would mean that the
@@ -180,7 +180,7 @@ strategy was effective as the gadget only appears in a small number of the progr
 
 \subsection{Generation Process}
 
-Our process to generate our teset data is as follows:
+Our process to generate our test data is as follows:
 
 \begin{enumerate}
 	\item For every function generate 1000 versions with "speed" as the optimization goal.
