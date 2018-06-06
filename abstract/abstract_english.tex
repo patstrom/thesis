@@ -1,4 +1,21 @@
 \begin{abstract}
-	English abstract goes here.
-\end{abstract}
+	Unison is a tool that combines instruction scheduling and register allocation as a
+	single combinatorial problem and solves it using constraint programming, which is a
+	programming paradigm for systematically solving combinatorial problems.
 
+	Automated software diversity is the process of automatically providing diverse executables
+	in an effort to break so called \textit{gadgets}, which are short instruction sequences
+	that make up an attack vector. Attacks that utilize gadgets rely heavily on the
+	arragnment of the executable, and by providing a population of programs with equivalent
+	functionality but different gadgets an adversary must construct a unique payload for
+	each taret.
+
+	When using Unison to systematically generate diverse executables I found that the size
+	of the population is often larger than 1000000, even for small functions (<10 instructions).
+	Forcing the executables to differ in a certain way is simple to implement, only a
+	handful lines of code, and for manner of diversity 82\% of gadgets only appeared in one
+	version, and the most frequent gadget only appeared in 23\% of versions. However, since
+	Unison does not yet support x86 future work is required before anything practical can be
+	evaluated.
+
+\end{abstract}
