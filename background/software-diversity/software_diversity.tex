@@ -94,10 +94,10 @@ In order to call the \textit{system()} function in an unintended manner we can e
 the buffer overflow vulnerability. Specifically in this example, the vulnerability is that
 a buffer of size 32 bytes is allocated and 92 bytes is read into it. The string will grow
 from lower memory addresses to higher while the stack grows from higher addresses to
-lower. In other words, by writing 92 bytes to the buffer, the top 60 bytes of the stack
-will be overwritten. Included in these 60 bytes is the \textit{return address} and by
-overwriting this to the location of the \textit{system()} function call we can call the
-function in an unintended manner.
+lower. In other words, by writing 92 bytes to the buffer, 60 bytes of data allocated lower
+in the stack is overwritten. Included in these 60 bytes is (in this case) the
+\textit{return address} and by overwriting this to the location of the \textit{system()}
+function call we can call the function in an unintended manner.
 
 The calling convention of the AMD64 Linux Kernel is to load the arguments to the kernel
 interface in registers \textit{rdi, rsi, rdx, r10, r8} and \textit{r9} in that order\cite{system-v-abi}.
