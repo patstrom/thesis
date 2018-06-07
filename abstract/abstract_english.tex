@@ -6,16 +6,16 @@
 	Automated software diversity is the process of automatically providing diverse executables
 	in an effort to break so called \textit{gadgets}, which are short instruction sequences
 	that make up an attack vector. Attacks that utilize gadgets rely heavily on the
-	arrangement of the executable, and by providing a population of programs with equivalent
-	functionality but different arrangements (in an attempt to break gadgets) an adversary
-	must construct a unique payload for each target.
+	arrangement of the executable. By providing a population of executables with equivalent
+	functionality but different arrangements an adversary must construct a unique payload
+	for each executable.
 
-	When using Unison to systematically generate diverse executables I found that the size
-	of the population is often larger than 1000000, even for small functions (<10 instructions).
-	Forcing the executables to differ in a certain way is simple to implement, only a
-	handful lines of code, and one strategy for diversity resulted in that 82\% of gadgets
-	only appeared in one version, and the most frequent gadget only appeared in 24\% of
-	versions. However, future work is required before anything practical can be evaluated,
-	in part because Unison does not support the x86 architecture.
-
+	The results when using Unison to systematically generate diverse executables show that
+	the number of possible pairwise distinct executables is often larger than 1000000, even
+	for small functions (<10 instructions). Using Unison to force the executables to differ
+	in a particular way is simple to implement, only a handful lines of code. One strategy
+	evaluated in the experiment resulted in that the most frequent gadget only appeared in
+	24\% of versions, and 82\% of the gadgets only appeared in one program version each.
+	However, future work is required before anything consumer oriented can be evaluated, in
+	part because Unison does not support the x86 architecture.
 \end{abstract}
