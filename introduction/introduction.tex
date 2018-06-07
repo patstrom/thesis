@@ -18,19 +18,19 @@ choosing these gadgets an adversary can achieve arbitrary code execution.
 
 However, the adversary relies on the fact that the chosen instruction sequences are always
 equivalent across all binary files. I.e an equivalent sequence of instructions is located
-at the exact same offset. If, for example, everyone would run their own, semantically
+at the exact same offset. If, for example, everyone would run their own, structurally
 different but functionally equivalent version of the Firefox web browser an adversary would
 have to disassemble all variations and construct a unique payload for every target. Thus,
 techniques that provide diversity between executables and/or runtimes have been researched
 as a defense to these code re-use attacks\cite{survey}.
 
-To understand how two executables can be semantically different but functionally equal
+To understand how two executables can be structurally different but functionally equal
 consider an example pertaining the instruction schedule. Say there are two independent
 instructions, one of which is part of a gadget. By swapping the place of these two
 instructions the gadget is now different, but since the instructions are independent
 program functionality is the same. There are many decisions taken by the compiler that are
 not necessarily the only valid decision, and if one could explore all combinations of
-decisions one could systematically generate the entire population of semantically different
+decisions one could systematically generate the entire population of diversely assembled
 but functionally equivalent executables.
 
 Constraint programming is a paradigm for solving combinatorial search problems wherein
