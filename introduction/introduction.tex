@@ -63,12 +63,12 @@ approach comes with a 3 key challenges; It is difficult to make guarantees about
 resulting population, proving the correctness of the code transformations is challenging
 and there is no fine-grained control of the process.
 
-When generating the executables you cannot make any guarantees regarding the resulting
-population. If you generate two different executable you cannot with certainty tell that
-they are not equal. The risk of them being equal is most likely very small for just two
-versions, but what if 10000 different version are generated? Or 1000000? At some point the
-pigeonhole principle comes into effect, in which case case it would be better to re-use
-the already generated code.
+When generating the executables with a random element in the process you cannot make any
+guarantees regarding the resulting population. If you generate two executable you cannot
+with certainty tell that they are in fact different without verifying it. The risk of them
+being equal is most likely very small for just two versions, but what if 10000 different
+version are generated? Or 1000000? At some point the pigeonhole principle comes into
+effect, in which case case it would be better to re-use the already generated code.
 
 By instead systematically generating different variations those sort of guarantees can be
 made. If two equal executables are never generated it follows that they are all pairwise
@@ -79,7 +79,7 @@ Unison comes in; In addition to its main purpose Unison has potential for softwa
 diversity purposes.
 
 This thesis aims to be an early exploration of a systematic approach to automated software
-diversity using a constraint solver, specifically the Unison tool. It aims to evaluate 
+diversity using a constraint solver, specifically the Unison tool. It aims to evaluate
 both the code generator and the generated code. This leads us to the hypothesis that
 
 \say{Systematically generating diverse executables using a constraint solver is at least
