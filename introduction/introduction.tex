@@ -59,12 +59,16 @@ solution that is better than the last\cite{unison-docs}.
 
 It might feel intuitive to provide software diversity by somehow randomizing a part of an
 executable, and in fact many have\cite{survey,librando,binary-stirring}, but this
-approach comes with a few problems. When generating the executables you cannot make any
-guarantees regarding the resulting population. If you generate two different executable
-you cannot with certainty tell that they are not equal. The risk of them being equal is
-most likely very small for just two versions, but what if 10000 different version are
-generated? Or 1000000? At some point the pigeonhole principle comes into effect, in which
-case case it would be better to re-use the already generated code.
+approach comes with a 3 key challenges; It is difficult to make guarantees about the
+resulting population, proving the correctness of the code transformations is challenging
+and there is no fine-grained control of the process.
+
+When generating the executables you cannot make any guarantees regarding the resulting
+population. If you generate two different executable you cannot with certainty tell that
+they are not equal. The risk of them being equal is most likely very small for just two
+versions, but what if 10000 different version are generated? Or 1000000? At some point the
+pigeonhole principle comes into effect, in which case case it would be better to re-use
+the already generated code.
 
 By instead systematically generating different variations those sort of guarantees can be
 made. If two equal executables are never generated it follows that they are all pairwise
