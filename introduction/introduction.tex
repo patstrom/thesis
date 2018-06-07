@@ -65,18 +65,19 @@ and there is no fine-grained control of the process.
 
 When generating the executables with a random element in the process you cannot make any
 guarantees regarding the resulting population. If you generate two executable you cannot
-with certainty tell that they are in fact different without verifying it. The risk of them
-being equal is most likely very small for just two versions, but what if 10000 different
-version are generated? Or 1000000? At some point the pigeonhole principle comes into
-effect, in which case case it would be better to re-use the already generated code.
+with certainty tell that they are in fact sufficiently different without verifying it. The
+risk of them being equal is most likely very small for just two versions, but what if
+10000 different version are generated? Or 1000000? At some point the pigeonhole principle
+comes into effect, in which case case it would be better to re-use the already generated
+code.
 
 By instead systematically generating different variations those sort of guarantees can be
 made. If two equal executables are never generated it follows that they are all pairwise
-distinct (with respect to our diversification technique). It also follows that if the
-code generator is run to termination, all pairwise distinct versions are generated.
-The nature of constraint solving lends itself well to this application. This is where
-Unison comes in; In addition to its main purpose Unison has potential for software
-diversity purposes.
+distinct. It also follows that if the code generator is run to termination, all pairwise
+distinct versions are generated. There is also opportunity to define exactly what pairwise
+distinct entails. The nature of constraint solving lends itself well to this application.
+This is where Unison comes in; In addition to its main purpose Unison has potential for
+software diversity purposes.
 
 This thesis aims to be an early exploration of a systematic approach to automated software
 diversity using a constraint solver, specifically the Unison tool. It aims to evaluate
@@ -87,13 +88,14 @@ as good as basing the diversification process on randomization.}
 
 \section{Motivation}
 
-In addition to what is mentioned in the problem statement, perhaps the most compelling
-reason to use a constraint solver for software diversity is that for a combination to be
-considered a solution, \textit{all} constraints must be satisfied. Regardless of what
-unorthodox approach we want to try out we do not need to consider it's effect on program
-functionality, since the constraints that ensure a valid program is generated must still
-be satisfied. This property makes implementing new techniques relatively simple. Modifying
-code while retaining functionality is no easy task, and this simplifies it greatly.
+As mentioned, it is difficult to prove the correctness of code transformations. Perhaps
+the most compelling reason to use a constraint solver for software diversity is that for
+a combination to be considered a solution, \textit{all} constraints must be satisfied.
+Regardless of what unorthodox approach we want to try out we do not need to consider it's
+effect on program functionality, since the constraints that ensure a valid program is
+generated must still be satisfied. This property makes implementing new techniques
+relatively simple. Modifying code while retaining functionality is no easy task, and this
+simplifies it greatly.
 
 With the systematic approach there is full control of what changes between versions, and
 how much it changes between versions. Instead of introducing randomness into some part of
