@@ -43,7 +43,7 @@ The motivation is that by employing diversification techniques one can break the
 reactive nature of software security and shift the advantage from the attacker to the
 defender \cite{compiler-generated-sw-div}.
 
-\subsection{Return Oriented Programming}
+\section{Return Oriented Programming}
 \label{rop}
 
 \textcite{rop} introduces \textit{return-oriented programming} (ROP) as an extension of
@@ -80,24 +80,45 @@ reads the top of the stack as a memory address and transfers the control flow to
 from that address. If an adversary can control the stack he or she can also control the
 control flow. Gadgets can end with other instructions depending on what is desirable.
 
-\subsubsection{Example of a code re-use attack}
+\subsection{Example of a code re-use attack}
 
 As an example attack consider the x86-64 version of the "split" challenge on ROP emporium\footnote{https://ropemporium.com/challenge/split.html}.
-The challenge consists of two files, a binary that is vulnerable to a buffer overflow and
-a "flag.txt" file. The goal is to provide a payload to the stdin of the binary that executes
-the command "/bin/cat flag.txt". It is a simple challenge in the sense that the string
-"/bin/cat flag.txt" and a call to the \textit{system()} function (which executes a shell
-command) are already present in the binary. The intended behaviour of the binary is to
-execute \textit{system()} with the argument "/bin/ls".
+The challenge consists of two files, an executable and a "flag.txt" file. The goal is to
+provide a payload to the stdin of the binary that executes the command "/bin/cat flag.txt".
+It is a simple challenge in the sense that the string "/bin/cat flag.txt" and a call to
+the \textit{system()} function (which executes a shell command) are already present in the
+binary. The intended behaviour of the binary is to execute \textit{system()} with the
+argument "/bin/ls".
+
+\subsubsection{Approach}
+
+In order to construct and mount or attack we have a few boxes to check. Namely we must:
+
+\begin{enumerate}
+	\item Identify a vulnerability.
+	\item Disassemble the program, find the available gadgets, function calls and strings.
+	\item Construct our payload
+\end{enumarate}
+
+As previously mentioned, in this case we have crucial knowledge about the executable
+beforehand. We know that a call to the \textit{system()} function and the string
+"/bin/cat flag.txt" are already present in the binary. However, we don't know where.
+
+\subsubsection{Identifying a vulnerability}
+
+When executing the executable we are met with a prompt for user input. If we enter a long
+string, e.g 100 "A" characters, the program raises a segmentation fault. This tells us
+that there is a buffer overflow somewhere that overwrites the return address on the stack.
 
 In order to call the \textit{system()} function in an unintended manner we can exploit
-the buffer overflow vulnerability. Specifically in this example, the vulnerability is that
-a buffer of size 32 bytes is allocated and 92 bytes is read into it. The string will grow
-from lower memory addresses to higher while the stack grows from higher addresses to
-lower. In other words, by writing 92 bytes to the buffer, 60 bytes of data allocated lower
-in the stack is overwritten. Included in these 60 bytes is (in this case) the
-\textit{return address} and by overwriting this to the location of the \textit{system()}
-function call we can call the function in an unintended manner.
+this buffer overflow vulnerability. By disassembling the executable and analyzing the
+code we find that in this case the vulnerability is that a buffer of size 32 bytes is
+allocated and 92 bytes is read into it. The string will grow from lower memory addresses
+to higher while the stack grows from higher addresses to lower. In other words, by writing
+92 bytes to the buffer, 60 bytes of data allocated lower in the stack is overwritten.
+Included in these 60 bytes is (in this case) the \textit{return address} and by
+overwriting this to the instruction that invokes the \textit{system()} function call we
+can call the function outside of the normal program control flow.
 
 The calling convention of the AMD64 Linux Kernel is to load the arguments to the kernel
 interface in registers \textit{rdi, rsi, rdx, r10, r8} and \textit{r9} in that order\cite{system-v-abi}.
@@ -106,43 +127,59 @@ before we call the \textit{system()} function. In order to do this we must find 
 "pop rdi; ret" somewhere in the binary. If we manage to execute this gadget when the
 address of the "/bin/cat flag.txt" is at the top of the stack and the address of the call to
 \textit{system()} is at the penultimate position we will execute the shell command and print
-the contents of "flag.txt". The "pop rdi" instruction will load the address of the argument
-into the rdi register and increment the stack pointer (remember that the stack grows
-downwards). The "ret" instruction will then read the now current value at the top of the
-stack, which is the address to the \textit{system()} call, and transfer the program
-control there. The \textit{system()} call will read the argument in the \textit{rdi}
-register and execute the command.
+the contents of "flag.txt". The "pop rdi" instruction will load the value at the top of
+the stack, which is the address of the "/bin/cat flag.txt" string, into the rdi register
+and increment the stack pointer (remember that the stack grows downwards). The "ret"
+instruction will then read the now current value at the top of the stack, which is the
+address to the \textit{system()} call, and transfer the program control there. The
+\textit{system()} call will read the argument in the \textit{rdi} register and execute
+the command.
 
 Putting this together, we want to overwrite the return address of the vulnerable function
 with the address of our gadget (i.e the address of the "pop rdi" instruction). When control
 is transferred to the gadget the top of the stack should be the address of the "/bin/cat flag.txt"
 string, followed by the address of the \textit{system()} call.
 
-To find the offset of the return address we can run the program in a debugger and enter
-garbage to the stdin, e.g "AAAABBBBCCCCDDDDEEEEFFFF" and so on. If we overwrite the return
-address the program will most likely raise a segmentation fault, and from the core dump we
-can read what address it tried to divert control flow to. If it is e.g "0x4545454546464646"
-(which is the ascii encoding of "EEEEFFFF") we know that by padding our payload with 16
-characters we overwrite the return address. There are more clever ways to do this but the
-simple way also work. In this case the padding required is 40 bytes.
+Without the previous knowledge of the system call and the argument string we would have had
+to find these pieces by disassembling the program.
+
+\subsubsection{Disassembly and finding the offset of the return address}
+
+We know want we want to do and we have identified an attack vector. A few pieces of the
+puzzle still remain. We must find the offset of the return address on the stack, i.e how
+must the payload be constructed in order to overwrite the return address with the value we
+want. We must also find exactly what values should be placed on the stack.
+
+To find the offset of the return address we can run the program and enter garbage to the
+stdin, e.g "AAAABBBBCCCCDDDDEEEEFFFF" and so on. If we overwrite the return address the
+program will most likely raise a segmentation fault (as it did when we identified the
+buffer overflow), and from the core dump we can read what address it tried to divert
+control flow to. If it is e.g "0x4545454546464646" (which is the ascii encoding of
+"EEEEFFFF") we know that by padding our payload with 16 characters we overwrite the return
+address. There are more clever ways to do this but the simple way also work. In this case
+the padding required is 40 bytes.
 
 The address of the gadget (the "pop rdi" instruction) to be used is 0x400883, the address
 of the "/bin/cat flag.txt" string is 0x601060 and the address of the system call is
 0x400810. All of these addresses as well as the required padding were found using the
-radare2\footnote{https://github.com/radare/radare2} utility. We want to place the address
-of the gadget at the return address, followed by the address of the "/bin/cat flag.txt"
-followed by the address of the system call. We know from forcing a segmentation fault that
-to overwrite the return address we need 40 bytes of padding. We also know that since the
-input buffer and the stack grows in different directions the stack will read our values in
-the order we write them.
+radare2\footnote{https://github.com/radare/radare2} reverse engineering framework.
+
+\subsubsection{Formulate and mount the payload}
+
+We want to place the address of the gadget at the return address, followed by the address
+of the "/bin/cat flag.txt" followed by the address of the system call. We know from
+forcing a segmentation fault that to overwrite the return address we need 40 bytes of
+padding. We also know that since the input buffer and the stack grows in different
+directions the stack will read our values in the order we write them.
 
 The hexadecimal encoded payload for this example is thus:
 
 \seqsplit{41414141414141414141414141414141414141414141414141414141414141414141414141414141830840000000000060106000000000001008400000000000}
 
-which includes 40 "A"s (0x41) as padding, followed by the little endian
-representation of the addresses, each of which is 8 bytes (16 hexadecimal digits). When
-this payload is posted the stack will look as depicted in Figure \ref{fig:after-payload}.
+which includes 40 "A"s (0x41) as padding, followed by the little endian representation of
+the gadget address, the string address and the address of the system function call. Each
+of which is 8 bytes (16 hexadecimal digits). When this payload is posted the stack will
+look as depicted in Figure \ref{fig:after-payload}.
 
 \begin{figure}[h]
 	\centering
