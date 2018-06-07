@@ -1,7 +1,9 @@
 \chapter{Discussion, Conclusion and Future Work}
 \label{chapter:discussion}
 
-% Implementation
+\section{Discussion}
+\label{sec:discussion}
+
 The core of the disUnison model, the three strategies, are implemented in just a handful
 lines of code and, thanks to being an extension of the Unison model, there is never a risk
 of breaking the functionality of the generated code. This is not to say that every
@@ -18,35 +20,49 @@ more performant. As mentioned in \ref{sec:unison-model} the Unison model consist
 variables than the 4 explored in this experiment, all of which offers potential for
 diversity.
 
-% Cost
-By exploring lower cost solutions first and applying tiny, incremental changes between
-solutions the performance of the resulting code is widely distributed but also relatively
-good. Only the highest sampling rates for the schedule strategy incurs a significant
-overhead. There is also an opportunity to add constraints to the model that steers this
-cost in some direction. There is opportunity to limit our executables to have a smaller cost
-than the LLVM solution, or to only incur an overhead of e.g 5\% compared to the LLVM
-solution if we want more versions. By not randomizing we have full control of the process
-and can limit the resulting code in whatever way is appropriate.
+Apart from cost, the set of active operations is the first variable to be assigned during
+search (see Section \ref{sec:branch_strategy}. This partly explains the long execution
+time of the code generator for the schedule strategy; For each solution found all branching
+decisions following the cost are discarded. In contrast the registers strategy can keep
+the decisions relating to active operations and which instruction implements which
+operation and the enumerate strategy can keep all but the very last decision taken.
 
-Unison (and disUnison) accepts the basic LLVM-solution as an optional parameter, and can
-post constraints to only generate solutions that are \textit{better}. In other words, we
-can generate executables with zero overhead \textit{with respect to LLVM's solution}.
-Certain strategies would of course have an overhead, but with respect to the
-\textit{optimal solution}. As this would limit the number of possible version this
-optional parameter was not used during the experiment. It is however an exciting factor to
-consider for future work.
+As an explanation for the effectiveness of the schedule strategy consider what was
+mentioned in Section \ref{sec:schedule}. When applying the schedule strategy, not only can
+the order of operations change between solutions, the number of operations can also change.
+During search when applying the schedule strategy all combinations of issue cycles for a
+valid set of active operations will be explored. When all possible orderings of that
+particular set has been exhausted the search engine will attempt to find a new set of
+active operations. This new set will then contain more or less operations than
+the previous set. By introducing or removing instructions either all following instructions
+are effectively shifted. Since code re-use attacks rely on the exact address of the
+instructions to be executed, a simple shift can foil the attack. In addition to breaking
+gadgets by simply swapping independent instructions, these shifts are likely the cause of
+the effectiveness of the schedule strategy.
 
 There is a constant trade-off between diversity and execution overhead when generating
 diverse populations of executables and the systematic approach is not excluded from this.
 From the results we can deduce that there is a correlation that a more diverse population
-in terms of gadgets incurs a wider distribution and a higher mean for the cost metric even
-for the systematic approach. However, when comparing sampling rates 10 and 100 of the
+in terms of gadgets incurs a wider distribution and a higher mean for the cost metric for
+the implemented strategies. However, when comparing sampling rates 10 and 100 of the
 enumerate and registers strategy the higher sampling rate generates a noticeably more
 diverse population, but the mean cost in speed is virtually unchanged and the code size is
 only increased by a handful of percentage points. Perhaps a more advanced strategy can
 lessen this gap even more and still provide a diverse population of executables.
 
-% Thread to validity
+Unison (and disUnison) accepts the basic LLVM-solution as an optional parameter, and can
+post constraints to only generate solutions that are \textit{better}. In other words, we
+can generate executables with zero overhead \textit{with respect to LLVM's solution}.
+Certain strategies would of course have an overhead, but with respect to the
+\textit{optimal solution}. There is also the opportunity to limit the resulting population
+in other ways, e.g only incur a 5\% overhead compared to the LLVM solution. By not
+randomizing we have full control of the process and can limit the resulting code in
+whatever way is appropriate. As this would limit the number of possible version this
+optional parameter was not used during the experiment. It is however an exciting factor
+to consider for future work.
+
+\section{Threats to Validity}
+
 \textcite{large-scale-automated} found 433.milc from the SPEC2006 benchmark suite to be
 representative in terms of surviving gadgets. Unfortunately 433.milc was too large for the
 experiment and the Unison test suite had to be used instead. Most the functions were too
@@ -58,12 +74,16 @@ strategy.
 
 For a more proper comparison of the systematic approach tests would have to be repeated for
 a more comprehensive data set and target the x86-64 architecture. As mentioned in Section
-\ref{sec:arch} Unison in its current state does not support the x86-64 architecture. If or
-when Unison or a similar tool implements support for the x86-64 architecture, the
-experiment would have be repeated on to test whether or not the strategies are equally
-performant.
+\ref{sec:arch} Unison in its current state does not support the x86 and x86-64
+architecture and the tests were conducted for the Hexagon architecture. This is, of course,
+not optimal but given that the strategies are not explicitly tied to the underlying
+instructions and that they are potentially applied to all instructions the results are
+still promising. If or when Unison or a similar tool implements support for the x86 and
+x86-64 architecture, the experiment would have be repeated on to test whether or not the
+strategies are equally performant.
 
-% Conclusion
+\section{Conclusion}
+
 Using a constraint solver to generate diverse binaries is an attractive approach given
 the ease of implementation and the quality of the generated code. The resulting population
 of diversified programs shows that the systematic approach has great potential at breaking
