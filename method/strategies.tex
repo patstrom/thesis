@@ -2,8 +2,8 @@
 \label{sec:strategies}
 
 For the purposes of this thesis we define three strategies to be evaluated and compared.
-The goal of each strategy is to automatically generate a population of as diverse versions
-of an executable as possible while incurring as little overhead as possible. The chosen
+The goal of each strategy is to provide a population of as diverse versions of an
+executable as possible while incurring as little overhead as possible. The chosen
 strategies are \textit{enumeration}, \textit{instruction schedule} and
 \textit{register allocation}, and the motivation for each is presented in each respective
 subsection.
@@ -32,8 +32,8 @@ happens if we do nothing.
 
 The strategy to diversify the register allocation of the resulting binaries is an attractive
 one due to causing no run-time overhead. Consequently, if it introduces significant diversity
-it is an excellent candidate. As register allocation is one of Unison's primary purpose it
-feels like a natural strategy to explore.
+it is an excellent candidate. In addition, as register allocation is one of Unison's
+primary purpose it feels like a natural strategy to explore.
 
 There are two variables and one set that are of concern when diversifying the register
 allocation. Their description from the Unison documentation are as follows:

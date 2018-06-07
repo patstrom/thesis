@@ -13,7 +13,7 @@ describes how we extend the model to provide software diversity, and the
 
 In its current state Unison accepts input in the form of the LLVM MIR (see Section
 \ref{sec:unison}) of a single function\cite{unison-docs} and outputs LLVM MIR of the same
-function with allocated registers and scheduled instructions. It is then to job of
+function with allocated registers and scheduled instructions. It is then the job of
 \textit{llc}, the LLVM static compiler to emit architecture specific assembly, which can
 be passed through a native assembler and linker to generate an executable\cite{llvm-llc}.
 
@@ -61,11 +61,12 @@ the experiment the code will be compiled for the Hexagon architecture.
 Hexagon functions very differently from x86 but for our purposes targeting Hexagon will
 still hint at the gadget-breaking potential of the systematic approach. After all,
 breaking gadgets is about shifting, adding, removing or otherwise modifying \textit{any}
-instruction in the program, and since the diversification strategies are applied globally
-they are supposedly equally effective regardless of the placement or structure of the
-instruction.
+instruction in the program, and since the diversification strategies (see Section
+\ref{sec:disUnison}) are applied globally they are supposedly equally effective regardless
+of the placement or structure of the instruction.
 
 \section{disUnison}
+\label{sec:disUnison}
 
 The implementation that makes up the following strategies that are used in the experiment
 is henceforth referred to as disUnison (from the word disunity). It is a variation of the
@@ -106,19 +107,19 @@ it varies widely between functions and for some it might require days of search.
 most functions in the suite to be used do have 1000000 versions, so 1000 versions appears
 to be a good number of versions to generate.
 
-For those function where the 1000 versions cannot be generated for the given strategy and
-sampling rate the ones that have been generated will be re-used so that 1000 programs can
-still be generated. More information about these functions can be seen in appendix
-\ref{appendix:function_names}.
+For those function where 1000 versions cannot be generated for the given strategy and
+sampling rate the ones that have been generated will be re-used so that 1000 program
+versions can still be generated. More information about these functions can be seen in
+appendix \ref{appendix:function_names}.
 
 \subsection{Branching Strategy}
 \label{sec:branch_strategy}
 
-The disUnison models uses the same branching strategy as the original Unison model.When
+The disUnison models uses the same branching strategy as the original Unison model. When
 the search engine reaches a state where branching is necessary the first decision is to
 assign the \textit{cost} (see Section \ref{sec:cost}) variable to its lowest possible
-value. If the \textit{cost} variable is already assigned, the strategy branching is done
-as follows, in the order listed:
+value. If the \textit{cost} variable is already assigned, the branching is done as
+follows, in the order listed:
 
 \begin{enumerate}
 	\item assign the active operations. (the $a_o$ variable)
@@ -136,7 +137,7 @@ evaluation metrics and the process for generating the program populations will b
 presented.
 
 The experiment will be carried out on a computer running a 4-core Intel(R) Core(TM)
-i7-4500U CPU @ 1.80GHz and 8 gigabytes of memory.
+i7-4500U CPU @ 1.80GHz and with 8 gigabytes of memory.
 
 \subsection{Data Set}
 
@@ -172,11 +173,12 @@ size will be presented in the results section.
 
 Surviving gadgets will be calculated as the ratio of which each gadget appears among the
 population of program versions. All gadgets present in any of the 1000 program versions
-will be enumerated. The ratio is calculated as the occurrence of every unique gadget
-divided by the number of versions, which in this case is 1000. In other words a ratio of
-100\% means that the gadget appears in all version and the strategy was not effective at
-breaking that gadget. Similarly a very low ratio (close to 0\%) would mean that the
-strategy was effective as the gadget only appears in a small number of the programs.
+will be enumerated. The ratio is calculated as the number of occurrences of every unique
+gadget divided by the number of versions, which in this case is 1000. In other words a
+ratio of 100\% means that the gadget appears in all version and the strategy was not
+effective at breaking that gadget. Similarly a very low ratio (close to 0\%) would mean
+that the strategy was effective as the gadget only appears in a small number of the
+programs.
 
 \subsection{Generation Process}
 
@@ -186,7 +188,7 @@ Our process to generate our test data is as follows:
 	\item For every function generate 1000 versions with "speed" as the optimization goal.
 	\item Version 0 of every function will make up program 0, version 1 will make up program
 		1 and so forth.
-	\item For every program find all gadgets and its cost (in cycles).
+	\item For every program find all gadgets and its cost.
 	\item Calculate our metrics.
 	\item Repeat for all strategies.
 		\begin{itemize}

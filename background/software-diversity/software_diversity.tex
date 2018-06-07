@@ -49,7 +49,8 @@ defender \cite{compiler-generated-sw-div}.
 \textcite{rop} introduces \textit{return-oriented programming} (ROP) as an extension of
 the \textit{return-to-libc}\cite{return-into-libc} attack that allows arbitrary code
 execution without the limitation of calling complete functions. All examples in this
-subsection is only concerned with the x86 and x86-64 architecture.
+subsection is only concerned with the x86 and x86-64 architecture as this is the
+architecture were the concept was first introduced and where it is most applicable.
 
 A typical return-into-libc attack involves somehow diverting the program control
 flow to transfer control to code that already exists in the program's address space,
@@ -65,14 +66,15 @@ short sequences of instructions, usually just two or three instructions, typical
 with a "ret" instruction. These sequences are dubbed \textit{gadgets} and by carefully
 choosing and chaining them together one can achieve arbitrary code execution \cite{rop}.
 
-For instruction set architectures with varying instruction sizes there can be gadgets not
-explicitly placed there by the compiler. \textcite{rop} explains them with an analogy to
-the English language; Where the word "dress" can be found in "Address" and the word "head"
-can be found in "The Address" depending on where you start and stop reading. When
-instructions can be of varying lengths then the same sequence of bytes can be interpreted
-as different instructions depending on where one starts reading. If you can find a hidden
-"ret" instruction you can potentially find a whole gadget not explicitly placed there by
-the compiler.
+For instruction set architectures with varying instruction sizes, such as x86 and x86-64,
+there can be gadgets not explicitly placed there by the compiler. \textcite{rop} explains
+them with an analogy to the English language; Where the word "dress" can be found in
+"Address" and the word "head" can be found in "The Address" depending on where you start
+and stop reading. When instructions can be of varying lengths then the same sequence of
+bytes can be interpreted as different instructions depending on where one starts reading.
+If you can find a hidden "ret" instruction you can potentially find a whole gadget not
+explicitly placed there by the compiler. The x86-64 architecture has 4 "ret" instructions
+and the most basic one is only a single byte\cite{x86-ret}, making hidden gadgets frequent.
 
 The reason that the "ret" instruction is convenient is because it transfers control flow
 to the instruction pointed to by the value at the top of the stack. I.e the "ret" instruction
@@ -110,8 +112,8 @@ When executing the executable we are met with a prompt for user input. If we ent
 string, e.g 100 "A" characters, the program raises a segmentation fault. This tells us
 that there is a buffer overflow somewhere that overwrites the return address on the stack.
 
-In order to call the \textit{system()} function in an unintended manner we can exploit
-this buffer overflow vulnerability. By disassembling the executable and analyzing the
+We can exploit this buffer overflow vulnerability in order to call the \textit{system()}
+function in an unintended manner. By disassembling the executable and analyzing the
 code we find that in this case the vulnerability is that a buffer of size 32 bytes is
 allocated and 92 bytes is read into it. The string will grow from lower memory addresses
 to higher while the stack grows from higher addresses to lower. In other words, by writing
@@ -130,10 +132,10 @@ address of the "/bin/cat flag.txt" is at the top of the stack and the address of
 the contents of "flag.txt". The "pop rdi" instruction will load the value at the top of
 the stack, which is the address of the "/bin/cat flag.txt" string, into the rdi register
 and increment the stack pointer (remember that the stack grows downwards). The "ret"
-instruction will then read the now current value at the top of the stack, which is the
-address to the \textit{system()} call, and transfer the program control there. The
-\textit{system()} call will read the argument in the \textit{rdi} register and execute
-the command.
+instruction will then read the value currently at the top of the stack, which is the
+address to the invocation of the \textit{system()} function, and transfer the program
+control there. The \textit{system()} call will read the argument in the \textit{rdi}
+register and execute the command.
 
 Putting this together, we want to overwrite the return address of the vulnerable function
 with the address of our gadget (i.e the address of the "pop rdi" instruction). When control
@@ -143,12 +145,12 @@ string, followed by the address of the \textit{system()} call.
 Without the previous knowledge of the system call and the argument string we would have had
 to find these pieces by disassembling the program.
 
-\subsubsection{Disassembly and finding the offset of the return address}
+\subsubsection{Disassembly and gathering all pieces of the puzzle}
 
-We know want we want to do and we have identified an attack vector. A few pieces of the
-puzzle still remain. We must find the offset of the return address on the stack, i.e how
-must the payload be constructed in order to overwrite the return address with the value we
-want. We must also find exactly what values should be placed on the stack.
+We know want we want to do and we have identified an attack vector. However, a few pieces
+of the puzzle still remain. We must find the offset of the return address on the stack,
+i.e how must the payload be constructed in order to overwrite the return address with the
+value we want. We must also find exactly what values should be placed on the stack.
 
 To find the offset of the return address we can run the program and enter garbage to the
 stdin, e.g "AAAABBBBCCCCDDDDEEEEFFFF" and so on. If we overwrite the return address the
@@ -156,7 +158,7 @@ program will most likely raise a segmentation fault (as it did when we identifie
 buffer overflow), and from the core dump we can read what address it tried to divert
 control flow to. If it is e.g "0x4545454546464646" (which is the ascii encoding of
 "EEEEFFFF") we know that by padding our payload with 16 characters we overwrite the return
-address. There are more clever ways to do this but the simple way also work. In this case
+address. There are more clever ways to do this but the simple way also works. In this case
 the padding required is 40 bytes.
 
 The address of the gadget (the "pop rdi" instruction) to be used is 0x400883, the address
@@ -242,8 +244,8 @@ payload can then \textit{not} be re-used on any other version of this program.
 
 For example, the payload crafted for the example above only works on that binary. If a
 compiler could generate two binaries, the one "attacked" above and one where the
-\textit{system()} call is shifted to the address 0x00400808 I would have to create a new,
-different payload for the latter binary. The payload crafted above would not work if
-the \textit{system()} call is not located at 0x00400810. In fact, the payload crafted in
-the example would not work if the address of the gadget, the system call \textit{or} the
+\textit{system()} call is shifted to the address 0x00400808 a new, different payload would
+have to created for the latter binary. The payload crafted above would not work if the
+\textit{system()} call is not located at 0x00400810. In fact, the payload crafted in the
+example would not work if the address of the gadget, the system call \textit{or} the
 address of the command string changed.

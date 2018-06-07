@@ -34,14 +34,15 @@ does not exist (within the local search space).
 
 In the latter situation (3) the Gecode constraint solver splits a variable's domain into
 two or more subsets, creating a \textit{search tree} where each \textit{branch} represents
-reducing the variable's domain to a particular subset \cite[Section~8]{MPG}. By committing
-to a branch the constraint solver can once again perform constraint propagation and repeat
-the process. However, if \textit{branching} has taken place and the solver reaches
-situation (1) it can go back up the tree and explore a different branch. If situation (2)
-is reached it can still backtrack but with the added option of adding more constraints
-based on the newly found solution. Constraining based on previously found solutions in the
-search tree is done with the \textit{branch-and-bound} search engine\cite[Section~9]{MPG}
-in Gecode.
+reducing the variable's domain to a particular subset \cite[Section~8]{MPG}. For the above
+example branching could entail trying one case where $x=1$ and one case where $x\neq1$.
+By committing to a branch the constraint solver can once again perform constraint
+propagation and repeat the process. However, if \textit{branching} has taken place and the
+solver reaches situation (1) it can go back up the tree and explore a different branch.
+If situation (2) is reached it can still backtrack but with the added option of adding
+more constraints based on the newly found solution. Constraining based on previously found
+solutions in the search tree is done with the \textit{branch-and-bound} search
+engine\cite[Section~9]{MPG} in Gecode.
 
 \textit{Branch and bound} is an efficient strategy to find the optimal solution to a
 combinatorial problem which in essence constitutes comparing potential solutions to the

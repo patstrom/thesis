@@ -18,10 +18,12 @@ allocation and instruction scheduling as separate procedures. It is important to
 mind that more unorthodox strategies that exploit the combined approach might be even
 more performant. As mentioned in \ref{sec:unison-model} the Unison model consists of more
 variables than the 4 explored in this experiment, all of which offers potential for
-diversity.
+diversity. The strategies can also be combined, both in terms of combining the constraints
+as well as combining the resulting function differently. E.g one could construct a program
+version by combining function versions from different strategies and sampling rates.
 
 Apart from cost, the set of active operations is the first variable to be assigned during
-search (see Section \ref{sec:branch_strategy}. This partly explains the long execution
+search (see Section \ref{sec:branch_strategy}). This partly explains the long execution
 time of the code generator for the schedule strategy; For each solution found all branching
 decisions following the cost are discarded. In contrast the registers strategy can keep
 the decisions relating to active operations and which instruction implements which
@@ -38,7 +40,8 @@ the previous set. By introducing or removing instructions either all following i
 are effectively shifted. Since code re-use attacks rely on the exact address of the
 instructions to be executed, a simple shift can foil the attack. In addition to breaking
 gadgets by simply swapping independent instructions, these shifts are likely the cause of
-the effectiveness of the schedule strategy.
+the effectiveness of the schedule strategy. However, inserting instructions will in most
+cases mean a larger overhead.
 
 There is a constant trade-off between diversity and execution overhead when generating
 diverse populations of executables and the systematic approach is not excluded from this.
@@ -65,16 +68,16 @@ to consider for future work.
 
 \textcite{large-scale-automated} found 433.milc from the SPEC2006 benchmark suite to be
 representative in terms of surviving gadgets. Unfortunately 433.milc was too large for the
-experiment and the Unison test suite had to be used instead. Most the functions were too
-large to find even one solution (one searching for about one hour). This is an obvious
-problem for any practical purpose of the systematic approach. One solution to this problem
-is to modify the search heuristics of the disUnison model even further. Unfortunately it
-would be difficult, if not impossible, to find an optimal, generally-applicable search
-strategy.
+experiment and the Unison test suite had to be used instead. Most of the functions in
+433.milc were too large to find even one solution (one searching for about one hour).
+This is an obvious problem for any practical purpose of the systematic approach. One
+solution to this problem is to modify the search heuristics of the disUnison model even
+further. Unfortunately it would be difficult, if not impossible, to find an optimal,
+generally-applicable search strategy.
 
 For a more proper comparison of the systematic approach tests would have to be repeated for
-a more comprehensive data set and target the x86-64 architecture. As mentioned in Section
-\ref{sec:arch} Unison in its current state does not support the x86 and x86-64
+a more comprehensive data set and target the x86 or x86-64 architecture. As mentioned in
+Section \ref{sec:arch} Unison in its current state does not support the x86 and x86-64
 architecture and the tests were conducted for the Hexagon architecture. This is, of course,
 not optimal but given that the strategies are not explicitly tied to the underlying
 instructions and that they are potentially applied to all instructions the results are
