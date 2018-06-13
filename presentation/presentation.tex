@@ -2,9 +2,12 @@
 
 \usepackage[utf8]{inputenc}
 
+\usepackage[export]{adjustbox}
+
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{biblatex}
+\usepackage{multirow}
 
 \addbibresource{../background/software-diversity/software_diversity.bib}
 \addbibresource{../background/llvm/llvm.bib}
@@ -13,41 +16,57 @@
 
 \begin{document}
 
-\input{software_diversity.tex}
+\begin{frame}
+	\frametitle{Introduction}
 
-%\input{llvm.tex}
+	A Systematic Approach to Automated Software Diversity using Unison
+
+	\vspace{0.5cm}
+
+	Systematically generating diverse executables using a constraint solver is at least as good as basing the diversification process on randomization.
+
+	\begin{enumerate}
+		\item Software Diversity
+		\item Constraint Programming
+		\item Unison
+		\item Experiment \& Result
+		\item Summary \& Conclusion
+	\end{enumerate}
+
+\end{frame}
+
+\input{software_diversity.tex}
 
 \input{constraint_programming.tex}
 
 \input{unison.tex}
 
-\begin{frame}
-	\frametitle{Preliminary strategies}
+\input{diversity.tex}
 
+\input{result.tex}
+
+\begin{frame}
+	\frametitle{Summary and Conclusion}
+
+	Summary
 	\begin{itemize}
-		\item \textit{Just} (with respect to Unison) different
-		\item Generate all possible schedules (equivalent of randomizing schedule)
-		\item Insert "alternative" no-ops (equivalent of no-op insertion)
-		\item Only diversify instruction preceding "ret"
+		\item Code re-use attacks
+			\begin{itemize}
+				\item Reliant on the arrangement of the executable
+			\end{itemize}
+		\item Constraint programming \& Unison
+		\item The experiments and results
 	\end{itemize}
-\end{frame}
-
-\begin{frame}
-	\frametitle{Evaluating the Binaries}
-
-	Unison doesn't support x86-64
-
-	\vspace{0.5cm}
-
-	Analyze Hexagon instead.
 
 	\vspace{0.5cm}
 	
-	Can diversity be statically analyzed at the LLVM MIR level?
-
-	\vspace{0.5cm}
-
-	Static analysis of execution time
+	Conclusion
+	\begin{itemize}
+		\item Easy to implement
+		\item A lot of control of the generated code
+		\item Diverse populations
+		\item Has to be repeated on a proper executable targeting x86
+	\end{itemize}
 
 \end{frame}
 

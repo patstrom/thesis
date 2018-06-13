@@ -1,47 +1,18 @@
 \begin{frame}
 	\frametitle{Unison}
 	
-	Combined instruction scheduling and register allocation
+	Combines instruction scheduling and register allocation
 
 	\vspace{0.5cm}
 
-	Models the problem for a constraint solver \cite{unison-docs}
+	Models the problem for a constraint solver
 
 	\vspace{0.5cm}
 
-	Introduces alternatives, creating more possible combinations
-
-\end{frame}
-
-\begin{frame}
-	\frametitle{LLVM Machine Specific Representation}
-	
-	The data structure(s) used by the LLVM code generator to emit assembly \cite{llvm-mir-lang-ref}
+	Introduces optional copies and alternative temporaries
 
 	\vspace{0.5cm}
 
-	Not close enough to the actual machine code to search for gadgets in
-	
-\end{frame}
+	Works on the function level
 
-\begin{frame}
-	\frametitle{Diversifying}
-
-	\textcite{large-scale-automated} tried randomizing instruction schedule and inserting no-ops at random places in the code.
-
-	\vspace{0.5cm}
-
-	Proved to be successful
-
-	\vspace{0.5cm}
-
-	Unison can do both. Perhaps better.
-
-\end{frame}
-
-\begin{frame}
-	\frametitle{Hypothesis}
-
-	Systematically generating diverse executables with Unison is at least as effective at
-	thwarting ROP attacks as basing the diversification process on randomization.
 \end{frame}

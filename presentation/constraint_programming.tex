@@ -8,6 +8,10 @@
 	Declare variables, their potential values (\textit{domains}) and their relationships when
 	part of a solution (\textit{constraints})
 
+	\vspace{0.5cm}
+
+	For example $x,y \in \{0,1,2\}$ and the constraint $x > y$
+
 \end{frame}
 
 \begin{frame}
@@ -18,7 +22,7 @@
 
 	\vspace{0.5cm}
 
-	Local inference (aka \textit{constraint propagation}) interleaved with systematic search \cite{handbook-constraint-programming}
+	Local inference (aka \textit{constraint propagation}) interleaved with systematic search
 
 \end{frame}
 
@@ -54,7 +58,11 @@
 	\frametitle{Branching}
 
 	\begin{enumerate}
-		\item Choose a variable and construct a number of subsets based on it's domain
+		\item Choose a variable and construct a number of subsets based on its domain
+			\begin{itemize}
+				\item $x = 1$
+				\item $x \neq 1$
+			\end{itemize}
 		\item Reduce the variable's domain to one subset, creating a \textit{branch} in a \textit{search tree}
 		\item Propagate and repeat
 	\end{enumerate}
@@ -68,7 +76,7 @@
 \begin{frame}
 	\frametitle{Branch and Bound}
 
-	Compare new solutions to the currently best found and choose the better \cite{BaB}
+	Compare new solutions candidates to the currently best found and choose the better
 
 	\vspace{0.5cm}
 

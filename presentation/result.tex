@@ -1,0 +1,66 @@
+\begin{frame}
+	\frametitle{Implementation}
+	
+	The actual constraints are only handful of lines of code
+
+	\vspace{0.5cm}
+
+	If they are incompatible with valid code, no code will be generated
+
+	\vspace{0.5cm}
+
+	Many more strategies exists, and they don't have to treat register allocation and instruction scheduling as seperate problems
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Execution time of code generator (sampling rate 1000)}
+
+	\includegraphics[width=\textwidth]{../results/figures/generator_time}
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Cost - Speed}
+
+	\includegraphics[width=\textwidth]{../results/figures/cost_speed}
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Cost - Size}
+
+	\includegraphics[width=\textwidth]{../results/figures/cost_size}
+
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Surviving gadgets}
+
+	\adjincludegraphics[width=\textwidth,trim={0 {0.5\height} 0 0},clip]{../results/figures/gadgets}
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Surviving gadgets cont.}
+
+	\adjincludegraphics[width=\textwidth,trim={0 0 0 {0.5\height}},clip]{../results/figures/gadgets}
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Shortcomings}
+
+	Data set. \textcite{large-scale-automated} found 433.milc from SPEC2006 to be representative
+	in terms of gadgets
+
+	\vspace{0.5cm}
+
+	Too large for diversity
+
+	\vspace{0.5cm}
+
+	Not on x86
+
+\end{frame}
