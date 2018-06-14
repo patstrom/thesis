@@ -6,56 +6,16 @@
 	\vspace{0.5cm}
 
 	Declare variables, their potential values (\textit{domains}) and their relationships when
-	part of a solution (\textit{constraints})
+	part of a solution (\textit{constraints}).
 
 	\vspace{0.5cm}
 
-	For example $x,y \in \{0,1,2\}$ and the constraint $x > y$
+	For example $x,y \in \{0,1,2\}$ and the constraint $x > y$.
 
 \end{frame}
 
 \begin{frame}
-	\frametitle{Solving}
-
-	Utilize a \textit{constraint solver} to explore different combinations of variable to
-	value mappings
-
-	\vspace{0.5cm}
-
-	Local inference (aka \textit{constraint propagation}) interleaved with systematic search
-
-\end{frame}
-
-\begin{frame}
-	\frametitle{Constraint Propagation}
-	Locally determine what values are incompatible with the constraints
-
-	\vspace{0.5cm}
-
-	Variables $x,y \in \{0,1,2\}$ and the constraint $x > y$
-
-	\vspace{0.5cm}
-
-	$x \in \{1,2\}$ and $y \in \{0,1\}$
-\end{frame}
-
-\begin{frame}
-	\frametitle{Search}
-
-	When constraint propagation is finished there are three possible states:
-
-	\vspace{0.5cm}
-
-	\begin{enumerate}
-		\item One or more domains could be empty, proving that no solution exists.
-		\item	All domains could be of size 1, indicating that there exists only one possible value for every variable, and thus we have found a solution.
-		\item One or more variables have multiple values in their domain.
-	\end{enumerate}
-
-\end{frame}
-
-\begin{frame}
-	\frametitle{Branching}
+	\frametitle{Search and Branching}
 
 	\begin{enumerate}
 		\item Choose a variable and construct a number of subsets based on its domain
@@ -64,22 +24,19 @@
 				\item $x \neq 1$
 			\end{itemize}
 		\item Reduce the variable's domain to one subset, creating a \textit{branch} in a \textit{search tree}
-		\item Propagate and repeat
+		\item Repeat
 	\end{enumerate}
 
 	\vspace{0.5cm}
 
-	Now when we reach (failure) or a (solution) we can still continue.
-
-\end{frame}
-
-\begin{frame}
-	\frametitle{Branch and Bound}
-
-	Compare new solutions candidates to the currently best found and choose the better
-
-	\vspace{0.5cm}
-
-	Primarily used for optimization. Can it be used to diversify?
+	\begin{itemize}
+		\item Incompatible with constraint
+		\item Branch and Bound
+			\begin{itemize}
+				\item Compare new solutions candidates to the currently best found and choose the better
+				\item Primarily used for optimization 
+				\item Can it be used to diversify?
+			\end{itemize}
+	\end{itemize}
 
 \end{frame}

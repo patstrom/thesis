@@ -1,16 +1,5 @@
 \begin{frame}
-	\frametitle{Diversity with Unison}
-
-	Implemented 3 different strategies
-
-	\vspace{0.5cm}
-
-	\textit{Cost}, frequency of surviving gadgets, execution time of code generator
-
-\end{frame}
-
-\begin{frame}
-	\frametitle{Strategies}
+	\frametitle{Branch and Bound Strategies for Diversity}
 
 	\begin{enumerate}
 		\item Enumerate
@@ -25,7 +14,6 @@
 		\item Schedule
 			\begin{itemize}
 				\item Disallow same schedule
-				\item Remember there can be more or fewer instructions
 			\end{itemize}
 	\end{enumerate}
 
@@ -34,16 +22,22 @@
 \begin{frame}
 	\frametitle{Data set}
 
-	Unison test suite
-
-	\vspace{0.5cm}
-
-	23 functions; All samples from SPEC2006
+	Unison test suite; Samples from SPEC2006
 
 	\vspace{0.5cm}
 
 	Simulate linking by placing them in the same order every time
 
+	\vspace{0.5cm}
+	
+	\begin{itemize}
+		\item	Execution time of code generator
+		\item Cost
+			\begin{itemize}
+				\item	Estimated execution time
+			\end{itemize}
+		\item	Frequency of surviving gadgets
+	\end{itemize}
 
 \end{frame}
 
@@ -51,23 +45,23 @@
 	\frametitle{Experimental Protocol}
 
 	\begin{enumerate}
-		\item For every function generate 1000 versions with "speed" as the optimization goal.
+		\item For every function generate 1000 versions, where lower "speed" solutions are explored first
 		\item Version 0 of every function will make up program 0, version 1 will make up program
-			1 and so forth.
-		\item For every program find all gadgets and its cost.
-		\item Calculate our metrics.
-		\item Repeat for all strategies.
+			1 and so forth
+		\item For every program find all gadgets and its cost
+		\item Calculate our metrics
+		\item Repeat for all strategies
 			\begin{itemize}
-				\item Enumerate.
-				\item Registers.
-				\item Schedule.
+				\item Enumerate
+				\item Registers
+				\item Schedule
 			\end{itemize}
-		\item Repeat for all sampling rates.
+		\item Repeat for all sampling rates
 			\begin{itemize}
-				\item 1.
-				\item 10.
-				\item 100.
-				\item 1000.
+				\item 1
+				\item 10
+				\item 100
+				\item 1000
 			\end{itemize}
 	\end{enumerate}
 
