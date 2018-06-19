@@ -4,11 +4,11 @@ The field of \textit{software diversity} is concerned with researching the
 causes and effects of diversity in software and software engineering, both in the result
 and the process. As an example consider web browsers; There are many different implementations
 of what is essentially the same functionality. In the context of security vulnerabilities
-of one browser does not necessarily carry over to another\cite{survey}.
+of one browser does not necessarily carry over to another \cite{survey}.
 
-One of the applications of software diversity is as a defense to code re-use attacks\cite{survey}.
+One of the applications of software diversity is as a defense to code re-use attacks \cite{survey}.
 Code-reuse attacks refers to attacks that diverts program control flow to re-use already
-present code in an unintended manner\cite{code-re-use}. For example if an adversary gains
+present code in an unintended manner \cite{code-re-use}. For example if an adversary gains
 access to a process' stack the address to jump to after a return instruction can be
 overwritten and the adversary can choose which instruction to jump to. \textcite{rop}
 extended on this concept and introduced what is called \textit{return oriented programming}.
@@ -22,7 +22,7 @@ at the exact same offset. If, for example, everyone would run their own, structu
 different but functionally equivalent version of the Firefox web browser an adversary would
 have to disassemble all variations and construct a unique payload for every target. Thus,
 techniques that provide diversity between executables and/or runtimes have been researched
-as a defense to these code re-use attacks\cite{survey}.
+as a defense to these code re-use attacks \cite{survey}.
 
 To understand how two executables can be structurally different but functionally equal
 consider an example pertaining the instruction schedule. Say there are two independent
@@ -36,7 +36,7 @@ but functionally equivalent executables.
 Constraint programming is a paradigm for solving combinatorial search problems wherein
 the relationship between variables are expressed as \textit{constraints}. It solves problems
 such as scheduling, vehicle routing and, in our case, compiling
-\cite{handbook-constraint-programming, unison-docs}. For example, consider the problem
+ \cite{handbook-constraint-programming, unison-docs}. For example, consider the problem
 of scheduling working shifts in a store. The variables could be the start and end time
 of a shift for one person, and the constraint could be that there are always two employees
 present in the store and no one works for more than 8 consecutive hours.
@@ -44,7 +44,7 @@ present in the store and no one works for more than 8 consecutive hours.
 A \textit{constraint solver} takes a problem such as the example above and finds a value
 for all the variables such that all constraints are satisfied, or in the case when no
 mapping that satisfies all constraints exists proves that such is the case
-\cite{handbook-constraint-programming}. The process of finding these values consists of
+ \cite{handbook-constraint-programming}. The process of finding these values consists of
 \textit{searching} the combinatorial space and either implicitly or explicitly discarding
 combinations that cannot be solutions, i.e does not satisfy the constraints.
 
@@ -53,13 +53,13 @@ registers as a single, integrated problem. It operates as a part of the LLVM bac
 is thus not a standalone compiler. Unison is potentially optimal in the sense that given
 enough time, it can generate the optimal instruction schedule and register allocation.
 It finds this solution by searching the combinatorial space in a continuous pursuit for a
-solution that is better than the last\cite{unison-docs}.
+solution that is better than the last \cite{unison-docs}.
 
 \section{Problem Statement}
 
 It might feel intuitive to provide software diversity by somehow randomizing a part of an
-executable, and in fact many have\cite{survey,librando,binary-stirring}, but this
-approach comes with a 3 key challenges; It is difficult to make guarantees about the
+executable, and in fact many have \cite{survey,librando,binary-stirring}, but this
+approach comes with a three key challenges; It is difficult to make guarantees about the
 resulting population, proving the correctness of the code transformations is challenging
 and there is no fine-grained control of the process.
 

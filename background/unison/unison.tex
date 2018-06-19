@@ -8,12 +8,12 @@ the algorithms currently in place by compilers such as GCC and LLVM. In particul
 already exists a driver for LLVM which accept input in the form of LLVM MIR \cite{unison-docs}.
 
 LLVM MIR is a human readable, YAML serialized format of the LLVM machine specific
-representation\cite{llvm-mir-lang-ref}. The machine specific representation is used by the
+representation \cite{llvm-mir-lang-ref}. The machine specific representation is used by the
 LLVM code generator to emit assembly for a specific architecture \cite{welcome-to-backend}.
 
 Unison models the problems of register allocation and instruction scheduling as a single
 constraint programming problem and solves them simultaneously using a branch and bound
-algorithm\cite{unison-docs,reg-alloc-inst-sched-uni,unison-src}.
+algorithm \cite{unison-docs,reg-alloc-inst-sched-uni,unison-src}.
 
 To allow for further optimizations than the current LLVM code generator does Unison also
 introduces \textit{optional copies} and \textit{alternate temporaries}

@@ -37,7 +37,7 @@ What all of these techniques have in common is that they introduce some kind of 
 the development toolchain, which as mentioned will not be the approach taken in this paper.
 Instead the focus will be on systematic and deterministic generation of \textit{static}
 diversity. Static diversity entails generating several, diverse executables; In contrast
-to \textit{dynamic} diversity which involves providing diverse run-times\cite{survey}.
+to \textit{dynamic} diversity which involves providing diverse run-times \cite{survey}.
 
 The motivation is that by employing diversification techniques one can break the
 reactive nature of software security and shift the advantage from the attacker to the
@@ -47,7 +47,7 @@ defender \cite{compiler-generated-sw-div}.
 \label{rop}
 
 \textcite{rop} introduces \textit{return-oriented programming} (ROP) as an extension of
-the \textit{return-to-libc}\cite{return-into-libc} attack that allows arbitrary code
+the \textit{return-to-libc} \cite{return-into-libc} attack that allows arbitrary code
 execution without the limitation of calling complete functions. All examples in this
 subsection is only concerned with the x86 and x86-64 architecture as this is the
 architecture were the concept was first introduced and where it is most applicable.
@@ -74,7 +74,7 @@ and stop reading. When instructions can be of varying lengths then the same sequ
 bytes can be interpreted as different instructions depending on where one starts reading.
 If you can find a hidden "ret" instruction you can potentially find a whole gadget not
 explicitly placed there by the compiler. The x86-64 architecture has 4 "ret" instructions
-and the most basic one is only a single byte\cite{x86-ret}, making hidden gadgets frequent.
+and the most basic one is only a single byte \cite{x86-ret}, making hidden gadgets frequent.
 
 The reason that the "ret" instruction is convenient is because it transfers control flow
 to the instruction pointed to by the value at the top of the stack. I.e the "ret" instruction
@@ -123,7 +123,7 @@ overwriting this to the instruction that invokes the \textit{system()} function 
 can call the function outside of the normal program control flow.
 
 The calling convention of the AMD64 Linux Kernel is to load the arguments to the kernel
-interface in registers \textit{rdi, rsi, rdx, r10, r8} and \textit{r9} in that order\cite{system-v-abi}.
+interface in registers \textit{rdi, rsi, rdx, r10, r8} and \textit{r9} in that order \cite{system-v-abi}.
 In other words, we want the \textit{rdi} register to point to the "/bin/cat flag.txt" string
 before we call the \textit{system()} function. In order to do this we must find the sequence
 "pop rdi; ret" somewhere in the binary. If we manage to execute this gadget when the
