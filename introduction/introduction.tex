@@ -11,7 +11,7 @@ Code-reuse attacks refers to attacks that diverts program control flow to re-use
 present code in an unintended manner \cite{code-re-use}. For example if an adversary gains
 access to a process' stack the address to jump to after a return instruction can be
 overwritten and the adversary can choose which instruction to jump to. \textcite{rop}
-extended on this concept and introduced what is called \textit{return oriented programming}.
+extended this concept and introduced what is called \textit{return oriented programming}.
 Return oriented programming is a code re-use technique were the program control flow is
 diverted to a chain of short instruction sequences, dubbed a \textit{gadget}. By carefully
 choosing these gadgets an adversary can achieve arbitrary code execution.
