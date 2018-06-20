@@ -2,7 +2,7 @@
 
 The field of \textit{software diversity} is concerned with researching the
 causes and effects of diversity in software and software engineering, both in the result
-and the process. As an example consider web browsers; There are many different implementations
+and the process. As an example consider web browsers. There are many different implementations
 of what is essentially the same functionality. In the context of security vulnerabilities
 of one browser does not necessarily carry over to another \cite{survey}.
 
@@ -11,7 +11,7 @@ Code-reuse attacks refers to attacks that diverts program control flow to re-use
 present code in an unintended manner \cite{code-re-use}. For example if an adversary gains
 access to a process' stack the address to jump to after a return instruction can be
 overwritten and the adversary can choose which instruction to jump to. \textcite{rop}
-extended this concept and introduced what is called \textit{return oriented programming}.
+extended this concept and introduced what is called \textit{return-oriented programming}.
 Return oriented programming is a code re-use technique were the program control flow is
 diverted to a chain of short instruction sequences, dubbed a \textit{gadget}. By carefully
 choosing these gadgets an adversary can achieve arbitrary code execution.
@@ -59,7 +59,7 @@ solution that is better than the last \cite{unison-docs}.
 
 It might feel intuitive to provide software diversity by somehow randomizing a part of an
 executable, and in fact many have \cite{survey,librando,binary-stirring}, but this
-approach comes with a three key challenges; It is difficult to make guarantees about the
+approach comes with a three key challenges: It is difficult to make guarantees about the
 resulting population, proving the correctness of the code transformations is challenging
 and there is no fine-grained control of the process.
 
@@ -76,7 +76,7 @@ made. If two equal executables are never generated it follows that they are all 
 distinct. It also follows that if the code generator is run to termination, all pairwise
 distinct versions are generated. There is also opportunity to define exactly what pairwise
 distinct entails. The nature of constraint solving lends itself well to this application.
-This is where Unison comes in; In addition to its main purpose Unison has potential for
+This is where Unison comes in. In addition to its main purpose Unison has potential for
 software diversity purposes.
 
 This thesis aims to be an early exploration of a systematic approach to automated software

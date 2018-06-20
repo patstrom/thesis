@@ -20,7 +20,7 @@ fewer than 1000 solutions were found (for a complete breakdown see appendix
 \ref{appendix:function_names}).
 
 While the total execution time is daunting, it does represent about 23 million solutions
-found (but only 23000 emitted). The enumerate strategy is fairly quick; 51 minutes for one
+found (but only 23000 emitted). The enumerate strategy is fairly quick: 51 minutes for one
 million solutions of every function means that on average, one solution was found every
 139ns. The same number for registers and schedule is 343ns and 1095ns respectively. To
 mitigate the impact of a long execution time the solutions can be emitted directly when
@@ -69,9 +69,9 @@ referring to the optimization goal used, which was speed. The code size has not 
 into account during branching and no attempt has been made to optimize it.
 
 Interesting to note is that all strategies and sampling rates have found a solution with
-an equally low speed. This is the very first solution found; When no strategy related
-constraints have been posted yet. Thanks to the search heuristic, where lower cost
-solutions are explored first, this is also the optimal speed.
+an equally low speed. This is the very first solution found and it is upon this solution
+the first strategy related constraints are based. Thanks to the search heuristic, where
+lower cost solutions are explored first, this is also the optimal speed.
 
 \section{Surviving Gadgets}
 

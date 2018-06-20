@@ -68,7 +68,7 @@ choosing and chaining them together one can achieve arbitrary code execution \ci
 
 For instruction set architectures with varying instruction sizes, such as x86 and x86-64,
 there can be gadgets not explicitly placed there by the compiler. \textcite{rop} explains
-them with an analogy to the English language; Where the word "dress" can be found in
+them with an analogy to the English language: the word "dress" can be found in
 "Address" and the word "head" can be found in "The Address" depending on where you start
 and stop reading. When instructions can be of varying lengths then the same sequence of
 bytes can be interpreted as different instructions depending on where one starts reading.
@@ -227,7 +227,7 @@ it was also fairly simple in the sense that the argument to be passed to \textit
 was already present in the binary. One could supply this argument with the payload. In
 fact, including a "/bin/sh" string in the payload and providing it as an argument to the
 \textit{execve()} function is one of the examples described by \textcite{rop} when
-introducing the concept of return oriented programming. In this example \textcite{rop}
+introducing the concept of return-oriented programming. In this example \textcite{rop}
 performs a number of computations to set up the arguments (including calculating the address
 of the "/bin/sh" string on the stack), showing that if one is clever enough there are few
 limits to what code can be executed simply be re-using the code already present in the binary.

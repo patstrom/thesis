@@ -25,7 +25,7 @@ operations and their operands relate to the actual instructions, temporaries, re
 and issue cycles.
 
 The only constraint solver currently supported by Unison is Gecode \cite{unison-docs}. A
-branch and bound search can be implemented in Gecode by using a branch-and-bound search
+branch and bound search can be implemented in Gecode by using a branch and bound search
 engine and overriding the virtual member function \textit{constrain()} of the model. The
 \textit{constrain()} function is invoked by the search engine whenever a solution is found
 and takes the most recently found solution as an argument. The idea is to post constraints
