@@ -43,8 +43,8 @@ An important variable in the Unison model is \textit{cost}. It is the deciding f
 of whether a solution is better than another during the branch and bound search. It is a
 sum of the estimated cost of each basic block, weighted by the estimated execution
 frequencies \cite{unison-docs}. Cost can be either cycles or code size depending on if the
-optimization goal is speed or size, respectively. I.e the \textit{constrain()} function of
-the Unison model post the constraint that for future combinations to be considered
+optimization goal is speed or size, respectively. That is the \textit{constrain()} function
+of the Unison model post the constraint that for future combinations to be considered
 solutions, in addition to the original constraints, the cost must be less than the cost of
 the previously found solution. Given enough execution time, Unison will thus find the
 optimal solution with regards to the \textit{cost} variable.
@@ -151,7 +151,7 @@ strategies and sampling rates.
 As mentioned in Section \ref{sec:unison-model} Unison works on the function level, and so
 does disUnison. 1000 versions of each function will be generated and labeled from 0 through
 999. Version 0 of each function will make up program version 0, version 1 of each function
-will make up program version 1 and so forth. I.e one program version consists of 23
+will make up program version 1 and so forth. That is, one program version consists of 23
 functions, and there will be a total of 1000 program versions for each strategy and
 sampling rate, yielding a total of 12 programs with 1000 versions each.
 

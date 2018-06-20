@@ -17,12 +17,12 @@ diverted to a chain of short instruction sequences, dubbed a \textit{gadget}. By
 choosing these gadgets an adversary can achieve arbitrary code execution.
 
 However, the adversary relies on the fact that the chosen instruction sequences are always
-equivalent across all binary files. I.e an equivalent sequence of instructions is located
-at the exact same offset. If, for example, everyone would run their own, structurally
-different but functionally equivalent version of the Firefox web browser an adversary would
-have to disassemble all variations and construct a unique payload for every target. Thus,
-techniques that provide diversity between executables and/or runtimes have been researched
-as a defense to these code re-use attacks \cite{survey}.
+equivalent across all binary files. In other words an equivalent sequence of instructions
+is located at the exact same offset. If, for example, everyone would run their own,
+structurally different but functionally equivalent version of the Firefox web browser an
+adversary would have to disassemble all variations and construct a unique payload for
+every target. Thus, techniques that provide diversity between executables and/or runtimes
+have been researched as a defense to these code re-use attacks \cite{survey}.
 
 To understand how two executables can be structurally different but functionally equal
 consider an example pertaining the instruction schedule. Say there are two independent
@@ -46,7 +46,7 @@ for all the variables such that all constraints are satisfied, or in the case wh
 mapping that satisfies all constraints exists proves that such is the case
  \cite{handbook-constraint-programming}. The process of finding these values consists of
 \textit{searching} the combinatorial space and either implicitly or explicitly discarding
-combinations that cannot be solutions, i.e does not satisfy the constraints.
+combinations that cannot be solutions, i.e. does not satisfy the constraints.
 
 \textit{Unison} is a tool that uses a constraint solver to schedule instructions and allocate
 registers as a single, integrated problem. It operates as a part of the LLVM backend, and

@@ -14,9 +14,10 @@ metric, but all general discussion will be in chapter \ref{chapter:discussion}.
 \end{figure}
 
 The execution times of the constraint solver at sampling rate 1000 are shown in Figure
-\ref{fig:time}. Each marker represents the completed generation of a function. I.e for each
-marker 1000000 (one million) solutions have been explored. For a few functions fewer than
-1000 solutions were found (for a complete breakdown see appendix \ref{appendix:function_names}).
+\ref{fig:time}. Each marker represents the completed generation of a function. That is,
+for each marker 1000000 (one million) solutions have been explored. For a few functions
+fewer than 1000 solutions were found (for a complete breakdown see appendix
+\ref{appendix:function_names}).
 
 While the total execution time is daunting, it does represent about 23 million solutions
 found (but only 23000 emitted). The enumerate strategy is fairly quick; 51 minutes for one
@@ -53,9 +54,9 @@ Figure \ref{fig:cost-speed} and Figure \ref{fig:cost-size} shows the distributio
 estimated cost in cycles and the code size for each strategy and sampling rate
 respectively. Both the cost in cycles and the code size for a program version is
 calculated as the geometric mean between the cost of the individual functions that make
-up the program version. I.e for every strategy and sampling rate there are 1000 values for
-each cost metric, where each value is a geometric mean between the cost values of 23
-functions.
+up the program version. That is, for every strategy and sampling rate there are 1000
+values for each cost metric, where each value is a geometric mean between the cost values
+of 23 functions.
 
 All strategies perform better for lower sampling rates both in terms of speed and in terms
 of code size. As described in section \ref{sec:sampling_rate}, this is expected. Both the

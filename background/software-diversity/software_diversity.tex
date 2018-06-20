@@ -77,10 +77,11 @@ explicitly placed there by the compiler. The x86-64 architecture has 4 "ret" ins
 and the most basic one is only a single byte \cite{x86-ret}, making hidden gadgets frequent.
 
 The reason that the "ret" instruction is convenient is because it transfers control flow
-to the instruction pointed to by the value at the top of the stack. I.e the "ret" instruction
-reads the top of the stack as a memory address and transfers the control flow to continue
-from that address. If an adversary can control the stack he or she can also control the
-control flow. Gadgets can end with other instructions depending on what is desirable.
+to the instruction pointed to by the value at the top of the stack. That is, the "ret"
+instruction reads the top of the stack as a memory address and transfers the control flow
+to continue from that address. If an adversary can control the stack he or she can also
+control the control flow. Gadgets can end with other instructions depending on what is
+desirable.
 
 \subsection{Example of a code re-use attack}
 
@@ -138,7 +139,7 @@ control there. The \textit{system()} call will read the argument in the \textit{
 register and execute the command.
 
 Putting this together, we want to overwrite the return address of the vulnerable function
-with the address of our gadget (i.e the address of the "pop rdi" instruction). When control
+with the address of our gadget (i.e. the address of the "pop rdi" instruction). When control
 is transferred to the gadget the top of the stack should be the address of the "/bin/cat flag.txt"
 string, followed by the address of the \textit{system()} call.
 
@@ -149,7 +150,7 @@ to find these pieces by disassembling the program.
 
 We know want we want to do and we have identified an attack vector. However, a few pieces
 of the puzzle still remain. We must find the offset of the return address on the stack,
-i.e how must the payload be constructed in order to overwrite the return address with the
+i.e. how must the payload be constructed in order to overwrite the return address with the
 value we want. We must also find exactly what values should be placed on the stack.
 
 To find the offset of the return address we can run the program and enter garbage to the
