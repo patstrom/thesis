@@ -84,7 +84,7 @@ control flow. Gadgets can end with other instructions depending on what is desir
 
 \subsection{Example of a code re-use attack}
 
-As an example attack consider the x86-64 version of the "split" challenge on ROP emporium\footnote{https://ropemporium.com/challenge/split.html}.
+As an example attack consider the x86-64 version of the "split" challenge on ROP emporium\footnote{\url{https://ropemporium.com/challenge/split.html} (visited on 20/06/2018)}.
 The challenge consists of two files, an executable and a "flag.txt" file. The goal is to
 provide a payload to the stdin of the binary that executes the command "/bin/cat flag.txt".
 It is a simple challenge in the sense that the string "/bin/cat flag.txt" and a call to
@@ -164,7 +164,7 @@ the padding required is 40 bytes.
 The address of the gadget (the "pop rdi" instruction) to be used is 0x400883, the address
 of the "/bin/cat flag.txt" string is 0x601060 and the address of the system call is
 0x400810. All of these addresses as well as the required padding were found using the
-radare2\footnote{https://github.com/radare/radare2} reverse engineering framework.
+radare2\footnote{\url{https://github.com/radare/radare2} (visited on 20/06/2018)} reverse engineering framework.
 
 \subsubsection{Formulate and mount the payload}
 
