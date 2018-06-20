@@ -113,8 +113,8 @@ modifying the Unison tool to support generating multiple outputs. Exactly how th
 outputs should differ to generate the most diverse population is outside the scope of this
 project. With that said, for the purposes of this thesis the modification of Unison will
 include three different options of how the resulting code should differ. Both the modified
-code generator as well as the resulting population of each invocation of the code generator
-will be evaluated. This lends itself well to an experimental approach.
+code generator as well as the resulting population of each of the three options will be
+evaluated. This lends itself well to an experimental approach.
 
 The purpose of the experiment is to evaluate both the code generator and the resulting
 code. The evaluation of the code generator will be performed on both quantifiable and
@@ -124,4 +124,37 @@ in a purely quantifiable way.
 
 \section{Ethics and Sustainability}
 
+Developing defenses in the field of software security does not generally offer many
+ethical controversies. It is in principle always good to offer defense against ominous
+deeds. However, generating multiple executables on each invocation of a compiler would
+lead to sustainability impacts.
+
+\textcite{compiler-generated-sw-div} describes the architecture for a solution like this
+when deployed on a large scale. It involves an "app store" (e.g a package manager
+repository or a smartphone app store) where a user asks for a binary and each user is given
+a unique variant. The two options are to either generate a new version when one is asked
+for or to generate as many versions as feasible beforehand, storing them somewhere and
+simply providing one at user requests. Both of these approaches involves more computation
+than just compiling a single binary and providing it to all users. In the latter case a
+lot of storage is also involved.
+
+Initially either of these factor might not seems like much but requiring additional
+computation and potentially storage that scales linearly with users can become a problem
+for popular applications, such as certain web browsers or common software libraries. The
+extra computation and storage requires power which is costly not only in monetary terms
+but also environmentally. Unfortunately, this is an unavoidable consequence of a large
+scale deployment of automated software diversity.
+
 \section{Overview}
+
+This thesis is divided into five chapters. The first chapter provides an overview and
+introduction of the project background and goal as well as the research method and ethics
+and sustainability issues.
+
+Chapter 2, background, presents software diversity and why it is desirable. Also presented
+is how the systematic approach will be taken in the form of Unison and constraint
+programming.
+
+Chapter 3 and 4 of the thesis consists of, respectively, what experiment has
+been done and the results of that experiment. The last chapter discusses the shortcomings
+of the experiment, the future work required and the conclusion.
