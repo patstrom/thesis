@@ -221,12 +221,16 @@ Our process to generate our test data is as follows:
 		\end{itemize}
 \end{enumerate}
 
-In other words, for every combination of strategy and sampling rate (12 in total) 1000
-different versions of each of the 23 functions will be generated. These function versions
-will then be combined to yield 1000 different program versions for each combination, at
-a total of 12000 program versions (and a total of 276000 different function versions).
+In other words, for every strategy and sampling 1000 versions of each function will be
+generated. Each combination of strategy and sampling rate will thus have 23000 function
+versions assosiated with it. Version 0 of every function for each strategy and sampling
+rate will make up program version 0 for the corresponding strategy and sampling rate
+combination. Version 1 will make up program version 1 and so forth. Each program version
+will consist of 23 functions so the process will yield 1000 program versions for each
+combination of strategy and sampling rate.
 
 The resulting test data will be 12 programs, one for each combination of strategy and
 sampling rate. Each of these 12 programs represents a population of 1000 different versions,
-and each version consists of 23 functions. The result will emphasize comparison between
-the sampling rates for each strategy as well as the difference between the strategies.
+for a total of 12000 program versions. Each version consists of 23 functions for a total
+of 276000 function versions. The result will emphasize comparison between the sampling
+rates for each strategy as well as the difference between the strategies.
