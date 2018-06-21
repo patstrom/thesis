@@ -6,7 +6,7 @@ metric, but all general discussion will be in chapter \ref{chapter:discussion}.
 
 \section{Generation Time}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth,height=0.5\textheight]{results/figures/generator_time}
 	\caption{The execution time of the code generator at sampling rate 1000 (i.e 1000000 solutions for every function). Each marker represents the finished generation of a function. The markers are ordered so that the nth marker on every line represents the same function. Total time is annotated as hours and minutes.}
@@ -36,14 +36,14 @@ heuristic for the schedule strategy.
 \section{Cost}
 \label{sec:cost_result}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth,height=0.5\textheight]{results/figures/cost_speed}
 	\caption{The cost (speed) distributions for every strategy and sampling rate. The cost of the LLVM solution is included for reference.}
 	\label{fig:cost-speed}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth,height=0.5\textheight]{results/figures/cost_size}
 	\caption{The code size distributions for every strategy and sampling rate. The cost of the LLVM solution is included for reference.}
@@ -52,11 +52,13 @@ heuristic for the schedule strategy.
 
 Figure \ref{fig:cost-speed} and Figure \ref{fig:cost-size} shows the distributions of the
 estimated cost in cycles and the code size for each strategy and sampling rate
-respectively. Both the cost in cycles and the code size for a program version is
-calculated as the geometric mean between the cost of the individual functions that make
+respectively. The cost in terms of code size is calculated as the sum of the cost for each
+function, i.e. the number of instructions in the program version. Cost in terms of speed
+is calculated as the mean between the costs of the individual functions that make
 up the program version. That is, for every strategy and sampling rate there are 1000
-values for each cost metric, where each value is a geometric mean between the cost values
-of 23 functions.
+values for each cost metric. For the size metric each of those values is a sum of 23
+values. For the speed metric each of those values is a mean between 23 values. Note that
+the cost in speed is weighted against estimated execution frequency (see Section \ref{sec:cost})
 
 All strategies perform better for lower sampling rates both in terms of speed and in terms
 of code size. As described in section \ref{sec:sampling_rate}, this is expected. Both the
@@ -77,11 +79,9 @@ lower cost solutions are explored first, this is also the optimal speed.
 
 \begin{figure}[htp]
 	\centering
-	\includegraphics[width=\textwidth,height=\textheight]{results/figures/gadgets}
-	\caption{The ratio of occurrence for each gadget broken down by strategy and sampling rate.
-The x-axis displays the gadget ids. The first non-zero x-tick and the second non-zero x-tick
-displays the first gadget that only appear in one program version and the total number
-of unique gadgets, respectively. The data is sorted from most to least frequent to allow
+	\includegraphics[width=\textwidth,height=0.9\textheight]{results/figures/gadgets}
+	\caption{\small The ratio of occurrence for each gadget broken down by strategy and sampling rate.
+The x-axis displays the gadget ids. The data is sorted from most to least frequent to allow
 for a better overview.}
 	\label{fig:gadgets}
 \end{figure}
