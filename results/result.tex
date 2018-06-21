@@ -1,4 +1,4 @@
-\chapter{Results}
+\chapter{Results and Discussion}
 
 In this chapter each metric mentioned in Section \ref{sec:metrics} will be presented in
 its own section. An interpretation of the result will also be presented for each
@@ -104,5 +104,15 @@ not particularly impressive even at sampling rate 1000. There are still many gad
 survives across a large percentage of versions. The schedule strategy, however, performed
 well with no gadget being present in even 50\% of all versions for the lowest sampling
 rate and for sampling rate 1000 about 82\% of gadgets only appear in one version.
+
+If an adversary were to construct a payload for a binary from the schedule strategy
+at sampling rate 1000 the chances of it working on another binary in that population is
+very small. Even if the payload only relies on a single gadget, and that gadget happens
+to be the most frequent one, the payload would only work on about 24\% of the binaries. It
+is, however, much more likely that an adversary needs multiple gadgets. Since 82\% of
+all gadgets are unique to their program version and the gadgets has to be exactly equal on
+for the payload to work on another binary it is very unlikely that the adversary can re-use
+the payload at all. Unfortunately the schedule strategy also incurred the most overhead,
+as seen in Section \ref{cost_result}.
 
 The difference in behavior of the strategies is discussed in Section \ref{sec:discussion}.
