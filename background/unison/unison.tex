@@ -4,12 +4,14 @@
 Unison is an open-source\footnote{\url{https://github.com/unison-code/unison} (visited on 20/06/2018)},
 potentially optimal tool that performs integrated register allocation and instruction
 scheduling using constraint programming. It can be used as an alternative or complement to
-the algorithms currently in place by compilers such as GCC and LLVM. In particular there
+the algorithms currently in place by compilers such as GCC\footnote{https://gcc.gnu.org/ (visited on 21/06/2018)}
+and LLVM\footnote{http://llvm.org/ (visited on 21/06/2018)}. In particular there
 already exists a driver for LLVM which accept input in the form of LLVM MIR \cite{unison-docs}.
 
-LLVM MIR is a human readable, YAML serialized format of the LLVM machine specific
-representation \cite{llvm-mir-lang-ref}. The machine specific representation is used by the
-LLVM code generator to emit assembly for a specific architecture \cite{welcome-to-backend}.
+LLVM MIR is a human readable, YAML\footnote{http://yaml.org/ (visited on 21/06/2018)}
+serialized format of the LLVM machine specific representation \cite{llvm-mir-lang-ref}.
+The machine specific representation is used by the LLVM code generator to emit assembly
+for a specific architecture \cite{welcome-to-backend}.
 
 Unison models the problems of register allocation and instruction scheduling as a single
 constraint programming problem and solves them simultaneously using a branch and bound
