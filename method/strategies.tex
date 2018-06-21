@@ -1,4 +1,3 @@
-\subsection{Strategies}
 \label{sec:strategies}
 
 For the purposes of this thesis we define three strategies to be evaluated and compared.
@@ -8,7 +7,7 @@ strategies are \textit{enumeration}, \textit{instruction schedule} and
 \textit{register allocation}, and the motivation for each is presented in each respective
 subsection.
 
-\subsubsection{Enumeration}
+\subsection{Enumeration}
 
 The name of this strategy comes from the fact that we are only concerned that the solutions
 are different, not how they differ. During search the Gecode search engine will never
@@ -28,7 +27,7 @@ Unison can differ the solutions in four main ways:
 The results of this strategy serve as a baseline for the program. It is literally what
 happens if we do nothing.
 
-\subsubsection{Registers}
+\subsection{Registers}
 
 The strategy to diversify the register allocation of the resulting binaries is an attractive
 one due to causing no run-time overhead. Consequently, if it introduces significant diversity
@@ -45,7 +44,7 @@ allocation. Their description from the Unison documentation are as follows:
 		\textbf{Type} & \textbf{Name} & \textbf{Description} \\ \hline
 		\textbf{Set} & $P$ & The set of all operands in the program \\ \hline
 		\multirow{2}{*}{\textbf{Variable}}
-			& $x_p \in \{0, 1\}$ & whether operand \textit{p} is connected (0 is false and 1 is true) \\
+			& $x_p \in \{0, 1\}$ & if operand \textit{p} is connected (false/true) \\
 			& $ry_p \in \mathbb{N}_0$ & register to which operand \textit{p} is assigned \\
 	\end{tabular}
 }
@@ -76,7 +75,7 @@ assigned, and $y_p$ represents which temporary is connected to operand $p$. In o
 $ry_p$ is implemented as $r(y(p))$. This distinction is important during search, and in
 particular when branching.
 
-\subsubsection{Instruction Schedule}
+\subsection{Instruction Schedule}
 \label{sec:schedule}
 
 Given how Unison functions diversifying the instruction schedule is an exciting strategy.
@@ -97,7 +96,7 @@ documentation they are described as follow:
 		\textbf{Type} & \textbf{Name} & \textbf{Description} \\ \hline
 		\textbf{Set} & $O$ & The set of all operations in the program \\ \hline
 		\multirow{2}{*}{\textbf{Variable}}
-			& $a_o \in \{0, 1\}$ & whether operation \textit{o} is active (0 is false and 1 is true) \\
+			& $a_o \in \{0, 1\}$ & if operation \textit{o} is active (false/true) \\
 			& $c_o \in \mathbb{N}_0$ & issue cycle of operation \textit{o} \\
 	\end{tabular}
 }
