@@ -30,7 +30,8 @@ When constraint propagation is finished there are three possible states:
 \end{enumerate}
 
 For situation (1) and (2), either a solution is found or we have proven that a solution
-does not exist (within the local search space).
+does not exist (within the local search space). The possible solutions in the above example
+are $x=1,y=0$ and $x=2,y \in {0,1}$.
 
 In the latter situation (3) the Gecode constraint solver splits a variable's domain into
 two or more subsets, creating a \textit{search tree} where each \textit{branch} represents
@@ -40,9 +41,10 @@ By committing to a branch the constraint solver can once again perform constrain
 propagation and repeat the process. However, if \textit{branching} has taken place and the
 solver reaches situation (1) it can go back up the tree and explore a different branch.
 If situation (2) is reached it can still backtrack but with the added option of adding
-more constraints based on the newly found solution. Constraining based on previously found
-solutions in the search tree is done with the \textit{branch and bound} search
-engine \cite[Section~9]{MPG} in Gecode.
+more constraints based on the newly found solution. For example, if the $x=1$ branch was
+taken the $x=1,y=0$ solution is found, in which case we could post the constraint $x>1$.
+Constraining based on previously found solutions in the search tree is done with the
+\textit{branch and bound} search engine \cite[Section~9]{MPG} in Gecode.
 
 \textit{Branch and bound} is an efficient strategy to find the optimal solution to a
 combinatorial problem which in essence constitutes comparing potential solutions to the
@@ -50,3 +52,5 @@ currently best found solution, keeping the better of the two \cite{BaB}.
 
 We will adopt a similar strategy, but instead of constraining solutions to be better we
 will require them to be \textit{different}. In addition, no solutions will be discarded.
+In the context of Unison a solution refers to a valid instruction schedule and a valid
+register allocation.
