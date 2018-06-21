@@ -68,17 +68,17 @@ strategies are equally performant.
 \section{Future Work}
 
 In addition to addressing the shortcomings by targeting the x86 platform and improving
-the search heuristics to be able to compile larger functions there are many possibilities
-for diversification strategies. Regardless of what the selection of strategies may
-indicate the possibilities for diversification are far broader than when approaching the
-problem in terms of register allocation and instruction scheduling as separate procedures.
-It is important to keep in mind that more unorthodox strategies that exploit the combined
-approach might be even more performant. As mentioned in \ref{sec:unison-model} the Unison
-model consists of more variables than the 4 explored in this experiment, all of which
-offers potential for diversity. The strategies can also be combined, both in terms of
-combining the constraints as well as combining the resulting function differently. E.g one
-could construct a program version by combining function versions from different strategies
-and sampling rates.
+the search heuristics to be able to compile larger functions there is much to explore.
+
+Regardless of what the selection of strategies may indicate the possibilities for
+diversification are far broader than when approaching the problem in terms of register
+allocation and instruction scheduling as separate procedures.  It is important to keep in
+mind that more unorthodox strategies that exploit the combined approach might be even more
+performant. As mentioned in \ref{sec:unison-model} the Unison model consists of more
+variables than the 4 explored in this experiment, all of which offers potential for
+diversity. The strategies can also be combined, both in terms of combining the constraints
+as well as combining the resulting function differently. E.g one could construct a program
+version by combining function versions from different strategies and sampling rates.
 
 Unison (and disUnison) accepts the basic LLVM-solution as an optional parameter, and can
 post constraints to only generate solutions that are \textit{better}. In other words, we
