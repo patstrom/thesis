@@ -76,7 +76,7 @@ emitted, is still present in the disUnison model.
 
 \input{method/strategies.tex}
 
-\subsection{Sampling Rate}
+\section{Sampling Rate}
 \label{sec:sampling_rate}
 
 When exploring combinations with a constraint solver similar solutions are found close to
@@ -112,7 +112,7 @@ sampling rate the ones that have been generated will be re-used so that 1000 pro
 versions can still be generated. More information about these functions can be seen in
 appendix \ref{appendix:function_names}.
 
-\subsection{Branching Strategy}
+\section{Branching Strategy}
 \label{sec:branch_strategy}
 
 The disUnison models uses the same branching strategy as the original Unison model. When
@@ -139,7 +139,7 @@ presented.
 The experiment will be carried out on a computer running a 4-core Intel(R) Core(TM)
 i7-4500U CPU @ 1.80GHz and with 8 gigabytes of memory.
 
-\subsection{Data Set}
+\section{Data Set}
 
 The data set to be used is part of the Unison test suite for the Hexagon architecture. In
 total 23 functions will be used, each of which is from a benchmark in the SPEC2006\footnote{https://www.spec.org/cpu2006/ (visited on 21/06/2018)}
@@ -155,7 +155,7 @@ will make up program version 1 and so forth. That is, one program version consis
 functions, and there will be a total of 1000 program versions for each strategy and
 sampling rate, yielding a total of 12 programs with 1000 versions each.
 
-\subsection{Metrics}
+\section{Metrics}
 \label{sec:metrics}
 
 The metrics to be evaluated are surviving gadgets, \textit{cost} (See \ref{sec:cost}),
@@ -164,8 +164,10 @@ both speed and size, and the execution time of the code generator.
 The \textit{cost} metric is calculated by a tool called \textit{uni analyze}, which is
 part of the Unison toolchain. It accepts the LLVM MIR of a function as input and outputs
 the estimated cost for each optimization goal as described in Section \ref{sec:cost}. The
-cost of a program version will be calculated as the geometric mean of the cost for each
-function version that makes up the program version in question.
+cost in terms of size of a program version will be calculated as the mean of the cost for
+each function version that makes up the program version in question. The cost in speed of
+a program version will be calculated as the geometric mean between the cost of the corresponding
+functions normalized to the regular LLVM solution (when neither Unison or disUnison is used).
 
 For the experiment the optimization goal will be speed, and thus solutions that are
 estimated to execute faster are generated first. However, both cost in speed and cost in
@@ -180,7 +182,13 @@ effective at breaking that gadget. Similarly a very low ratio (close to 0\%) wou
 that the strategy was effective as the gadget only appears in a small number of the
 programs.
 
-\subsection{Generation Process}
+\section{Generation Process}
+
+As mentioned in Section \ref{sec:sampling_rate} most functions in the suite has 1000000
+different versions so all strategies will be tested for sampling rates up to 1000. There
+is a lot of disk I/O involved in generating all versions and even more so when calculating
+the metrics. Thus, sampling a population of 1000 is empirically a good choice to keep the
+calculations relatively fast.
 
 Our process to generate our test data is as follows:
 
@@ -188,8 +196,16 @@ Our process to generate our test data is as follows:
 	\item For every function generate 1000 versions with "speed" as the optimization goal.
 	\item Version 0 of every function will make up program 0, version 1 will make up program
 		1 and so forth.
-	\item For every program find all gadgets and its cost.
-	\item Calculate our metrics.
+	\item Calculate/record our metrics.
+		\begin{itemize}
+			\item Execution time of code generator
+			\item Cost
+				\begin{itemize}
+					\item speed
+					\item size
+				\end{itemize}
+			\item Frequency of surviving gadgets
+		\end{itemize}
 	\item Repeat for all strategies.
 		\begin{itemize}
 			\item Enumerate.
@@ -207,4 +223,10 @@ Our process to generate our test data is as follows:
 
 In other words, for every combination of strategy and sampling rate (12 in total) 1000
 different versions of each of the 23 functions will be generated. These function versions
-will then be combined to yield 1000 different program versions.
+will then be combined to yield 1000 different program versions for each combination, at
+a total of 12000 program versions (and a total of 276000 different function versions).
+
+The resulting test data will be 12 programs, one for each combination of strategy and
+sampling rate. Each of these 12 programs represents a population of 1000 different versions,
+and each version consists of 23 functions. The result will emphasize comparison between
+the sampling rates for each strategy as well as the difference between the strategies.
