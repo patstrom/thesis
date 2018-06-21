@@ -34,9 +34,10 @@ that all future solutions will be affected by all already found solutions.
 
 As mentioned, our intention is to replace the current \textit{constrain()} function of
 Unison with one that instead posts constraints to ensure that future solutions are
-\textit{different} in some regard.
+\textit{different} in some regard. Remember that in the context of Unison a solution is a
+valid instruction schedule and allocation of registers.
 
-\subsection{Cost}
+\section{Cost}
 \label{sec:cost}
 
 An important variable in the Unison model is \textit{cost}. It is the deciding factor
@@ -49,22 +50,6 @@ solutions, in addition to the original constraints, the cost must be less than t
 the previously found solution. Given enough execution time, Unison will thus find the
 optimal solution with regards to the \textit{cost} variable.
 
-\subsection{Target Architecture}
-\label{sec:arch}
-
-Unison does not currently support the x86 or x86-64 architecture. Only ARM, Hexagon and MIPS
-are supported \cite{unison-src}. None of the supported architectures are generally considered
-when testing automated software diversity, but for the purposes of evaluating the use of
-a systematic approach the supported architectures offers a glimpse at the potential. For
-the experiment the code will be compiled for the Hexagon architecture.
-
-Hexagon functions very differently from x86 but for our purposes targeting Hexagon will
-still hint at the gadget-breaking potential of the systematic approach. After all,
-breaking gadgets is about shifting, adding, removing or otherwise modifying \textit{any}
-instruction in the program, and since the diversification strategies (see Section
-\ref{sec:disUnison}) are applied globally they are supposedly equally effective regardless
-of the placement or structure of the instruction.
-
 \section{disUnison}
 \label{sec:disUnison}
 
@@ -75,6 +60,23 @@ bound search is modified. The bulk of the Unison model, that ensures functional 
 emitted, is still present in the disUnison model.
 
 \input{method/strategies.tex}
+
+\section{Branching Strategy}
+\label{sec:branch_strategy}
+
+The disUnison models uses the same branching strategy as the original Unison model. When
+the search engine reaches a state where branching is necessary the first decision is to
+assign the \textit{cost} (see Section \ref{sec:cost}) variable to its lowest possible
+value. If the \textit{cost} variable is already assigned, the branching is done as
+follows, in the order listed:
+
+\begin{enumerate}
+	\item assign the active operations. (the $a_o$ variable)
+	\item assign which instruction should implement each operation.
+	\item assign which temporary is connected to each operand. (the $y_p$ variable)
+	\item assign which cycle each operation is issued. (the $c_o$ variable)
+	\item assign which register is assigned to which temporary. (the $r_t$ variable)
+\end{enumerate}
 
 \section{Sampling Rate}
 \label{sec:sampling_rate}
@@ -87,11 +89,11 @@ e.g 100 solutions are discarded between every emitted executable perhaps more ga
 broken.
 
 In the original Unison model the cost variable is used both for branching and during the
-branch and bound process. In the disUnison model it is still used for branching. Lower
-cost combinations are explores first. However, future solutions are not bound to have
-lower cost. Discarding solutions can thus impact performance in a negative way in the
-sense that the later versions might have a higher cost, resulting in a wider cost
-distribution across all program versions.
+branch and bound process. As mentioned in Section \ref{sec:branch_strategy}, in the
+disUnison model it is still used for branching. Lower cost combinations are explores
+first. However, future solutions are not bound to have lower cost. Discarding solutions
+can thus impact performance in a negative way in the sense that the later versions might
+have a higher cost, resulting in a wider cost distribution across all program versions.
 
 Sampling rates of 1, 10, 100 and 1000 will be evaluated for every strategy, where a
 sampling rate of 100 means that every 100th solution is kept. Generating 1000 versions
@@ -112,22 +114,21 @@ sampling rate the ones that have been generated will be re-used so that 1000 pro
 versions can still be generated. More information about these functions can be seen in
 appendix \ref{appendix:function_names}.
 
-\section{Branching Strategy}
-\label{sec:branch_strategy}
+\section{Target Architecture}
+\label{sec:arch}
 
-The disUnison models uses the same branching strategy as the original Unison model. When
-the search engine reaches a state where branching is necessary the first decision is to
-assign the \textit{cost} (see Section \ref{sec:cost}) variable to its lowest possible
-value. If the \textit{cost} variable is already assigned, the branching is done as
-follows, in the order listed:
+Unison does not currently support the x86 or x86-64 architecture. Only ARM, Hexagon and MIPS
+are supported \cite{unison-src}. None of the supported architectures are generally considered
+when testing automated software diversity, but for the purposes of evaluating the use of
+a systematic approach the supported architectures offers a glimpse at the potential. For
+the experiment the code will be compiled for the Hexagon architecture.
 
-\begin{enumerate}
-	\item assign the active operations. (the $a_o$ variable)
-	\item assign which instruction should implement each operation.
-	\item assign which temporary is connected to each operand. (the $y_p$ variable)
-	\item assign which cycle each operation is issued. (the $c_o$ variable)
-	\item assign which register is assigned to which temporary. (the $r_t$ variable)
-\end{enumerate}
+Hexagon functions very differently from x86 but for our purposes targeting Hexagon will
+still hint at the gadget-breaking potential of the systematic approach. After all,
+breaking gadgets is about shifting, adding, removing or otherwise modifying \textit{any}
+instruction in the program, and since the diversification strategies (see Section
+\ref{sec:disUnison}) are applied globally they are supposedly equally effective regardless
+of the placement or structure of the instruction.
 
 \chapter{Experimental Setup}
 
@@ -164,10 +165,10 @@ both speed and size, and the execution time of the code generator.
 The \textit{cost} metric is calculated by a tool called \textit{uni analyze}, which is
 part of the Unison toolchain. It accepts the LLVM MIR of a function as input and outputs
 the estimated cost for each optimization goal as described in Section \ref{sec:cost}. The
-cost in terms of size of a program version will be calculated as the mean of the cost for
-each function version that makes up the program version in question. The cost in speed of
-a program version will be calculated as the geometric mean between the cost of the corresponding
-functions normalized to the regular LLVM solution (when neither Unison or disUnison is used).
+cost in terms of size of a program version will be calculated as the sum of the cost for
+each function version that makes up the program version in question (i.e. the total number
+of instructions in the program version). The cost in speed of a program version will be
+calculated as the  mean between the cost of the corresponding functions.
 
 For the experiment the optimization goal will be speed, and thus solutions that are
 estimated to execute faster are generated first. However, both cost in speed and cost in
