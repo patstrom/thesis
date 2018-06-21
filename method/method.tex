@@ -129,7 +129,7 @@ follows, in the order listed:
 	\item assign which register is assigned to which temporary. (the $r_t$ variable)
 \end{enumerate}
 
-\section{Experimental Protocol}
+\chapter{Experimental Setup}
 
 In order to evaluate both the code generator and the generated code for each strategy a
 population of programs for each strategy is required. In this section the data set, the
@@ -142,9 +142,9 @@ i7-4500U CPU @ 1.80GHz and with 8 gigabytes of memory.
 \subsection{Data Set}
 
 The data set to be used is part of the Unison test suite for the Hexagon architecture. In
-total 23 functions will be used, each of which is from a benchmark in the SPEC2006 suite.
-These function will together make up a \textit{program}. Since they do not make up a
-complete executable they cannot be linked nor executed. Linking will instead be simulated
+total 23 functions will be used, each of which is from a benchmark in the SPEC2006\footnote{https://www.spec.org/cpu2006/ (visited on 21/06/2018)}
+suite. These function will together make up a \textit{program}. Since they do not make up
+a complete executable they cannot be linked nor executed. Linking will instead be simulated
 by placing them in the same order every time to ensure a fair comparison between
 strategies and sampling rates.
 
