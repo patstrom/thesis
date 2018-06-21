@@ -1,4 +1,4 @@
-\chapter{Discussion, Conclusion and Future Work}
+\chapter{Discussion}
 \label{chapter:discussion}
 
 \section{Discussion}
@@ -11,16 +11,6 @@ diversification strategy allows for proper executable code to be generated, but 
 the nature of constraint solving the result will either be all possible solutions
 (given enough execution time) or a proof that no solution, and thus no proper executable,
 exists.
-
-Regardless of what the selection of strategies may indicate the possibilities for
-diversification are far broader than when approaching the problem in terms of register
-allocation and instruction scheduling as separate procedures. It is important to keep in
-mind that more unorthodox strategies that exploit the combined approach might be even
-more performant. As mentioned in \ref{sec:unison-model} the Unison model consists of more
-variables than the 4 explored in this experiment, all of which offers potential for
-diversity. The strategies can also be combined, both in terms of combining the constraints
-as well as combining the resulting function differently. E.g one could construct a program
-version by combining function versions from different strategies and sampling rates.
 
 Apart from cost, the set of active operations is the first variable to be assigned during
 search (see Section \ref{sec:branch_strategy}). This partly explains the long execution
@@ -54,17 +44,6 @@ diverse population, but the mean cost in speed is virtually unchanged and the co
 only increased by a handful of percentage points. Perhaps a more advanced strategy can
 lessen this gap even more and still provide a diverse population of executables.
 
-Unison (and disUnison) accepts the basic LLVM-solution as an optional parameter, and can
-post constraints to only generate solutions that are \textit{better}. In other words, we
-can generate executables with zero overhead \textit{with respect to LLVM's solution}.
-Certain strategies would of course have an overhead, but with respect to the
-\textit{optimal solution}. There is also the opportunity to limit the resulting population
-in other ways, e.g only incur a 5\% overhead compared to the LLVM solution. By not
-randomizing we have full control of the process and can limit the resulting code in
-whatever way is appropriate. As this would limit the number of possible version this
-optional parameter was not used during the experiment. It is however an exciting factor
-to consider for future work.
-
 \section{Threats to Validity}
 
 \textcite{large-scale-automated} found 433.milc from the SPEC2006 benchmark suite to be
@@ -85,6 +64,32 @@ instructions and that they are potentially applied to all instructions the resul
 still promising. If or when Unison or a similar tool implements support for the x86 and
 x86-64 architecture, the experiment would have be repeated on to test whether or not the
 strategies are equally performant.
+
+\section{Future Work}
+
+In addition to addressing the shortcomings by targeting the x86 platform and improving
+the search heuristics to be able to compile larger functions there are many possibilities
+for diversification strategies. Regardless of what the selection of strategies may
+indicate the possibilities for diversification are far broader than when approaching the
+problem in terms of register allocation and instruction scheduling as separate procedures.
+It is important to keep in mind that more unorthodox strategies that exploit the combined
+approach might be even more performant. As mentioned in \ref{sec:unison-model} the Unison
+model consists of more variables than the 4 explored in this experiment, all of which
+offers potential for diversity. The strategies can also be combined, both in terms of
+combining the constraints as well as combining the resulting function differently. E.g one
+could construct a program version by combining function versions from different strategies
+and sampling rates.
+
+Unison (and disUnison) accepts the basic LLVM-solution as an optional parameter, and can
+post constraints to only generate solutions that are \textit{better}. In other words, we
+can generate executables with zero overhead \textit{with respect to LLVM's solution}.
+Certain strategies would of course have an overhead, but with respect to the
+\textit{optimal solution}. There is also the opportunity to limit the resulting population
+in other ways, e.g only incur a 5\% overhead compared to the LLVM solution. By not
+randomizing we have full control of the process and can limit the resulting code in
+whatever way is appropriate. As this would limit the number of possible version this
+optional parameter was not used during the experiment. It is however an exciting factor
+to consider for future work.
 
 \section{Conclusion}
 
